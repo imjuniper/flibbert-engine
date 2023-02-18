@@ -1,78 +1,95 @@
-#include "Display.h"
-#include "Renderer.h"
-#include "VertexArray.h"
-#include "VertexBuffer.h"
-#include "VertexBufferLayout.h"
-#include "IndexBuffer.h"
-#include "Shader.h"
-#include "Texture.h"
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+#include <imgui.h>
+#include <iostream>
+
+#include "opengl/Renderer.h"
+
+#include "demos/Demo.h"
+#include "demos/DemoClearColor.h"
+#include "demos/DemoTexture2D.h"
 
 int main()
 {
-    Display display;
+	GLFWwindow* window;
 
-    if (!display.Init())
-        return -1;
+	if (!glfwInit())
+		return -1;
 
-    if (!display.CreateWindow(640, 480, "OpenGL Learning", true))
-        return -1;
+	/* Set OpenGL version to 4.1 on macOS */
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
-    display.SetContext();
+	/* Create a windowed mode window and its src context */
+	window = glfwCreateWindow(960, 540, "OpenGL Learning", nullptr, nullptr);
 
-    float positions[] = {
-            -0.5f, -0.5f, 0.0f, 0.0f,
-            0.5f, -0.5f, 1.0f, 0.0f,
-            0.5f, 0.5f, 1.0f, 1.0f,
-            -0.5f, 0.5f, 0.0f, 1.0f,
-    };
+	if (!window)
+		return -1;
 
-    unsigned int indices[] = {
-            0, 1, 2,
-            2, 3, 0
-    };
+	glfwMakeContextCurrent(window);
 
-    VertexArray va;
-    VertexBuffer vb(positions, 4 * 4 * sizeof(float));
+	if (glewInit() != GLEW_OK)
+		std::cout << "GLEW Error" << std::endl;
 
-    VertexBufferLayout layout;
-    layout.Push<float>(2);
-    layout.Push<float>(2);
-    va.AddBuffer(vb, layout);
+	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-    IndexBuffer ib(indices, 6);
+	GLCallV(glEnable(GL_BLEND));
+	GLCallV(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
-    Shader shader("../res/shaders/Basic.vert", "../res/shaders/Basic.frag");
-    shader.Bind();
+	Renderer renderer;
 
-    Texture texture("../res/textures/neko.png");
-    texture.Bind();
-    shader.SetUniform1i("u_Texture", 0);
+	ImGui::CreateContext();
+	ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
+	ImGui_ImplGlfw_InitForOpenGL(window, true);
+	ImGui::StyleColorsDark();
 
-    va.Unbind();
-    vb.Unbind();
-    ib.Unbind();
-    shader.Unbind();
+	Demo::Demo* currentDemo = nullptr;
+	Demo::DemoMenu* demoMenu = new Demo::DemoMenu(currentDemo);
+	currentDemo = demoMenu;
 
-    Renderer renderer;
+	demoMenu->RegisterDemo<Demo::DemoClearColor>("Clear Color");
+	demoMenu->RegisterDemo<Demo::DemoTexture2D>("2D Texture");
 
-    float r = 0.0f;
-    float increment = 0.05f;
-    /* Loop until the user closes the window */
-    while (!display.WindowShouldClose()) {
-        renderer.Clear();
+	while (!glfwWindowShouldClose(window)) {
+		GLCallV(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+		renderer.Clear();
 
-        renderer.Draw(va, ib, shader);
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
 
-        if (r > 1.0f)
-            increment = -0.05f;
-        else if (r < 0.0f)
-            increment = 0.05f;
+		if (currentDemo) {
+			currentDemo->OnUpdate(0.0f);
+			currentDemo->OnRender();
+			ImGui::Begin("Demo");
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
+				    1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			if (currentDemo != demoMenu && ImGui::Button("<--")) {
+				delete currentDemo;
+				currentDemo = demoMenu;
+			}
+			currentDemo->OnImGuiRender();
+			ImGui::End();
+		}
 
-        r += increment;
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
 
-        display.SwapBuffers();
-        display.PollEvents();
-    }
+	delete currentDemo;
+	if (currentDemo != demoMenu)
+		delete demoMenu;
 
-    return 0;
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+	glfwTerminate();
+	return 0;
 }

@@ -1,0 +1,12 @@
+[submodule "vendor/glew"]
+	path = vendor/glew
+	url = ssh://git@github.com/omniavinco/glew-cmake.git
+[submodule "vendor/glm"]
+	path = vendor/glm
+	url = ssh://git@github.com/g-truc/glm.git
+[submodule "vendor/glfw"]
+	path = vendor/glfw
+	url = ssh://git@github.com/glfw/glfw.git
+[submodule "vendor/imgui"]
+	path = vendor/imgui
+	url = ssh://git@github.com/ocornut/imgui.git
