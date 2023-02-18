@@ -7,9 +7,14 @@
 #include "VertexArray.h"
 
 #ifdef DEBUG
+#if _MSC_VER
+#define DEBUGTRAP() __debugbreak()
+#else
+#define DEBUGTRAP() __builtin_debugtrap()
+#endif
 #define ASSERT(condition)                                                                          \
 	if (!(condition))                                                                          \
-	__builtin_debugtrap()
+	DEBUGTRAP()
 #define GLCallV(fn)                                                                                \
 	GLClearErrors();                                                                           \
 	fn;                                                                                        \

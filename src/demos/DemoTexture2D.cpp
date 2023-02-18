@@ -1,6 +1,6 @@
 #include "DemoTexture2D.h"
 
-#include "GLFW/glfw3.h"
+#include "opengl/asset.h"
 
 namespace Demo
 {
@@ -33,10 +33,10 @@ namespace Demo
 		m_VAO->AddBuffer(*m_VertexBuffer, layout);
 		m_IndexBuffer = std::make_unique<IndexBuffer>(indices, 6);
 
-		m_Shader = std::make_unique<Shader>("../res/shaders/Basic.vert",
-						    "../res/shaders/Basic.frag");
+		m_Shader = std::make_unique<Shader>(SHADER_DIR "/Basic.vert",
+                SHADER_DIR "/Basic.frag");
 		m_Shader->Bind();
-		m_Texture = std::make_unique<Texture>("../res/textures/neko.png");
+		m_Texture = std::make_unique<Texture>(TEXTURE_DIR "/neko.png");
 		m_Shader->SetUniform1i("u_Texture", 0);
 	}
 

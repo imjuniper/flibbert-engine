@@ -70,9 +70,14 @@ target_link_libraries(opengl-learning
 		PRIVATE glm
 		PRIVATE imgui)
 
+configure_file(
+		${CMAKE_CURRENT_SOURCE_DIR}/src/opengl/asset.h.in
+		${CMAKE_CURRENT_BINARY_DIR}/src/opengl/asset.h)
+
 target_include_directories(opengl-learning
-		PRIVATE ${CMAKE_SOURCE_DIR}/src
-		PRIVATE ${CMAKE_SOURCE_DIR}/vendor)
+		PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
+		PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src
+		PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor)
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
 	add_definitions(-DDEBUG)
