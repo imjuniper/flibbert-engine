@@ -5,15 +5,15 @@
 
 VertexArray::VertexArray() : m_RendererID(0)
 {
-	GLCallV(glGenVertexArrays(1, &m_RendererID));
+	GLCall(glGenVertexArrays(1, &m_RendererID));
 }
 
 VertexArray::~VertexArray()
 {
-	GLCallV(glDeleteVertexArrays(1, &m_RendererID));
+	GLCall(glDeleteVertexArrays(1, &m_RendererID));
 }
 
-void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout)
+void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout) const
 {
 	Bind();
 	vb.Bind();
@@ -21,19 +21,19 @@ void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& la
 	unsigned int offset = 0;
 	for (unsigned int i = 0; i < elements.size(); i++) {
 		const auto& element = elements[i];
-		GLCallV(glEnableVertexAttribArray(i));
-		GLCallV(glVertexAttribPointer(i, element.count, element.type, element.normalized,
-					      layout.GetStride(), (const void*)offset));
+		GLCall(glEnableVertexAttribArray(i));
+		GLCall(glVertexAttribPointer(i, element.count, element.type, element.normalized,
+					     layout.GetStride(), (const void*)offset));
 		offset += element.count * VertexBufferElement::GetSizeOfType(element.type);
 	}
 }
 
 void VertexArray::Bind() const
 {
-	GLCallV(glBindVertexArray(m_RendererID));
+	GLCall(glBindVertexArray(m_RendererID));
 }
 
 void VertexArray::Unbind() const
 {
-	GLCallV(glBindVertexArray(0));
+	GLCall(glBindVertexArray(0));
 }

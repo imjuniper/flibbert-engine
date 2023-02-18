@@ -45,7 +45,6 @@ add_executable(opengl-learning
 		src/opengl/VertexArray.h
 		src/opengl/VertexBuffer.cpp
 		src/opengl/VertexBuffer.h
-		src/opengl/VertexBufferLayout.cpp
 		src/opengl/VertexBufferLayout.h
 		src/opengl/IndexBuffer.cpp
 		src/opengl/IndexBuffer.h

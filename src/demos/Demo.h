@@ -12,8 +12,8 @@ namespace Demo
 	class Demo
 	{
 	public:
-		Demo(){};
-		virtual ~Demo(){};
+		Demo() = default;
+		virtual ~Demo() = default;
 
 		virtual void OnUpdate(float deltaTime) {}
 		virtual void OnRender() {}
@@ -23,7 +23,7 @@ namespace Demo
 	class DemoMenu : public Demo
 	{
 	public:
-		DemoMenu(Demo*& currentDemoPointer);
+		explicit DemoMenu(Demo*& currentDemoPointer);
 
 		void OnImGuiRender() override;
 

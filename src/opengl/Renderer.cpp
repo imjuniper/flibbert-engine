@@ -20,7 +20,7 @@ bool GLCheckError(const char* function, const char* file, int line)
 
 void Renderer::Clear() const
 {
-	GLCallV(glClear(GL_COLOR_BUFFER_BIT));
+	GLCall(glClear(GL_COLOR_BUFFER_BIT));
 }
 
 void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const
@@ -29,5 +29,5 @@ void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& 
 	ib.Bind();
 	shader.Bind();
 
-	GLCallV(glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
+	GLCall(glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr));
 }

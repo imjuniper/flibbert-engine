@@ -38,8 +38,8 @@ int main()
 
 	std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
-	GLCallV(glEnable(GL_BLEND));
-	GLCallV(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+	GLCall(glEnable(GL_BLEND));
+	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 	Renderer renderer;
 
@@ -56,7 +56,7 @@ int main()
 	demoMenu->RegisterDemo<Demo::DemoTexture2D>("2D Texture");
 
 	while (!glfwWindowShouldClose(window)) {
-		GLCallV(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+		GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
 		renderer.Clear();
 
 		ImGui_ImplOpenGL3_NewFrame();
@@ -83,9 +83,9 @@ int main()
 		glfwPollEvents();
 	}
 
-	delete currentDemo;
 	if (currentDemo != demoMenu)
 		delete demoMenu;
+	delete currentDemo;
 
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
