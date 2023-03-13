@@ -2,27 +2,29 @@
 
 #include <GLFW/glfw3.h>
 
-class Application {
+class Application
+{
 public:
-    Application();
-    ~Application();
+	Application();
+	~Application();
 
-    static Application& Get();
+	static Application& Get();
 
-    void Run();
-    void Close();
+	void Run();
+	void Close();
 
-    float GetTime();
-    GLFWwindow* GetWindowHandle() const { return m_WindowHandle; }
+	float GetTime();
+	GLFWwindow* GetWindowHandle() const { return m_WindowHandle; }
 
 private:
-    void Init();
-    void Shutdown();
-private:
-    GLFWwindow* m_WindowHandle = nullptr;
-    bool m_Running = false;
+	void Init();
+	void Shutdown();
 
-    float m_TimeStep = 0.0f;
-    float m_FrameTime = 0.0f;
-    float m_LastFrameTime = 0.0f;
+private:
+	GLFWwindow* m_WindowHandle = nullptr;
+	bool m_Running = false;
+
+	float m_TimeStep = 0.0f;
+	float m_FrameTime = 0.0f;
+	float m_LastFrameTime = 0.0f;
 };

@@ -4,17 +4,18 @@
 
 #include <glm/glm.hpp>
 
-namespace Neko {
+namespace Neko
+{
 
-    class Input
-    {
-    public:
-        static bool IsKeyDown(KeyCode keycode);
-        static bool IsMouseButtonDown(MouseButton button);
+	class Input
+	{
+	public:
+		static bool IsKeyDown(KeyCode keycode);
+		static bool IsMouseButtonDown(MouseButton button);
 
-        static glm::vec2 GetMousePosition();
+		static glm::vec2 GetMousePosition();
 
-        static void SetCursorMode(CursorMode mode);
-    };
+		static void SetCursorMode(CursorMode mode);
+	};
 
-}
+} // namespace Neko
