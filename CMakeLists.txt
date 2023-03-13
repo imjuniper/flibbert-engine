@@ -39,6 +39,12 @@ target_link_libraries(imgui PRIVATE glfw)
 # Project
 add_executable(opengl-learning
 		src/Application.cpp
+		src/Application.h
+		src/neko/Camera.cpp
+		src/neko/Camera.h
+		src/neko/Input.cpp
+		src/neko/Input.h
+		src/neko/KeyCodes.h
 		src/opengl/Renderer.cpp
 		src/opengl/Renderer.h
 		src/opengl/VertexArray.cpp
@@ -54,6 +60,8 @@ add_executable(opengl-learning
 		src/opengl/Texture.h
 		src/demos/Demo.cpp
 		src/demos/Demo.h
+		src/demos/DemoCamera3D.cpp
+		src/demos/DemoCamera3D.h
 		src/demos/DemoClearColor.cpp
 		src/demos/DemoClearColor.h
 		src/demos/DemoTexture2D.cpp
