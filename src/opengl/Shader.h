@@ -4,8 +4,7 @@
 #include <string>
 #include <unordered_map>
 
-class Shader
-{
+class Shader {
 private:
 	std::string m_VertexShaderFilePath;
 	std::string m_FragmentShaderFilePath;

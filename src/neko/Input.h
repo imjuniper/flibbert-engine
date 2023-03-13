@@ -4,11 +4,9 @@
 
 #include <glm/glm.hpp>
 
-namespace Neko
-{
+namespace Neko {
 
-	class Input
-	{
+	class Input {
 	public:
 		static bool IsKeyDown(KeyCode keycode);
 		static bool IsMouseButtonDown(MouseButton button);

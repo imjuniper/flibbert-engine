@@ -3,18 +3,15 @@
 #include "Renderer.h"
 #include "VertexBufferLayout.h"
 
-VertexArray::VertexArray() : m_RendererID(0)
-{
+VertexArray::VertexArray() : m_RendererID(0) {
 	GLCall(glGenVertexArrays(1, &m_RendererID));
 }
 
-VertexArray::~VertexArray()
-{
+VertexArray::~VertexArray() {
 	GLCall(glDeleteVertexArrays(1, &m_RendererID));
 }
 
-void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout) const
-{
+void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout) const {
 	Bind();
 	vb.Bind();
 	const auto& elements = layout.GetElements();
@@ -28,12 +25,10 @@ void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& la
 	}
 }
 
-void VertexArray::Bind() const
-{
+void VertexArray::Bind() const {
 	GLCall(glBindVertexArray(m_RendererID));
 }
 
-void VertexArray::Unbind() const
-{
+void VertexArray::Unbind() const {
 	GLCall(glBindVertexArray(0));
 }

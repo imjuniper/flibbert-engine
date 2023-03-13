@@ -6,11 +6,9 @@
 #include <string>
 #include <vector>
 
-namespace Demo
-{
+namespace Demo {
 
-	class Demo
-	{
+	class Demo {
 	public:
 		Demo() = default;
 		virtual ~Demo() = default;
@@ -20,16 +18,14 @@ namespace Demo
 		virtual void OnImGuiRender() {}
 	};
 
-	class DemoMenu : public Demo
-	{
+	class DemoMenu : public Demo {
 	public:
 		explicit DemoMenu(Demo*& currentDemoPointer);
 
 		void OnImGuiRender() override;
 
 		template <typename T>
-		void RegisterDemo(const std::string& name)
-		{
+		void RegisterDemo(const std::string& name) {
 			std::cout << "Registering demo " << name << std::endl;
 			m_Demos.push_back(std::make_pair(name, []() { return new T(); }));
 		}

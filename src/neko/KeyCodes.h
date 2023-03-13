@@ -3,8 +3,7 @@
 #include <cstdint>
 #include <iostream>
 
-namespace Neko
-{
+namespace Neko {
 
 	typedef enum class KeyCode : uint16_t {
 		// From glfw3.h
@@ -156,14 +155,12 @@ namespace Neko
 		Middle = Button2
 	} Button;
 
-	inline std::ostream& operator<<(std::ostream& os, KeyCode keyCode)
-	{
+	inline std::ostream& operator<<(std::ostream& os, KeyCode keyCode) {
 		os << static_cast<int32_t>(keyCode);
 		return os;
 	}
 
-	inline std::ostream& operator<<(std::ostream& os, MouseButton button)
-	{
+	inline std::ostream& operator<<(std::ostream& os, MouseButton button) {
 		os << static_cast<int32_t>(button);
 		return os;
 	}

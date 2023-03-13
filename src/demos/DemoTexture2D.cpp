@@ -2,14 +2,12 @@
 
 #include "opengl/asset.h"
 
-namespace Demo
-{
+namespace Demo {
 
 	DemoTexture2D::DemoTexture2D()
 	    : m_Projection(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f)),
 	      m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
-	      m_TranslationA(100, 100, 0), m_TranslationB(300, 100, 0)
-	{
+	      m_TranslationA(100, 100, 0), m_TranslationB(300, 100, 0) {
 		// clang-format off
 		float positions[] = {
 		    -100.0f, -75.0f, 0.0f, 0.0f,
@@ -42,8 +40,7 @@ namespace Demo
 
 	void DemoTexture2D::OnUpdate(float deltaTime) {}
 
-	void DemoTexture2D::OnRender()
-	{
+	void DemoTexture2D::OnRender() {
 		Renderer renderer;
 
 		m_Texture->Bind();
@@ -65,8 +62,7 @@ namespace Demo
 		}
 	}
 
-	void DemoTexture2D::OnImGuiRender()
-	{
+	void DemoTexture2D::OnImGuiRender() {
 		ImGui::SliderFloat3("Translation A", &m_TranslationA.x, 0.0f, 960.0f);
 		ImGui::SliderFloat3("Translation B", &m_TranslationB.x, 0.0f, 960.0f);
 	}

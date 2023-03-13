@@ -2,11 +2,9 @@
 
 #include "Demo.h"
 
-namespace Demo
-{
+namespace Demo {
 
-	class DemoClearColor : public Demo
-	{
+	class DemoClearColor : public Demo {
 	private:
 		float m_ClearColor[4];
 

@@ -4,7 +4,7 @@ AccessModifierOffset: -8
 AllowShortFunctionsOnASingleLine: Inline
 AllowShortIfStatementsOnASingleLine: false
 AlwaysBreakTemplateDeclarations: Yes
-BreakBeforeBraces: Linux
+BreakBeforeBraces: Attach
 ColumnLimit: 100
 EmptyLineAfterAccessModifier: Never
 EmptyLineBeforeAccessModifier: Always

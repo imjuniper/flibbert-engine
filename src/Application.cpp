@@ -15,25 +15,21 @@
 
 static Application* s_Instance = nullptr;
 
-Application::Application()
-{
+Application::Application() {
 	s_Instance = this;
 	Init();
 }
 
-Application::~Application()
-{
+Application::~Application() {
 	Shutdown();
 	s_Instance = nullptr;
 }
 
-Application& Application::Get()
-{
+Application& Application::Get() {
 	return *s_Instance;
 }
 
-void Application::Init()
-{
+void Application::Init() {
 	if (!glfwInit())
 		return;
 
@@ -66,16 +62,14 @@ void Application::Init()
 	ImGui::StyleColorsDark();
 }
 
-void Application::Shutdown()
-{
+void Application::Shutdown() {
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 	glfwTerminate();
 }
 
-void Application::Run()
-{
+void Application::Run() {
 	Renderer renderer;
 
 	Demo::Demo* currentDemo = nullptr;
@@ -124,13 +118,11 @@ void Application::Run()
 	delete currentDemo;
 }
 
-float Application::GetTime()
-{
+float Application::GetTime() {
 	return (float)glfwGetTime();
 }
 
-int main()
-{
+int main() {
 	Application* app = new Application();
 	app->Run();
 }
