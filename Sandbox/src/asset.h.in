@@ -1,0 +1,6 @@
+#pragma once
+
+namespace asset {
+#define SHADER_DIR "@CMAKE_CURRENT_SOURCE_DIR@/assets/shaders"
+#define TEXTURE_DIR "@CMAKE_CURRENT_SOURCE_DIR@/assets/textures"
+} // namespace asset
