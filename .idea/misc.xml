@@ -3,11 +3,11 @@
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
   <component name="CidrRootsConfiguration">
     <libraryRoots>
-      <file path="$PROJECT_DIR$/vendor/glew" />
-      <file path="$PROJECT_DIR$/vendor/glfw" />
-      <file path="$PROJECT_DIR$/vendor/glm" />
-      <file path="$PROJECT_DIR$/vendor/imgui" />
-      <file path="$PROJECT_DIR$/vendor/stb_image" />
+      <file path="$PROJECT_DIR$/Flibbert/vendor/glad" />
+      <file path="$PROJECT_DIR$/Flibbert/vendor/glfw" />
+      <file path="$PROJECT_DIR$/Flibbert/vendor/glm" />
+      <file path="$PROJECT_DIR$/Flibbert/vendor/imgui" />
+      <file path="$PROJECT_DIR$/Flibbert/vendor/stb_image" />
     </libraryRoots>
     <excludeRoots>
       <file path="$PROJECT_DIR$/.cache" />

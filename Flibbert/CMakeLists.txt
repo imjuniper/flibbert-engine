@@ -5,13 +5,14 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_MACOSX_RPATH 1)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
-add_definitions(-DGLEW_STATIC)
-add_subdirectory(vendor/glew)
+add_subdirectory(vendor/glad)
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/glm)
+add_subdirectory(vendor/stb_image)
 
 # ImGui
 set(IMGUI_PATH ${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui)
@@ -35,11 +36,6 @@ add_library(imgui STATIC
 
 target_include_directories(imgui PUBLIC ${IMGUI_PATH})
 target_link_libraries(imgui PRIVATE glfw)
-
-# stb_image
-add_library(stb_image
-		vendor/stb_image/stb_image.cpp
-		vendor/stb_image/stb_image.h)
 
 # Project
 add_library(Flibbert STATIC
@@ -70,7 +66,7 @@ add_library(Flibbert STATIC
 target_compile_options(Flibbert PRIVATE -Wall)
 
 target_link_libraries(Flibbert
-		PUBLIC libglew_static
+		PUBLIC glad
 		PUBLIC glfw
 		PUBLIC glm
 		PUBLIC imgui

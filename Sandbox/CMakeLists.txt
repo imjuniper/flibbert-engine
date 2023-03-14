@@ -24,5 +24,4 @@ configure_file(
 target_include_directories(Sandbox
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
         PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src
-        PRIVATE ${CMAKE_SOURCE_DIR}/Flibbert/src
-        PRIVATE ${CMAKE_SOURCE_DIR}/Flibbert/vendor)
+        PRIVATE ${CMAKE_SOURCE_DIR}/Flibbert/src)

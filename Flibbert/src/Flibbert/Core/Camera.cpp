@@ -3,9 +3,9 @@
 #include "Flibbert/Core/Application.h"
 #include "Flibbert/Core/Input.h"
 
-#include <glm/glm/gtc/matrix_transform.hpp>
-#include <glm/glm/gtc/quaternion.hpp>
-#include <glm/glm/gtx/quaternion.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 using namespace Flibbert;
 

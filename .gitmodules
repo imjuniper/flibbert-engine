@@ -1,6 +1,3 @@
-[submodule "Flibbert/vendor/glew"]
-	path = Flibbert/vendor/glew
-	url = ssh://git@github.com/omniavinco/glew-cmake.git
 [submodule "Flibbert/vendor/glm"]
 	path = Flibbert/vendor/glm
 	url = ssh://git@github.com/g-truc/glm.git

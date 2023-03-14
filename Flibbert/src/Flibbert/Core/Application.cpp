@@ -1,8 +1,8 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
+#include <glad/glad.h>
+
 #include <imgui.h>
+#include <imgui/backends/imgui_impl_glfw.h>
+#include <imgui/backends/imgui_impl_opengl3.h>
 
 #include "Flibbert/Core/Application.h"
 #include "Platform/OpenGL/Renderer.h"
@@ -45,8 +45,8 @@ namespace Flibbert {
 
 		glfwMakeContextCurrent(m_WindowHandle);
 
-		if (glewInit() != GLEW_OK)
-			std::cout << "GLEW Error" << std::endl;
+		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		assert(status);
 
 		std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;
 
@@ -54,7 +54,7 @@ namespace Flibbert {
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 		ImGui::CreateContext();
-		ImGui_ImplOpenGL3_Init((char*)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
+		ImGui_ImplOpenGL3_Init("#version 410");
 		ImGui_ImplGlfw_InitForOpenGL(m_WindowHandle, true);
 		ImGui::StyleColorsDark();
 	}

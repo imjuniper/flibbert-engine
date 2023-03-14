@@ -4,7 +4,7 @@
 #include "Platform/OpenGL/Shader.h"
 #include "Platform/OpenGL/VertexArray.h"
 
-#include <GL/glew.h>
+#include <glad/glad.h>
 
 #ifdef DEBUG
 #ifdef _MSC_VER
