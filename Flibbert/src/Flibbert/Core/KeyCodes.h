@@ -1,8 +1,5 @@
 #pragma once
 
-#include <cstdint>
-#include <iostream>
-
 namespace Flibbert {
 
 	typedef enum class KeyCode : uint16_t {
@@ -155,13 +152,4 @@ namespace Flibbert {
 		Middle = Button2
 	} Button;
 
-	inline std::ostream& operator<<(std::ostream& os, KeyCode keyCode) {
-		os << static_cast<int32_t>(keyCode);
-		return os;
-	}
-
-	inline std::ostream& operator<<(std::ostream& os, MouseButton button) {
-		os << static_cast<int32_t>(button);
-		return os;
-	}
 } // namespace Neko

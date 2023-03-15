@@ -1,3 +1,4 @@
+#include "fbtpch.h"
 #include "Platform/OpenGL/VertexArray.h"
 
 #include "Platform/OpenGL/Renderer.h"

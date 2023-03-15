@@ -1,0 +1,103 @@
+{
+	"version": 3,
+	"cmakeMinimumRequired": {
+		"major": 3,
+		"minor": 20,
+		"patch": 0
+	},
+	"configurePresets": [
+		{
+			"name": "base",
+			"hidden": true,
+			"generator": "Visual Studio 16 2019",
+			"binaryDir": "${sourceDir}/Build/${presetName}"
+		},
+		{
+			"name": "x64-debug",
+			"displayName": "x64 Debug",
+			"description": "Sets debug build type and x64 arch",
+			"inherits": "base",
+			"architecture": {
+				"value": "x64",
+				"strategy": "external"
+			},
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Debug"
+			},
+			"condition": {
+				"type": "equals",
+				"lhs": "${hostSystemName}",
+				"rhs": "Windows"
+			},
+			"vendor": {
+				"microsoft.com/VisualStudioSettings/CMake/1.0": {
+					"hostOS": ["Windows"]
+				}
+			}
+		},
+		{
+			"name": "x64-release",
+			"displayName": "x64 Release",
+			"description": "Sets release build type",
+			"inherits": "x64-debug",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Release"
+			}
+		},
+		{
+			"name": "macos-debug",
+			"displayName": "macOS Debug",
+			"description": "Sets debug build type",
+			"inherits": "base",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Debug"
+			},
+			"condition": {
+				"type": "equals",
+				"lhs": "${hostSystemName}",
+				"rhs": "Darwin"
+			},
+			"vendor": {
+				"microsoft.com/VisualStudioSettings/CMake/1.0": {
+					"hostOS": ["macOS"]
+				}
+			}
+		},
+		{
+			"name": "macos-release",
+			"displayName": "macOS Release",
+			"description": "Sets release build type",
+			"inherits": "macos-debug",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Release"
+			}
+		}
+	],
+	"buildPresets": [
+		{
+			"name": "default-build-windows",
+			"displayName": "Default",
+			"description": "Vanilla build",
+			"configurePreset": "x64-debug"
+		},
+		{
+			"name": "default-build-macos",
+			"displayName": "Default",
+			"description": "Vanilla build",
+			"configurePreset": "macos-debug"
+		},
+		{
+			"name": "verbose-build-windows",
+			"displayName": "Verbose Build",
+			"description": "Passes -v to Ninja",
+			"configurePreset": "x64-debug",
+			"nativeToolOptions": ["-v"]
+		},
+		{
+			"name": "verbose-build-macos",
+			"displayName": "Verbose Build",
+			"configurePreset": "macos-debug",
+			"inherits": "verbose-build-windows"
+		}
+	]
+}

@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 3.24)
-project(Sandbox)
+cmake_minimum_required(VERSION 3.20)
+project(Sandbox LANGUAGES CXX)
 
 add_executable(Sandbox
         src/SandboxApp.cpp
@@ -11,8 +11,6 @@ add_executable(Sandbox
         src/Demos/DemoClearColor.h
         src/Demos/DemoTexture2D.cpp
         src/Demos/DemoTexture2D.h)
-
-target_compile_options(Sandbox PRIVATE -Wall)
 
 target_link_libraries(Sandbox
         PRIVATE Flibbert)

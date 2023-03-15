@@ -1,4 +1,5 @@
-#include "Camera.h"
+#include "fbtpch.h"
+#include "Flibbert/Core/Camera.h"
 
 #include "Flibbert/Core/Application.h"
 #include "Flibbert/Core/Input.h"

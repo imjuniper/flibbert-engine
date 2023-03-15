@@ -1,3 +1,4 @@
+#include "fbtpch.h"
 #include "Platform/OpenGL/Shader.h"
 
 #include "Platform/OpenGL/Renderer.h"
@@ -5,9 +6,6 @@
 #include <glad/glad.h>
 
 #include <fstream>
-#include <iostream>
-#include <sstream>
-#include <string>
 
 Shader::Shader(const std::string& vertexShaderFilepath, const std::string& fragmentShaderFilepath)
     : m_VertexShaderFilePath(vertexShaderFilepath),

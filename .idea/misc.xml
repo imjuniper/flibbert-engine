@@ -11,7 +11,7 @@
     </libraryRoots>
     <excludeRoots>
       <file path="$PROJECT_DIR$/.cache" />
-      <file path="$PROJECT_DIR$/build" />
+      <file path="$PROJECT_DIR$/Build" />
     </excludeRoots>
   </component>
 </project>

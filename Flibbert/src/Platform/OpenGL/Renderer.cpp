@@ -1,6 +1,5 @@
+#include "fbtpch.h"
 #include "Platform/OpenGL/Renderer.h"
-
-#include <iostream>
 
 void GLClearErrors() {
 	while (glGetError() != GL_NO_ERROR)
