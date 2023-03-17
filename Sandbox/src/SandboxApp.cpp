@@ -31,7 +31,7 @@ public:
 		if (m_currentDemo) {
 			m_currentDemo->OnUpdate(ts);
 			m_currentDemo->OnRender();
-			ImGui::Begin("Demo");
+			ImGui::Begin("Sandbox");
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
 				    1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			if (m_currentDemo != m_demoMenu && ImGui::Button("<--")) {

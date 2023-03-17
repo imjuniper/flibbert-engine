@@ -21,7 +21,6 @@
 		#error "IOS is not supported!"
 	#elif TARGET_OS_MAC == 1
 		#define FBT_PLATFORM_MACOS
-		#error "MacOS is not supported!"
 	#else
 		#error "Unknown Apple platform!"
 	#endif

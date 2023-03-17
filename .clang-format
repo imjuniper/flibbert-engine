@@ -10,6 +10,7 @@ EmptyLineAfterAccessModifier: Never
 EmptyLineBeforeAccessModifier: Always
 IndentAccessModifiers: false
 IndentCaseLabels: true
+IndentPPDirectives: BeforeHash
 IndentWidth: 8
 MaxEmptyLinesToKeep: 1
 NamespaceIndentation: All

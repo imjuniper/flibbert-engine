@@ -8,8 +8,6 @@
 #include "Flibbert/Core/Application.h"
 #include "Platform/OpenGL/Renderer.h"
 
-#include <iostream>
-
 static Flibbert::Application* s_Instance = nullptr;
 
 namespace Flibbert {
@@ -33,7 +31,11 @@ namespace Flibbert {
 
 		/* Set OpenGL version to 4.1 on macOS */
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+#ifdef FBT_PLATFORM_MACOS
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
+#else
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+#endif
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 		glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
@@ -95,4 +97,4 @@ namespace Flibbert {
 	float Application::GetTime() {
 		return (float)glfwGetTime();
 	}
-}
+} // namespace Flibbert

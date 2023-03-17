@@ -9,7 +9,12 @@
 		{
 			"name": "base",
 			"hidden": true,
-			"binaryDir": "${sourceDir}/Build/${presetName}"
+			"generator": "Ninja",
+			"binaryDir": "${sourceDir}/Build/${presetName}",
+			"cacheVariables": {
+				"CMAKE_C_COMPILER": "clang",
+				"CMAKE_CXX_COMPILER": "clang++"
+			}
 		},
 		{
 			"name": "x64-debug",
