@@ -10,6 +10,10 @@
 			"name": "base",
 			"hidden": true,
 			"generator": "Ninja",
+			"architecture": {
+				"value": "x64",
+				"strategy": "external"
+			},
 			"binaryDir": "${sourceDir}/Build/${presetName}",
 			"cacheVariables": {
 				"CMAKE_C_COMPILER": "clang",
@@ -19,13 +23,8 @@
 		{
 			"name": "x64-debug",
 			"displayName": "x64 Debug",
-			"generator": "Visual Studio 16 2019",
 			"description": "Sets debug build type and x64 arch",
 			"inherits": "base",
-			"architecture": {
-				"value": "x64",
-				"strategy": "external"
-			},
 			"cacheVariables": {
 				"CMAKE_BUILD_TYPE": "Debug"
 			},
@@ -54,6 +53,10 @@
 			"displayName": "macOS Debug",
 			"description": "Sets debug build type",
 			"inherits": "base",
+			"architecture": {
+				"value": "arm64",
+				"strategy": "external"
+			},
 			"cacheVariables": {
 				"CMAKE_BUILD_TYPE": "Debug"
 			},

@@ -29,9 +29,9 @@ namespace Flibbert {
 		if (!glfwInit())
 			return;
 
-		/* Set OpenGL version to 4.1 on macOS */
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 #ifdef FBT_PLATFORM_MACOS
+		/* Set OpenGL version to 4.1 on macOS */
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 #else
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);

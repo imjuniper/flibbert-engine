@@ -44,8 +44,8 @@ target_link_libraries(Flibbert
 		PUBLIC stb_image)
 
 target_include_directories(Flibbert
-		PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
-		PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/vendor)
+		PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src"
+		PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/vendor")
 
 if (CMAKE_BUILD_TYPE MATCHES Debug)
 	add_definitions(-DDEBUG)

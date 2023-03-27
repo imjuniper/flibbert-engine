@@ -16,10 +16,10 @@ target_link_libraries(Sandbox
         PRIVATE Flibbert)
 
 configure_file(
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/asset.h.in
-        ${CMAKE_CURRENT_BINARY_DIR}/src/asset.h)
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/asset.h.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/src/asset.h")
 
 target_include_directories(Sandbox
-        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
-        PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/src
-        PRIVATE ${CMAKE_SOURCE_DIR}/Flibbert/src)
+        PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src"
+        PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/src"
+        PRIVATE "${CMAKE_SOURCE_DIR}/Flibbert/src")

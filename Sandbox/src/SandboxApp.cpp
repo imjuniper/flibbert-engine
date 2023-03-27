@@ -10,6 +10,7 @@ class Sandbox : public Flibbert::Application {
 private:
 	Demo::Demo* m_currentDemo;
 	Demo::DemoMenu* m_demoMenu;
+
 public:
 	Sandbox() {
 		m_currentDemo = nullptr;
