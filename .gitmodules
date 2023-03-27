@@ -7,3 +7,6 @@
 [submodule "Flibbert/vendor/imgui"]
 	path = Flibbert/vendor/imgui
 	url = ssh://git@github.com/ocornut/imgui.git
+[submodule "Flibbert/vendor/spdlog"]
+	path = Flibbert/vendor/spdlog
+	url = git@github.com:gabime/spdlog.git
