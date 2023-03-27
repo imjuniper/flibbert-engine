@@ -18,6 +18,8 @@ add_library(Flibbert STATIC
 		src/Flibbert/Core/Input.cpp
 		src/Flibbert/Core/Input.h
 		src/Flibbert/Core/KeyCodes.h
+		src/Flibbert/Core/Log.cpp
+		src/Flibbert/Core/Log.h
 		src/Flibbert/Core/PlatformDetection.h
 		src/Platform/OpenGL/Renderer.cpp
 		src/Platform/OpenGL/Renderer.h
@@ -41,6 +43,7 @@ target_link_libraries(Flibbert
 		PUBLIC glfw
 		PUBLIC glm
 		PUBLIC imgui
+		PUBLIC spdlog
 		PUBLIC stb_image)
 
 target_include_directories(Flibbert
