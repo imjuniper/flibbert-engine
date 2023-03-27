@@ -12,6 +12,12 @@ namespace Flibbert {
 		return state == GLFW_PRESS || state == GLFW_REPEAT;
 	}
 
+	bool Input::IsKeyUp(KeyCode keycode) {
+		GLFWwindow* windowHandle = Application::Get().GetWindowHandle();
+		int state = glfwGetKey(windowHandle, (int)keycode);
+		return state == GLFW_RELEASE;
+	}
+
 	bool Input::IsMouseButtonDown(MouseButton button) {
 		GLFWwindow* windowHandle = Application::Get().GetWindowHandle();
 		int state = glfwGetMouseButton(windowHandle, (int)button);

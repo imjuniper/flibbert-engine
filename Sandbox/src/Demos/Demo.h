@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Flibbert.h>
+
 #include <imgui.h>
 
 #include <functional>
@@ -27,7 +29,7 @@ namespace Demo {
 
 		template <typename T>
 		void RegisterDemo(const std::string& name) {
-			std::cout << "Registering demo " << name << std::endl;
+			FBT_INFO("Registering demo {}", name);
 			m_Demos.push_back(std::make_pair(name, []() { return new T(); }));
 		}
 

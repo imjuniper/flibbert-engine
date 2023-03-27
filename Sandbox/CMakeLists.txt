@@ -9,6 +9,8 @@ add_executable(Sandbox
         src/Demos/DemoCamera3D.h
         src/Demos/DemoClearColor.cpp
         src/Demos/DemoClearColor.h
+        src/Demos/DemoFloppyBirb.cpp
+        src/Demos/DemoFloppyBirb.h
         src/Demos/DemoTexture2D.cpp
         src/Demos/DemoTexture2D.h)
 

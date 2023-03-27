@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
 	// 	std::cout << argv[i] << std::endl;
 	// }
 
-	//	Flibbert::Log::Init();
+	Flibbert::Log::Init();
 
 	//	FBT_PROFILE_BEGIN_SESSION("Startup", "FlibbertProfile-Startup.json");
 	auto app = Flibbert::CreateApplication();

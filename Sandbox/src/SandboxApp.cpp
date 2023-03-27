@@ -4,6 +4,7 @@
 #include "Demos/Demo.h"
 #include "Demos/DemoCamera3D.h"
 #include "Demos/DemoClearColor.h"
+#include "Demos/DemoFloppyBirb.h"
 #include "Demos/DemoTexture2D.h"
 
 class Sandbox : public Flibbert::Application {
@@ -19,6 +20,7 @@ public:
 
 		m_demoMenu->RegisterDemo<Demo::DemoClearColor>("Clear Color");
 		m_demoMenu->RegisterDemo<Demo::DemoTexture2D>("2D Texture");
+		m_demoMenu->RegisterDemo<Demo::DemoFloppyBirb>("Floppy Birb");
 		m_demoMenu->RegisterDemo<Demo::DemoCamera3D>("3D Camera");
 	}
 
