@@ -15,6 +15,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#ifdef FBT_PLATFORM_WINDOWS
-	#include <Windows.h>
-#endif
+// LLVM doesn't like it.
+//#ifdef FBT_PLATFORM_WINDOWS
+//	#include <Windows.h>
+//#endif
