@@ -1,12 +1,12 @@
 [submodule "Flibbert/vendor/glm"]
 	path = Flibbert/vendor/glm
-	url = ssh://git@github.com/g-truc/glm.git
+	url = ../../g-truc/glm.git
 [submodule "Flibbert/vendor/glfw"]
 	path = Flibbert/vendor/glfw
-	url = ssh://git@github.com/glfw/glfw.git
+	url = ../../glfw/glfw.git
 [submodule "Flibbert/vendor/imgui"]
 	path = Flibbert/vendor/imgui
-	url = ssh://git@github.com/ocornut/imgui.git
+	url = ../../ocornut/imgui.git
 [submodule "Flibbert/vendor/spdlog"]
 	path = Flibbert/vendor/spdlog
-	url = git@github.com:gabime/spdlog.git
+	url = ../../spdlog.git
