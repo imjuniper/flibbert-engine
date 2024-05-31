@@ -9,4 +9,4 @@
 	url = ../../ocornut/imgui.git
 [submodule "Flibbert/vendor/spdlog"]
 	path = Flibbert/vendor/spdlog
-	url = ../../spdlog.git
+	url = ../../gabime/spdlog.git
