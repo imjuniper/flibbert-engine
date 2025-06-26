@@ -30,6 +30,6 @@ bool GLCheckError(const char* function, const char* file, int line);
 
 class Renderer {
 public:
-	void Clear() const;
+	void Clear(GLfloat red = 0.f, GLfloat green = 0.f, GLfloat blue = 0.f, GLfloat alpha = 1.f) const;
 	void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
 };

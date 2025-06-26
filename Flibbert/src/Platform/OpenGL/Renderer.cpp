@@ -15,7 +15,9 @@ bool GLCheckError(const char* function, const char* file, int line) {
 	return true;
 }
 
-void Renderer::Clear() const {
+void Renderer::Clear(const GLfloat red, const GLfloat green, const GLfloat blue,
+		     const GLfloat alpha) const {
+	GLCall(glClearColor(red, green, blue, alpha));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT));
 }
 

@@ -56,9 +56,10 @@ namespace Flibbert {
 		GLCall(glEnable(GL_BLEND));
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
+		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
-		ImGui_ImplOpenGL3_Init("#version 410");
 		ImGui_ImplGlfw_InitForOpenGL(m_WindowHandle, true);
+		ImGui_ImplOpenGL3_Init("#version 410");
 		ImGui::StyleColorsDark();
 	}
 
@@ -73,7 +74,7 @@ namespace Flibbert {
 		Renderer renderer;
 
 		while (!glfwWindowShouldClose(m_WindowHandle)) {
-			GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+			glfwPollEvents();
 			renderer.Clear();
 
 			ImGui_ImplOpenGL3_NewFrame();
@@ -84,8 +85,8 @@ namespace Flibbert {
 
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 			glfwSwapBuffers(m_WindowHandle);
-			glfwPollEvents();
 
 			float time = GetTime();
 			m_FrameTime = time - m_LastFrameTime;
