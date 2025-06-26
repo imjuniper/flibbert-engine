@@ -6,7 +6,9 @@
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
+#undef GLM_ENABLE_EXPERIMENTAL
 
 using namespace Flibbert;
 
