@@ -27,7 +27,9 @@ add_library(imgui STATIC
         "${IMGUI_PATH}/backends/imgui_impl_glfw.cpp"
         "${IMGUI_PATH}/backends/imgui_impl_opengl3.h"
         "${IMGUI_PATH}/backends/imgui_impl_opengl3.cpp"
-        "${IMGUI_PATH}/backends/imgui_impl_opengl3_loader.h")
+        "${IMGUI_PATH}/backends/imgui_impl_opengl3_loader.h"
+        "${IMGUI_PATH}/misc/cpp/imgui_stdlib.cpp"
+        "${IMGUI_PATH}/misc/cpp/imgui_stdlib.h")
 
 target_include_directories(imgui PUBLIC ${IMGUI_PATH})
 target_link_libraries(imgui PRIVATE glfw)
