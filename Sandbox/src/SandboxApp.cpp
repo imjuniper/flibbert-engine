@@ -7,13 +7,15 @@
 #include "Demos/DemoFloppyBirb.h"
 #include "Demos/DemoTexture2D.h"
 
-class Sandbox : public Flibbert::Application {
+class Sandbox : public Flibbert::Application
+{
 private:
 	Demo::Demo* m_currentDemo;
 	Demo::DemoMenu* m_demoMenu;
 
 public:
-	Sandbox() {
+	Sandbox()
+	{
 		m_currentDemo = nullptr;
 		m_demoMenu = new Demo::DemoMenu(m_currentDemo);
 		m_currentDemo = m_demoMenu;
@@ -24,19 +26,22 @@ public:
 		m_demoMenu->RegisterDemo<Demo::DemoCamera3D>("3D Camera");
 	}
 
-	~Sandbox() {
-		if (m_currentDemo != m_demoMenu)
+	~Sandbox()
+	{
+		if (m_currentDemo != m_demoMenu) {
 			delete m_demoMenu;
+		}
 		delete m_currentDemo;
 	}
 
-	void Render(float ts) {
+	void Render(float ts)
+	{
 		if (m_currentDemo) {
 			m_currentDemo->OnUpdate(ts);
 			m_currentDemo->OnRender();
 			ImGui::Begin("Sandbox");
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-				    1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			            1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			if (m_currentDemo != m_demoMenu && ImGui::Button("<--")) {
 				delete m_currentDemo;
 				m_currentDemo = m_demoMenu;
@@ -47,6 +52,7 @@ public:
 	}
 };
 
-Flibbert::Application* Flibbert::CreateApplication() {
+Flibbert::Application* Flibbert::CreateApplication()
+{
 	return new Sandbox();
 }

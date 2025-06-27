@@ -8,9 +8,11 @@
 
 #include <memory>
 
-namespace Demo {
+namespace Demo
+{
 
-	class DemoTexture2D : public Demo {
+	class DemoTexture2D : public Demo
+	{
 	private:
 		std::unique_ptr<VertexArray> m_VAO;
 		std::unique_ptr<VertexBuffer> m_VertexBuffer;

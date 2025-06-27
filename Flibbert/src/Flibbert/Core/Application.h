@@ -2,9 +2,11 @@
 
 #include <GLFW/glfw3.h>
 
-namespace Flibbert {
+namespace Flibbert
+{
 
-	class Application {
+	class Application
+	{
 	public:
 		Application();
 		virtual ~Application();

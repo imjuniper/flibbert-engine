@@ -1,4 +1,3 @@
-#include "fbtpch.h"
 #include <glad/glad.h>
 
 #include <imgui.h>
@@ -10,24 +9,28 @@
 
 static Flibbert::Application* s_Instance = nullptr;
 
-namespace Flibbert {
-	Application::Application() {
+namespace Flibbert
+{
+	Application::Application()
+	{
 		s_Instance = this;
 		Init();
 	}
 
-	Application::~Application() {
+	Application::~Application()
+	{
 		Shutdown();
 		s_Instance = nullptr;
 	}
 
-	Application& Application::Get() {
+	Application& Application::Get()
+	{
 		return *s_Instance;
 	}
 
-	void Application::Init() {
-		if (!glfwInit())
-			return;
+	void Application::Init()
+	{
+		if (!glfwInit()) return;
 
 		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 #ifdef FBT_PLATFORM_MACOS
@@ -43,8 +46,7 @@ namespace Flibbert {
 		/* Create a windowed mode window and its src context */
 		m_WindowHandle = glfwCreateWindow(960, 540, "OpenGL Learning", nullptr, nullptr);
 
-		if (!m_WindowHandle)
-			return;
+		if (!m_WindowHandle) return;
 
 		glfwMakeContextCurrent(m_WindowHandle);
 
@@ -63,14 +65,16 @@ namespace Flibbert {
 		ImGui::StyleColorsDark();
 	}
 
-	void Application::Shutdown() {
+	void Application::Shutdown()
+	{
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
 		ImGui::DestroyContext();
 		glfwTerminate();
 	}
 
-	void Application::Run() {
+	void Application::Run()
+	{
 		Renderer renderer;
 
 		while (!glfwWindowShouldClose(m_WindowHandle)) {
@@ -95,7 +99,8 @@ namespace Flibbert {
 		}
 	}
 
-	float Application::GetTime() {
+	float Application::GetTime()
+	{
 		return (float)glfwGetTime();
 	}
 } // namespace Flibbert

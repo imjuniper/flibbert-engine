@@ -1,12 +1,14 @@
 #include "Demos/DemoFloppyBirb.h"
 
-#include <Flibbert.h>
 #include "asset.h"
+#include <Flibbert.h>
 
-namespace Demo {
+namespace Demo
+{
 
 #pragma region Birb
-	Birb::Birb() {
+	Birb::Birb()
+	{
 		m_Position = glm::vec2(100, 500);
 		m_Size = glm::vec2(50, 50);
 
@@ -33,13 +35,14 @@ namespace Demo {
 		m_VAO->AddBuffer(*m_VertexBuffer, layout);
 		m_IndexBuffer = std::make_unique<IndexBuffer>(indices, 6);
 
-		m_Shader =
-		    std::make_unique<Shader>(SHADER_DIR "/DemoBirb/Birb.vert", SHADER_DIR "/DemoBirb/Birb.frag");
+		m_Shader = std::make_unique<Shader>(SHADER_DIR "/DemoBirb/Birb.vert",
+		                                    SHADER_DIR "/DemoBirb/Birb.frag");
 		m_Shader->Bind();
 		m_Shader->SetUniform4f("u_Color", 1, 1, 0, 1);
 	}
 
-	void Birb::OnUpdate(float deltaTime) {
+	void Birb::OnUpdate(float deltaTime)
+	{
 		m_CurrentYSpeed = m_CurrentYSpeed + m_FallAccel * deltaTime;
 		m_CurrentYSpeed = glm::max(m_CurrentYSpeed, m_MaxFallSpeed);
 
@@ -56,7 +59,8 @@ namespace Demo {
 #pragma endregion Birb
 
 #pragma region Pipe
-	Pipe::Pipe() {
+	Pipe::Pipe()
+	{
 		m_Position = glm::vec2(100, 500);
 		m_Size = glm::vec2(50, 150);
 
@@ -83,8 +87,8 @@ namespace Demo {
 		m_VAO->AddBuffer(*m_VertexBuffer, layout);
 		m_IndexBuffer = std::make_unique<IndexBuffer>(indices, 6);
 
-		m_Shader =
-		    std::make_unique<Shader>(SHADER_DIR "/DemoBirb/Pipe.vert", SHADER_DIR "/DemoBirb/Pipe.frag");
+		m_Shader = std::make_unique<Shader>(SHADER_DIR "/DemoBirb/Pipe.vert",
+		                                    SHADER_DIR "/DemoBirb/Pipe.frag");
 		m_Shader->Bind();
 		m_Shader->SetUniform4f("u_Color", 0, 0.5f, 0.1f, 1);
 	}
@@ -93,18 +97,22 @@ namespace Demo {
 #pragma region Scene
 	DemoFloppyBirb::DemoFloppyBirb()
 	    : m_Projection(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f)),
-	      m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))), m_Birb(), m_Pipe() {
+	      m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))), m_Birb(), m_Pipe()
+	{
 	}
 
-	void DemoFloppyBirb::OnUpdate(float deltaTime) {
+	void DemoFloppyBirb::OnUpdate(float deltaTime)
+	{
 		m_Birb.OnUpdate(deltaTime);
 	}
 
-	void DemoFloppyBirb::OnRender() {
+	void DemoFloppyBirb::OnRender()
+	{
 		Renderer renderer;
 
 		{
-			glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position, 0));
+			glm::mat4 model =
+			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position, 0));
 			glm::mat4 mvp = m_Projection * m_View * model;
 			m_Pipe.m_Shader->Bind();
 			m_Pipe.m_Shader->SetUniformMat4f("u_MVP", mvp);
@@ -112,7 +120,9 @@ namespace Demo {
 		}
 
 		{
-			glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position.x + 250.0f, m_Pipe.m_Position.y, 0));
+			glm::mat4 model =
+			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position.x + 250.0f,
+			                                              m_Pipe.m_Position.y, 0));
 			glm::mat4 mvp = m_Projection * m_View * model;
 			m_Pipe.m_Shader->Bind();
 			m_Pipe.m_Shader->SetUniformMat4f("u_MVP", mvp);
@@ -121,7 +131,8 @@ namespace Demo {
 
 		// Bird
 		{
-			glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(m_Birb.m_Position, 0));
+			glm::mat4 model =
+			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Birb.m_Position, 0));
 			glm::mat4 mvp = m_Projection * m_View * model;
 			m_Birb.m_Shader->Bind();
 			m_Birb.m_Shader->SetUniformMat4f("u_MVP", mvp);
@@ -129,7 +140,8 @@ namespace Demo {
 		}
 	}
 
-	void DemoFloppyBirb::OnImGuiRender() {
+	void DemoFloppyBirb::OnImGuiRender()
+	{
 		ImGui::Text("Floppy Birb!");
 		ImGui::Text("Position (%.2f, %.2f)", m_Birb.m_Position.x, m_Birb.m_Position.y);
 	}

@@ -1,18 +1,20 @@
-#include "fbtpch.h"
 #include "Platform/OpenGL/VertexArray.h"
 
 #include "Platform/OpenGL/Renderer.h"
 #include "Platform/OpenGL/VertexBufferLayout.h"
 
-VertexArray::VertexArray() : m_RendererID(0) {
+VertexArray::VertexArray() : m_RendererID(0)
+{
 	GLCall(glGenVertexArrays(1, &m_RendererID));
 }
 
-VertexArray::~VertexArray() {
+VertexArray::~VertexArray()
+{
 	GLCall(glDeleteVertexArrays(1, &m_RendererID));
 }
 
-void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout) const {
+void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout) const
+{
 	Bind();
 	vb.Bind();
 	const auto& elements = layout.GetElements();
@@ -21,15 +23,17 @@ void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& la
 		const auto& element = elements[i];
 		GLCall(glEnableVertexAttribArray(i));
 		GLCall(glVertexAttribPointer(i, element.count, element.type, element.normalized,
-					     layout.GetStride(), (const void*)offset));
+		                             layout.GetStride(), (const void*)offset));
 		offset += element.count * VertexBufferElement::GetSizeOfType(element.type);
 	}
 }
 
-void VertexArray::Bind() const {
+void VertexArray::Bind() const
+{
 	GLCall(glBindVertexArray(m_RendererID));
 }
 
-void VertexArray::Unbind() const {
+void VertexArray::Unbind() const
+{
 	GLCall(glBindVertexArray(0));
 }

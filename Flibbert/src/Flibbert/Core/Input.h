@@ -4,9 +4,11 @@
 
 #include <glm/glm.hpp>
 
-namespace Flibbert {
+namespace Flibbert
+{
 
-	class Input {
+	class Input
+	{
 	public:
 		static bool IsKeyDown(KeyCode keycode);
 		static bool IsKeyUp(KeyCode keycode);
@@ -17,4 +19,4 @@ namespace Flibbert {
 		static void SetCursorMode(CursorMode mode);
 	};
 
-} // namespace Neko
+} // namespace Flibbert

@@ -1,12 +1,13 @@
-#include "fbtpch.h"
 #include "Platform/OpenGL/Renderer.h"
 
-void GLClearErrors() {
+void GLClearErrors()
+{
 	while (glGetError() != GL_NO_ERROR)
 		;
 }
 
-bool GLCheckError(const char* function, const char* file, int line) {
+bool GLCheckError(const char* function, const char* file, int line)
+{
 	while (GLenum error = glGetError()) {
 		std::cout << "[OpenGL Error] (" << error << "): " << function << " " << file << ":"
 			  << line << std::endl;
@@ -16,12 +17,14 @@ bool GLCheckError(const char* function, const char* file, int line) {
 }
 
 void Renderer::Clear(const GLfloat red, const GLfloat green, const GLfloat blue,
-		     const GLfloat alpha) const {
+                     const GLfloat alpha) const
+{
 	GLCall(glClearColor(red, green, blue, alpha));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT));
 }
 
-void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const {
+void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const
+{
 	va.Bind();
 	ib.Bind();
 	shader.Bind();

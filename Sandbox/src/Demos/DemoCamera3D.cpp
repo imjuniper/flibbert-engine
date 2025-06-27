@@ -2,9 +2,11 @@
 
 #include "asset.h"
 
-namespace Demo {
+namespace Demo
+{
 
-	DemoCamera3D::DemoCamera3D() : m_TranslationA(-10, 5, 0), m_TranslationB(0, 0, 0) {
+	DemoCamera3D::DemoCamera3D() : m_TranslationA(-10, 5, 0), m_TranslationB(0, 0, 0)
+	{
 		m_Camera = new Camera(65.0f, -1.0f, 1.0f);
 		// clang-format off
 		float positions[] = {
@@ -36,11 +38,13 @@ namespace Demo {
 		m_Shader->SetUniform1i("u_Texture", 0);
 	}
 
-	void DemoCamera3D::OnUpdate(float deltaTime) {
+	void DemoCamera3D::OnUpdate(float deltaTime)
+	{
 		m_Camera->OnUpdate(deltaTime);
 	}
 
-	void DemoCamera3D::OnRender() {
+	void DemoCamera3D::OnRender()
+	{
 		Renderer renderer;
 
 		m_Texture->Bind();
@@ -62,7 +66,8 @@ namespace Demo {
 		}
 	}
 
-	void DemoCamera3D::OnImGuiRender() {
+	void DemoCamera3D::OnImGuiRender()
+	{
 		ImGui::SliderFloat3("Translation A", &m_TranslationA.x, -10.0f, 10.0f);
 		ImGui::SliderFloat3("Translation B", &m_TranslationB.x, -10.0f, 10.0f);
 	}

@@ -1,4 +1,3 @@
-#include "fbtpch.h"
 #include "Platform/OpenGL/Shader.h"
 
 #include "Platform/OpenGL/Renderer.h"
@@ -9,18 +8,21 @@
 
 Shader::Shader(const std::string& vertexShaderFilepath, const std::string& fragmentShaderFilepath)
     : m_VertexShaderFilePath(vertexShaderFilepath),
-      m_FragmentShaderFilePath(fragmentShaderFilepath), m_RendererID(0) {
+      m_FragmentShaderFilePath(fragmentShaderFilepath), m_RendererID(0)
+{
 	std::string vertexShader = LoadShader(vertexShaderFilepath);
 	std::string fragmentShader = LoadShader(fragmentShaderFilepath);
 
 	m_RendererID = CreateShader(vertexShader, fragmentShader);
 }
 
-Shader::~Shader() {
+Shader::~Shader()
+{
 	GLCall(glDeleteProgram(m_RendererID));
 }
 
-std::string Shader::LoadShader(const std::string& filepath) {
+std::string Shader::LoadShader(const std::string& filepath)
+{
 	std::ifstream stream(filepath);
 
 	std::stringstream ss;
@@ -29,7 +31,8 @@ std::string Shader::LoadShader(const std::string& filepath) {
 	return ss.str();
 }
 
-unsigned int Shader::CompileShader(unsigned int type, const std::string& source) {
+unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
+{
 	GLCall(unsigned int id = glCreateShader(type));
 	const char* src = source.c_str();
 	GLCall(glShaderSource(id, 1, &src, nullptr));
@@ -55,7 +58,8 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 }
 
 unsigned int Shader::CreateShader(const std::string& vertexShader,
-				  const std::string& fragmentShader) {
+                                  const std::string& fragmentShader)
+{
 	GLCall(unsigned int program = glCreateProgram());
 	unsigned int vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
 	unsigned int fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
@@ -71,35 +75,43 @@ unsigned int Shader::CreateShader(const std::string& vertexShader,
 	return program;
 }
 
-void Shader::Bind() const {
+void Shader::Bind() const
+{
 	GLCall(glUseProgram(m_RendererID));
 }
 
-void Shader::Unbind() const {
+void Shader::Unbind() const
+{
 	GLCall(glUseProgram(0));
 }
 
-void Shader::SetUniform1i(const std::string& name, int value) {
+void Shader::SetUniform1i(const std::string& name, int value)
+{
 	GLCall(glUniform1i(GetUniformLocation(name), value));
 }
 
-void Shader::SetUniform1f(const std::string& name, float value) {
+void Shader::SetUniform1f(const std::string& name, float value)
+{
 	GLCall(glUniform1f(GetUniformLocation(name), value));
 }
 
-void Shader::SetUniform2f(const std::string& name, float v0, float v1) {
+void Shader::SetUniform2f(const std::string& name, float v0, float v1)
+{
 	GLCall(glUniform2f(GetUniformLocation(name), v0, v1));
 }
 
-void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3) {
+void Shader::SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3)
+{
 	GLCall(glUniform4f(GetUniformLocation(name), v0, v1, v2, v3));
 }
 
-void Shader::SetUniformMat4f(const std::string& name, glm::mat4& matrix) {
+void Shader::SetUniformMat4f(const std::string& name, glm::mat4& matrix)
+{
 	GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));
 }
 
-int Shader::GetUniformLocation(const std::string& name) {
+int Shader::GetUniformLocation(const std::string& name)
+{
 	if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
 		return m_UniformLocationCache[name];
 

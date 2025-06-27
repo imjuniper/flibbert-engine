@@ -5,7 +5,8 @@
 #include <string>
 #include <unordered_map>
 
-class Shader {
+class Shader
+{
 private:
 	std::string m_VertexShaderFilePath;
 	std::string m_FragmentShaderFilePath;
@@ -31,6 +32,6 @@ private:
 	std::string LoadShader(const std::string& filepath);
 	unsigned int CompileShader(unsigned int type, const std::string& source);
 	unsigned int CreateShader(const std::string& vertexShader,
-				  const std::string& fragmentShader);
+	                          const std::string& fragmentShader);
 	int GetUniformLocation(const std::string& name);
 };

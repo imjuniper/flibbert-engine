@@ -2,9 +2,9 @@
 BasedOnStyle: LLVM
 AccessModifierOffset: -8
 AllowShortFunctionsOnASingleLine: Inline
-AllowShortIfStatementsOnASingleLine: false
-AlwaysBreakTemplateDeclarations: Yes
-BreakBeforeBraces: Attach
+AllowShortIfStatementsOnASingleLine: WithoutElse
+BreakTemplateDeclarations: Yes
+BreakBeforeBraces: Linux
 ColumnLimit: 100
 EmptyLineAfterAccessModifier: Never
 EmptyLineBeforeAccessModifier: Always
@@ -12,10 +12,13 @@ IndentAccessModifiers: false
 IndentCaseLabels: true
 IndentPPDirectives: BeforeHash
 IndentWidth: 8
+InsertNewlineAtEOF: true
+LineEnding: LF
 MaxEmptyLinesToKeep: 1
 NamespaceIndentation: All
 PackConstructorInitializers: BinPack
-UseTab: Always
+TabWidth: 8
+UseTab: AlignWithSpaces
 ---
 Language: Cpp
 # Force pointers to the type for C++.

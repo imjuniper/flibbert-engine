@@ -7,29 +7,30 @@
 #include <glad/glad.h>
 
 #ifdef DEBUG
-#ifdef _MSC_VER
-#define DEBUGTRAP() __debugbreak()
+	#ifdef _MSC_VER
+		#define DEBUGTRAP() __debugbreak()
+	#else
+		#define DEBUGTRAP() __builtin_debugtrap()
+	#endif
+	#define ASSERT(condition)                                                                  \
+		if (!(condition)) DEBUGTRAP()
+	#define GLCall(fn)                                                                         \
+		GLClearErrors();                                                                   \
+		fn;                                                                                \
+		ASSERT(GLCheckError(#fn, __FILE__, __LINE__))
 #else
-#define DEBUGTRAP() __builtin_debugtrap()
-#endif
-#define ASSERT(condition)                                                                          \
-	if (!(condition))                                                                          \
-	DEBUGTRAP()
-#define GLCall(fn)                                                                                 \
-	GLClearErrors();                                                                           \
-	fn;                                                                                        \
-	ASSERT(GLCheckError(#fn, __FILE__, __LINE__))
-#else
-#define ASSERT(condition) assert(condition)
-#define GLCall(fn) fn
+	#define ASSERT(condition) assert(condition)
+	#define GLCall(fn) fn
 #endif
 
 void GLClearErrors();
 
 bool GLCheckError(const char* function, const char* file, int line);
 
-class Renderer {
+class Renderer
+{
 public:
-	void Clear(GLfloat red = 0.f, GLfloat green = 0.f, GLfloat blue = 0.f, GLfloat alpha = 1.f) const;
+	void Clear(GLfloat red = 0.f, GLfloat green = 0.f, GLfloat blue = 0.f,
+	           GLfloat alpha = 1.f) const;
 	void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
 };

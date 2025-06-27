@@ -4,7 +4,8 @@
 
 #include <vector>
 
-class Camera {
+class Camera
+{
 public:
 	Camera(float verticalFOV, float nearClip, float farClip);
 
