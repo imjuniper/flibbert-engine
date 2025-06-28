@@ -61,7 +61,7 @@ target_precompile_headers(Flibbert
 
 target_link_libraries(Flibbert
         PUBLIC glad
-        PUBLIC glfw
+        PUBLIC rgfw
         PUBLIC glm
         PUBLIC imgui
         PUBLIC spdlog

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <GLFW/glfw3.h>
+struct RGFW_window;
 
 namespace Flibbert
 {
@@ -19,14 +19,14 @@ namespace Flibbert
 		void Close();
 
 		float GetTime();
-		GLFWwindow* GetWindowHandle() const { return m_WindowHandle; }
+		RGFW_window* GetWindowHandle() const { return m_WindowHandle; }
 
 	private:
 		void Init();
 		void Shutdown();
 
 	private:
-		GLFWwindow* m_WindowHandle = nullptr;
+		RGFW_window* m_WindowHandle = nullptr;
 		bool m_Running = false;
 
 		float m_TimeStep = 0.0f;

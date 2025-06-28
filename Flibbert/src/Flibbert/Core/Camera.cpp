@@ -8,6 +8,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 #undef GLM_ENABLE_EXPERIMENTAL
+#include <rgfw/RGFW.h>
 
 using namespace Flibbert;
 
@@ -17,9 +18,8 @@ Camera::Camera(float verticalFOV, float nearClip, float farClip)
 	m_ForwardDirection = glm::vec3(0, 0, -1);
 	m_Position = glm::vec3(0, 0, 6);
 	RecalculateView();
-	int width, height;
-	glfwGetWindowSize(Application::Get().GetWindowHandle(), &width, &height);
-	OnResize(width, height);
+	RGFW_window* windowHandle = Application::Get().GetWindowHandle();
+	OnResize(windowHandle->r.w, windowHandle->r.h);
 }
 
 bool Camera::OnUpdate(float ts)

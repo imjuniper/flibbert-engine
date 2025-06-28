@@ -1,7 +1,5 @@
 #pragma once
 
-#define GLFW_INCLUDE_NONE
-
 #include "Flibbert/Core/Application.h"
 #include "Flibbert/Core/Log.h"
 

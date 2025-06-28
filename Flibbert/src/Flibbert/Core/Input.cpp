@@ -1,45 +1,54 @@
 #include "Flibbert/Core/Input.h"
 #include "Flibbert/Core/Application.h"
 
-#include <GLFW/glfw3.h>
+#include <rgfw/RGFW.h>
 
 namespace Flibbert
 {
 
 	bool Input::IsKeyDown(KeyCode keycode)
 	{
-		GLFWwindow* windowHandle = Application::Get().GetWindowHandle();
-		int state = glfwGetKey(windowHandle, (int)keycode);
-		return state == GLFW_PRESS || state == GLFW_REPEAT;
+		RGFW_window* windowHandle = Application::Get().GetWindowHandle();
+		return RGFW_isPressed(windowHandle, (RGFW_key)keycode);
 	}
 
 	bool Input::IsKeyUp(KeyCode keycode)
 	{
-		GLFWwindow* windowHandle = Application::Get().GetWindowHandle();
-		int state = glfwGetKey(windowHandle, (int)keycode);
-		return state == GLFW_RELEASE;
+		RGFW_window* windowHandle = Application::Get().GetWindowHandle();
+		return RGFW_isReleased(windowHandle, (RGFW_key)keycode);
 	}
 
 	bool Input::IsMouseButtonDown(MouseButton button)
 	{
-		GLFWwindow* windowHandle = Application::Get().GetWindowHandle();
-		int state = glfwGetMouseButton(windowHandle, (int)button);
-		return state == GLFW_PRESS;
+		RGFW_window* windowHandle = Application::Get().GetWindowHandle();
+		return RGFW_isMousePressed(windowHandle, (RGFW_mouseButton)button);
 	}
 
 	glm::vec2 Input::GetMousePosition()
 	{
-		GLFWwindow* windowHandle = Application::Get().GetWindowHandle();
-
-		double x, y;
-		glfwGetCursorPos(windowHandle, &x, &y);
-		return {(float)x, (float)y};
+		RGFW_window* windowHandle = Application::Get().GetWindowHandle();
+		RGFW_point mousePos = RGFW_window_getMousePoint(windowHandle);
+		return glm::vec2{mousePos.x, mousePos.y};
 	}
 
 	void Input::SetCursorMode(CursorMode mode)
 	{
-		GLFWwindow* windowHandle = Application::Get().GetWindowHandle();
-		glfwSetInputMode(windowHandle, GLFW_CURSOR, GLFW_CURSOR_NORMAL + (int)mode);
+		RGFW_window* windowHandle = Application::Get().GetWindowHandle();
+		switch (mode) {
+			case CursorMode::Normal:
+				RGFW_window_mouseUnhold(windowHandle);
+				break;
+			case CursorMode::Hidden:
+				RGFW_window_mouseUnhold(windowHandle);
+				RGFW_window_showMouse(windowHandle, false);
+				break;
+			case CursorMode::Locked:
+				RGFW_window_mouseHold(
+				    windowHandle,
+				    RGFW_AREA(windowHandle->r.w / 2, windowHandle->r.h / 2));
+				RGFW_window_showMouse(windowHandle, false);
+				break;
+		}
 	}
 
 } // namespace Flibbert
