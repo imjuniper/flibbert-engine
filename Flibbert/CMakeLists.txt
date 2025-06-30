@@ -42,6 +42,7 @@ add_library(Flibbert STATIC
         src/Flibbert/Core/Log.cpp
         src/Flibbert/Core/Log.h
         src/Flibbert/Core/PlatformDetection.h
+        src/Flibbert/Debug/Instrumentor.h
         src/Platform/OpenGL/Renderer.cpp
         src/Platform/OpenGL/Renderer.h
         src/Platform/OpenGL/VertexArray.cpp
@@ -58,13 +59,13 @@ add_library(Flibbert STATIC
         src/Platform/Window.cpp
         src/Platform/Window.h)
 
+target_include_directories(Flibbert PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
+
 target_precompile_headers(Flibbert PRIVATE src/fbtpch.h)
 
-target_compile_definitions(Flibbert PRIVATE RGFW_EXPORT)
+target_compile_definitions(Flibbert PRIVATE RGFW_EXPORT FBT_PROFILE=0)
 
 target_link_libraries(Flibbert glm imgui spdlog)
-
-target_include_directories(Flibbert PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 # Stuff for rgfw
 if (APPLE)

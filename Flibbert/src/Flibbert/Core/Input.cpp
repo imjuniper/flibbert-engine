@@ -1,5 +1,6 @@
 #include "Flibbert/Core/Input.h"
 #include "Flibbert/Core/Application.h"
+#include "Platform/Window.h"
 
 #include <external/RGFW.h>
 
