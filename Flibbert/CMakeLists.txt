@@ -64,7 +64,7 @@ target_precompile_headers(Flibbert PRIVATE src/fbtpch.h)
 
 target_compile_definitions(Flibbert PRIVATE RGFW_EXPORT FBT_PROFILE=0)
 
-target_link_libraries(Flibbert glm imgui spdlog)
+target_link_libraries(Flibbert PUBLIC glm imgui spdlog)
 
 # Stuff for rgfw
 if (APPLE)
