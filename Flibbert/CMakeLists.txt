@@ -62,11 +62,9 @@ target_precompile_headers(Flibbert PRIVATE src/fbtpch.h)
 
 target_compile_definitions(Flibbert PRIVATE RGFW_EXPORT)
 
-target_link_libraries(Flibbert glad glm imgui spdlog)
+target_link_libraries(Flibbert glm imgui spdlog)
 
-target_include_directories(Flibbert
-        PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src"
-        PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/vendor")
+target_include_directories(Flibbert PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 # Stuff for rgfw
 if (APPLE)

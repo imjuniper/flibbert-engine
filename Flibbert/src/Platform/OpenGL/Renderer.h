@@ -4,7 +4,7 @@
 #include "Platform/OpenGL/Shader.h"
 #include "Platform/OpenGL/VertexArray.h"
 
-#include <glad/glad.h>
+#include <external/glad.h>
 
 #ifdef _DEBUG
 	#ifdef _MSC_VER
@@ -30,7 +30,6 @@ bool GLCheckError(const char* function, const char* file, int line);
 class Renderer
 {
 public:
-	void Clear(GLfloat red = 0.f, GLfloat green = 0.f, GLfloat blue = 0.f,
-	           GLfloat alpha = 1.f) const;
+	void Clear(float red = 0.f, float green = 0.f, float blue = 0.f, float alpha = 1.f) const;
 	void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
 };

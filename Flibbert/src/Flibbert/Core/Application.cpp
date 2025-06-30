@@ -3,10 +3,10 @@
 #include "Platform/OpenGL/Renderer.h"
 #include "Platform/Window.h"
 
-#include <imgui.h>
-#include <imgui/backends/imgui_impl_opengl3.h>
+#include <external/imgui/backends/imgui_impl_opengl3.h>
+#include <external/imgui/imgui.h>
 #define RGFW_IMGUI_IMPLEMENTATION
-#include <imgui_impl_rgfw.h>
+#include <external/imgui_impl_rgfw.h>
 
 static Flibbert::Application* s_Instance = nullptr;
 
@@ -82,10 +82,5 @@ namespace Flibbert
 	float Application::GetTime()
 	{
 		return (float)RGFW_getTime();
-	}
-
-	RGFW_window* Application::GetNativeWindow() const
-	{
-		return m_Window->GetNativeWindow();
 	}
 } // namespace Flibbert

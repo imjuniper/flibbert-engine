@@ -2,8 +2,11 @@
 
 #include "OpenGL/Renderer.h"
 
+#define GLAD_GL_IMPLEMENTATION
+#include <external/glad.h>
+
 #define RGFW_IMPLEMENTATION
-#include <RGFW.h>
+#include <external/RGFW.h>
 
 namespace Flibbert
 {
@@ -25,7 +28,8 @@ namespace Flibbert
 
 		RGFW_window_makeCurrent(m_Window);
 
-		int status = gladLoadGLLoader((GLADloadproc)RGFW_getProcAddress);
+		// @todo move this to Renderer class
+		int status = gladLoadGL((GLADloadfunc)RGFW_getProcAddress);
 		assert(status);
 
 		std::cout << "OpenGL Version: " << glGetString(GL_VERSION) << std::endl;

@@ -21,7 +21,6 @@ namespace Flibbert
 
 		float GetTime();
 
-		[[nodiscard]] RGFW_window* GetNativeWindow() const;
 		[[nodiscard]] Window* GetWindow() const { return m_Window; }
 
 	private:

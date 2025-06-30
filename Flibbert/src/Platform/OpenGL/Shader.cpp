@@ -2,7 +2,7 @@
 
 #include "Platform/OpenGL/Renderer.h"
 
-#include <glad/glad.h>
+#include <external/glad.h>
 
 #include <fstream>
 

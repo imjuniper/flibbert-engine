@@ -9,8 +9,8 @@
   </component>
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Flibbert/vendor/glm" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Flibbert/vendor/imgui" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Flibbert/vendor/spdlog" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Flibbert/src/external/glm" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Flibbert/src/external/imgui" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/Flibbert/src/external/spdlog" vcs="Git" />
   </component>
 </project>

@@ -3,12 +3,12 @@
 #include "Flibbert/Core/Application.h"
 #include "Flibbert/Core/Input.h"
 
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/quaternion.hpp>
+#include <external/glm/glm/gtc/matrix_transform.hpp>
+#include <external/glm/glm/gtc/quaternion.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
-#include <glm/gtx/quaternion.hpp>
+#include <external/glm/glm/gtx/quaternion.hpp>
 #undef GLM_ENABLE_EXPERIMENTAL
-#include <RGFW.h>
+#include <external/RGFW.h>
 
 using namespace Flibbert;
 
@@ -18,7 +18,7 @@ Camera::Camera(float verticalFOV, float nearClip, float farClip)
 	m_ForwardDirection = glm::vec3(0, 0, -1);
 	m_Position = glm::vec3(0, 0, 6);
 	RecalculateView();
-	RGFW_window* windowHandle = Application::Get().GetNativeWindow();
+	RGFW_window* windowHandle = Application::Get().GetWindow()->GetNativeWindow();
 	OnResize(windowHandle->r.w, windowHandle->r.h);
 }
 
