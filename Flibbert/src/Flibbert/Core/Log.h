@@ -2,9 +2,12 @@
 
 // This ignores all warnings raised inside External headers
 #pragma warning(push, 0)
-#include <spdlog/fmt/ostr.h>
 #include <spdlog/spdlog.h>
 #pragma warning(pop)
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/string_cast.hpp>
+#undef GLM_ENABLE_EXPERIMENTAL
 
 namespace Flibbert
 {
@@ -14,11 +17,11 @@ namespace Flibbert
 	public:
 		static void Init();
 
-		inline static std::shared_ptr<spdlog::logger>& GetCoreLogger()
+		[[nodiscard]] static std::shared_ptr<spdlog::logger>& GetCoreLogger()
 		{
 			return s_CoreLogger;
 		}
-		inline static std::shared_ptr<spdlog::logger>& GetClientLogger()
+		[[nodiscard]] static std::shared_ptr<spdlog::logger>& GetClientLogger()
 		{
 			return s_ClientLogger;
 		}
@@ -29,6 +32,24 @@ namespace Flibbert
 	};
 
 } // namespace Flibbert
+
+template <typename OStream, glm::length_t L, typename T, glm::qualifier Q>
+inline OStream& operator<<(OStream& os, const glm::vec<L, T, Q>& vector)
+{
+	return os << glm::to_string(vector);
+}
+
+template <typename OStream, glm::length_t C, glm::length_t R, typename T, glm::qualifier Q>
+inline OStream& operator<<(OStream& os, const glm::mat<C, R, T, Q>& matrix)
+{
+	return os << glm::to_string(matrix);
+}
+
+template <typename OStream, typename T, glm::qualifier Q>
+inline OStream& operator<<(OStream& os, glm::qua<T, Q> quaternion)
+{
+	return os << glm::to_string(quaternion);
+}
 
 // Core log macros
 #define FBT_CORE_TRACE(...) ::Flibbert::Log::GetCoreLogger()->trace(__VA_ARGS__)

@@ -11,7 +11,6 @@
 
 namespace Demo
 {
-
 	class Demo
 	{
 	public:
@@ -41,5 +40,4 @@ namespace Demo
 		Demo*& m_CurrentDemo;
 		std::vector<std::pair<std::string, std::function<Demo*()>>> m_Demos;
 	};
-
 } // namespace Demo

@@ -4,7 +4,6 @@
 
 namespace Demo
 {
-
 	class DemoClearColor : public Demo
 	{
 	private:
@@ -16,5 +15,4 @@ namespace Demo
 		void OnRender() override;
 		void OnImGuiRender() override;
 	};
-
 } // namespace Demo

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Flibbert/Core/Base.h"
+#include "Flibbert/Core/PlatformDetection.h"
 
 #include "Flibbert/Core/Application.h"
 #include "Flibbert/Debug/Instrumentor.h"
@@ -11,11 +11,6 @@ extern Flibbert::Application* Flibbert::CreateApplication();
 
 int main(int argc, char** argv)
 {
-	// std::cout << "Have " << argc << " arguments:" << std::endl;
-	// for (int i = 0; i < argc; ++i) {
-	// 	std::cout << argv[i] << std::endl;
-	// }
-
 	Flibbert::Log::Init();
 
 	FBT_PROFILE_BEGIN_SESSION("Startup", "FlibbertProfile-Startup.json");

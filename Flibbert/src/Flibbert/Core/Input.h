@@ -6,7 +6,6 @@
 
 namespace Flibbert
 {
-
 	class Input
 	{
 	public:
@@ -18,5 +17,4 @@ namespace Flibbert
 
 		static void SetCursorMode(CursorMode mode);
 	};
-
 } // namespace Flibbert

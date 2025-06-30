@@ -17,8 +17,8 @@ add_executable(Sandbox
 target_link_libraries(Sandbox PRIVATE Flibbert)
 
 configure_file(
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/asset.h.in"
-        "${CMAKE_CURRENT_BINARY_DIR}/src/asset.h")
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/AssetPathsMacros.h.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/src/AssetPathsMacros.h")
 
 target_include_directories(Sandbox
         PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src"

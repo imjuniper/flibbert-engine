@@ -2,8 +2,6 @@
 
 #include <glm/glm.hpp>
 
-#include <vector>
-
 class Camera
 {
 public:

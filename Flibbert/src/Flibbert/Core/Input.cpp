@@ -1,12 +1,12 @@
 #include "Flibbert/Core/Input.h"
+
 #include "Flibbert/Core/Application.h"
-#include "Platform/Window.h"
+#include "Platform/Desktop/Window.h"
 
 #include <external/RGFW.h>
 
 namespace Flibbert
 {
-
 	bool Input::IsKeyDown(KeyCode keycode)
 	{
 		RGFW_window* windowHandle = Application::Get().GetWindow()->GetNativeWindow();
@@ -51,5 +51,4 @@ namespace Flibbert
 				break;
 		}
 	}
-
 } // namespace Flibbert

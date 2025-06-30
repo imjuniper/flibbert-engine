@@ -2,7 +2,6 @@
 
 namespace Flibbert
 {
-
 	typedef enum class KeyCode : uint16_t {
 		Space = 32,
 		Apostrophe = 39, /* ' */
@@ -151,5 +150,4 @@ namespace Flibbert
 		Right = Button1,
 		Middle = Button2
 	} Button;
-
 } // namespace Flibbert

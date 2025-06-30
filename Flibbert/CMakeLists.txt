@@ -30,7 +30,6 @@ include(Dependencies.cmake)
 # Project
 add_library(Flibbert STATIC
         src/fbtpch.h
-        src/Flibbert/Core/Base.h
         src/Flibbert/Core/Application.cpp
         src/Flibbert/Core/Application.h
         src/Flibbert/Core/Camera.cpp
@@ -43,21 +42,21 @@ add_library(Flibbert STATIC
         src/Flibbert/Core/Log.h
         src/Flibbert/Core/PlatformDetection.h
         src/Flibbert/Debug/Instrumentor.h
-        src/Platform/OpenGL/Renderer.cpp
-        src/Platform/OpenGL/Renderer.h
-        src/Platform/OpenGL/VertexArray.cpp
-        src/Platform/OpenGL/VertexArray.h
-        src/Platform/OpenGL/VertexBuffer.cpp
-        src/Platform/OpenGL/VertexBuffer.h
-        src/Platform/OpenGL/VertexBufferLayout.h
-        src/Platform/OpenGL/IndexBuffer.cpp
-        src/Platform/OpenGL/IndexBuffer.h
-        src/Platform/OpenGL/Shader.cpp
-        src/Platform/OpenGL/Shader.h
-        src/Platform/OpenGL/Texture.cpp
-        src/Platform/OpenGL/Texture.h
-        src/Platform/Window.cpp
-        src/Platform/Window.h)
+        src/Flibbert/Renderer/Renderer.cpp
+        src/Flibbert/Renderer/Renderer.h
+        src/Flibbert/Renderer/RendererBackend.h
+        src/Platform/Desktop/Window.cpp
+        src/Platform/Desktop/Window.h
+        src/Platform/OpenGL/OpenGLBuffer.cpp
+        src/Platform/OpenGL/OpenGLBuffer.h
+        src/Platform/OpenGL/OpenGLRendererBackend.cpp
+        src/Platform/OpenGL/OpenGLRendererBackend.h
+        src/Platform/OpenGL/OpenGLShader.cpp
+        src/Platform/OpenGL/OpenGLShader.h
+        src/Platform/OpenGL/OpenGLTexture.cpp
+        src/Platform/OpenGL/OpenGLTexture.h
+        src/Platform/OpenGL/OpenGLVertexArray.cpp
+        src/Platform/OpenGL/OpenGLVertexArray.h)
 
 target_include_directories(Flibbert PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
 

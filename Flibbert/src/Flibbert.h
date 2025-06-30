@@ -8,10 +8,12 @@
 #include "Flibbert/Core/Input.h"
 #include "Flibbert/Core/KeyCodes.h"
 
-#include "Platform/OpenGL/IndexBuffer.h"
-#include "Platform/OpenGL/Renderer.h"
-#include "Platform/OpenGL/Shader.h"
-#include "Platform/OpenGL/Texture.h"
-#include "Platform/OpenGL/VertexArray.h"
-#include "Platform/OpenGL/VertexBuffer.h"
-#include "Platform/OpenGL/VertexBufferLayout.h"
+#include "Flibbert/Renderer/Renderer.h"
+#include "Flibbert/Renderer/RendererBackend.h"
+
+// @todo remove all those from public API
+#include "Platform/OpenGL/OpenGLBuffer.h"
+#include "Platform/OpenGL/OpenGLRendererBackend.h"
+#include "Platform/OpenGL/OpenGLShader.h"
+#include "Platform/OpenGL/OpenGLTexture.h"
+#include "Platform/OpenGL/OpenGLVertexArray.h"

@@ -26,7 +26,7 @@ public:
 		m_demoMenu->RegisterDemo<Demo::DemoCamera3D>("3D Camera");
 	}
 
-	~Sandbox()
+	~Sandbox() override
 	{
 		if (m_currentDemo != m_demoMenu) {
 			delete m_demoMenu;
@@ -34,7 +34,7 @@ public:
 		delete m_currentDemo;
 	}
 
-	void Render(float ts)
+	void Render(const float ts) override
 	{
 		if (m_currentDemo) {
 			m_currentDemo->OnUpdate(ts);

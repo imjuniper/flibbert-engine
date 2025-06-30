@@ -4,6 +4,7 @@ struct RGFW_window;
 
 namespace Flibbert
 {
+	class Renderer;
 	class Window;
 
 	class Application
@@ -14,29 +15,27 @@ namespace Flibbert
 
 		static Application& Get();
 
-		virtual void Render(float ts) {}
+		virtual void Render(float ts) = 0;
 
 		void Run();
-		void Close();
 
-		float GetTime();
-
+		[[nodiscard]] float GetTime() const;
 		[[nodiscard]] Window* GetWindow() const { return m_Window; }
-
-	private:
-		void Init();
-		void Shutdown();
+		[[nodiscard]] Renderer* GetRenderer() const { return m_Renderer; }
 
 	private:
 		Window* m_Window = nullptr;
+		Renderer* m_Renderer = nullptr;
 		bool m_Running = false;
 
 		float m_TimeStep = 0.0f;
 		float m_FrameTime = 0.0f;
 		float m_LastFrameTime = 0.0f;
+
+	private:
+		static Application* s_Instance;
 	};
 
 	// Defined in client/app
 	Application* CreateApplication();
-
 } // namespace Flibbert

@@ -1,11 +1,11 @@
 #include "Demos/DemoFloppyBirb.h"
 
-#include "asset.h"
+#include "AssetPathsMacros.h"
+
 #include <Flibbert.h>
 
 namespace Demo
 {
-
 #pragma region Birb
 	Birb::Birb()
 	{
@@ -20,23 +20,24 @@ namespace Demo
 			m_Size.x / -2.0f, m_Size.y / 2.0f,  0.0f, 1.0f,
 		};
 
-		unsigned int indices[] = {
+		uint32_t indices[] = {
 			0, 1, 2,
 			2, 3, 0
 		};
 		// clang-format on
 
-		m_VAO = std::make_unique<VertexArray>();
-		m_VertexBuffer = std::make_unique<VertexBuffer>(positions, 4 * 4 * sizeof(float));
-		VertexBufferLayout layout;
+		m_VAO = std::make_unique<Flibbert::OpenGLVertexArray>();
+		m_VertexBuffer = std::make_unique<Flibbert::OpenGLVertexBuffer>(
+		    positions, 4 * 4 * sizeof(float));
+		Flibbert::VertexBufferLayout layout;
 		layout.Push<float>(2);
 		layout.Push<float>(2);
 
 		m_VAO->AddBuffer(*m_VertexBuffer, layout);
-		m_IndexBuffer = std::make_unique<IndexBuffer>(indices, 6);
+		m_IndexBuffer = std::make_unique<Flibbert::OpenGLIndexBuffer>(indices, 6);
 
-		m_Shader = std::make_unique<Shader>(SHADER_DIR "/DemoBirb/Birb.vert",
-		                                    SHADER_DIR "/DemoBirb/Birb.frag");
+		m_Shader = std::make_unique<Flibbert::OpenGLShader>(
+		    SHADER_DIR "/DemoBirb/Birb.vert", SHADER_DIR "/DemoBirb/Birb.frag");
 		m_Shader->Bind();
 		m_Shader->SetUniform4f("u_Color", 1, 1, 0, 1);
 	}
@@ -72,23 +73,24 @@ namespace Demo
 			m_Size.x / -2.0f, m_Size.y / 2.0f,  0.0f, 1.0f,
 		};
 
-		unsigned int indices[] = {
+		uint32_t indices[] = {
 			0, 1, 2,
 			2, 3, 0
 		};
 		// clang-format on
 
-		m_VAO = std::make_unique<VertexArray>();
-		m_VertexBuffer = std::make_unique<VertexBuffer>(positions, 4 * 4 * sizeof(float));
-		VertexBufferLayout layout;
+		m_VAO = std::make_unique<Flibbert::OpenGLVertexArray>();
+		m_VertexBuffer = std::make_unique<Flibbert::OpenGLVertexBuffer>(
+		    positions, 4 * 4 * sizeof(float));
+		Flibbert::VertexBufferLayout layout;
 		layout.Push<float>(2);
 		layout.Push<float>(2);
 
 		m_VAO->AddBuffer(*m_VertexBuffer, layout);
-		m_IndexBuffer = std::make_unique<IndexBuffer>(indices, 6);
+		m_IndexBuffer = std::make_unique<Flibbert::OpenGLIndexBuffer>(indices, 6);
 
-		m_Shader = std::make_unique<Shader>(SHADER_DIR "/DemoBirb/Pipe.vert",
-		                                    SHADER_DIR "/DemoBirb/Pipe.frag");
+		m_Shader = std::make_unique<Flibbert::OpenGLShader>(
+		    SHADER_DIR "/DemoBirb/Pipe.vert", SHADER_DIR "/DemoBirb/Pipe.frag");
 		m_Shader->Bind();
 		m_Shader->SetUniform4f("u_Color", 0, 0.5f, 0.1f, 1);
 	}
@@ -108,7 +110,9 @@ namespace Demo
 
 	void DemoFloppyBirb::OnRender()
 	{
-		Renderer renderer;
+		Flibbert::OpenGLRendererBackend* renderer =
+		    static_cast<Flibbert::OpenGLRendererBackend*>(
+			Flibbert::Application::Get().GetRenderer()->GetBackend());
 
 		{
 			glm::mat4 model =
@@ -116,7 +120,7 @@ namespace Demo
 			glm::mat4 mvp = m_Projection * m_View * model;
 			m_Pipe.m_Shader->Bind();
 			m_Pipe.m_Shader->SetUniformMat4f("u_MVP", mvp);
-			renderer.Draw(*m_Pipe.m_VAO, *m_Pipe.m_IndexBuffer, *m_Pipe.m_Shader);
+			renderer->Draw(*m_Pipe.m_VAO, *m_Pipe.m_IndexBuffer, *m_Pipe.m_Shader);
 		}
 
 		{
@@ -126,7 +130,7 @@ namespace Demo
 			glm::mat4 mvp = m_Projection * m_View * model;
 			m_Pipe.m_Shader->Bind();
 			m_Pipe.m_Shader->SetUniformMat4f("u_MVP", mvp);
-			renderer.Draw(*m_Pipe.m_VAO, *m_Pipe.m_IndexBuffer, *m_Pipe.m_Shader);
+			renderer->Draw(*m_Pipe.m_VAO, *m_Pipe.m_IndexBuffer, *m_Pipe.m_Shader);
 		}
 
 		// Bird
@@ -136,7 +140,7 @@ namespace Demo
 			glm::mat4 mvp = m_Projection * m_View * model;
 			m_Birb.m_Shader->Bind();
 			m_Birb.m_Shader->SetUniformMat4f("u_MVP", mvp);
-			renderer.Draw(*m_Birb.m_VAO, *m_Birb.m_IndexBuffer, *m_Birb.m_Shader);
+			renderer->Draw(*m_Birb.m_VAO, *m_Birb.m_IndexBuffer, *m_Birb.m_Shader);
 		}
 	}
 
@@ -146,5 +150,4 @@ namespace Demo
 		ImGui::Text("Position (%.2f, %.2f)", m_Birb.m_Position.x, m_Birb.m_Position.y);
 	}
 #pragma endregion Scene
-
 } // namespace Demo

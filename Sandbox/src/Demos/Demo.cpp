@@ -2,7 +2,6 @@
 
 namespace Demo
 {
-
 	DemoMenu::DemoMenu(Demo*& currentDemoPointer) : m_CurrentDemo(currentDemoPointer) {}
 
 	void DemoMenu::OnImGuiRender()
@@ -13,5 +12,4 @@ namespace Demo
 			}
 		}
 	}
-
 } // namespace Demo

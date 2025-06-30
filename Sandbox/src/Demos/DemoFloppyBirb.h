@@ -3,9 +3,6 @@
 #include "Demos/Demo.h"
 #include <Flibbert.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
 #include <memory>
 
 namespace Demo
@@ -13,11 +10,11 @@ namespace Demo
 	class Entity
 	{
 	public:
-		std::unique_ptr<VertexArray> m_VAO;
-		std::unique_ptr<VertexBuffer> m_VertexBuffer;
-		std::unique_ptr<IndexBuffer> m_IndexBuffer;
-		std::unique_ptr<Shader> m_Shader;
-		std::unique_ptr<Texture> m_Texture;
+		std::unique_ptr<Flibbert::OpenGLVertexArray> m_VAO;
+		std::unique_ptr<Flibbert::OpenGLVertexBuffer> m_VertexBuffer;
+		std::unique_ptr<Flibbert::OpenGLIndexBuffer> m_IndexBuffer;
+		std::unique_ptr<Flibbert::OpenGLShader> m_Shader;
+		std::unique_ptr<Flibbert::OpenGLTexture> m_Texture;
 
 		glm::vec2 m_Position;
 		glm::vec2 m_Size;
@@ -65,5 +62,4 @@ namespace Demo
 		void OnRender() override;
 		void OnImGuiRender() override;
 	};
-
 } // namespace Demo
