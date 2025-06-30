@@ -54,23 +54,25 @@ add_library(Flibbert STATIC
         src/Platform/OpenGL/Shader.cpp
         src/Platform/OpenGL/Shader.h
         src/Platform/OpenGL/Texture.cpp
-        src/Platform/OpenGL/Texture.h)
+        src/Platform/OpenGL/Texture.h
+        src/Platform/Window.cpp
+        src/Platform/Window.h)
 
-target_precompile_headers(Flibbert
-        PRIVATE src/fbtpch.h)
+target_precompile_headers(Flibbert PRIVATE src/fbtpch.h)
 
-target_link_libraries(Flibbert
-        PUBLIC glad
-        PUBLIC rgfw
-        PUBLIC glm
-        PUBLIC imgui
-        PUBLIC spdlog
-        PUBLIC stb_image)
+target_compile_definitions(Flibbert PRIVATE RGFW_EXPORT)
+
+target_link_libraries(Flibbert glad glm imgui spdlog)
 
 target_include_directories(Flibbert
         PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src"
         PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/vendor")
 
-if (CMAKE_BUILD_TYPE MATCHES Debug)
-    add_definitions(-DDEBUG)
+# Stuff for rgfw
+if (APPLE)
+    target_link_libraries(Flibbert
+            PRIVATE
+            "-framework Cocoa"
+            "-framework OpenGL"
+            "-framework IOKit")
 endif ()

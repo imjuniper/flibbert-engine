@@ -6,7 +6,7 @@
 
 #include <glad/glad.h>
 
-#ifdef DEBUG
+#ifdef _DEBUG
 	#ifdef _MSC_VER
 		#define DEBUGTRAP() __debugbreak()
 	#else

@@ -4,6 +4,7 @@ struct RGFW_window;
 
 namespace Flibbert
 {
+	class Window;
 
 	class Application
 	{
@@ -19,14 +20,16 @@ namespace Flibbert
 		void Close();
 
 		float GetTime();
-		RGFW_window* GetWindowHandle() const { return m_WindowHandle; }
+
+		[[nodiscard]] RGFW_window* GetNativeWindow() const;
+		[[nodiscard]] Window* GetWindow() const { return m_Window; }
 
 	private:
 		void Init();
 		void Shutdown();
 
 	private:
-		RGFW_window* m_WindowHandle = nullptr;
+		Window* m_Window = nullptr;
 		bool m_Running = false;
 
 		float m_TimeStep = 0.0f;

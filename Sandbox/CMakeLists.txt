@@ -14,8 +14,7 @@ add_executable(Sandbox
         src/Demos/DemoTexture2D.cpp
         src/Demos/DemoTexture2D.h)
 
-target_link_libraries(Sandbox
-        PRIVATE Flibbert)
+target_link_libraries(Sandbox PRIVATE Flibbert)
 
 configure_file(
         "${CMAKE_CURRENT_SOURCE_DIR}/src/asset.h.in"

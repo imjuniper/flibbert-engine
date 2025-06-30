@@ -8,7 +8,7 @@
 #pragma once
 
 #ifndef RGFW_IMGUI_H
-#include "../imgui/imgui.h"      // IMGUI_IMPL_API
+#include "imgui/imgui.h"      // IMGUI_IMPL_API
 
 #ifdef _MSC_VER
     #if _MSC_VER < 600
