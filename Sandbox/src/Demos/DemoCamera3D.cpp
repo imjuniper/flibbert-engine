@@ -2,6 +2,8 @@
 
 #include "AssetPathsMacros.h"
 
+#include <imgui.h>
+
 namespace Demo
 {
 	DemoCamera3D::DemoCamera3D() : m_TranslationA(-10, 5, 0), m_TranslationB(0, 0, 0)
@@ -21,20 +23,21 @@ namespace Demo
 		};
 		// clang-format on
 
-		m_VAO = std::make_unique<Flibbert::OpenGLVertexArray>();
-		m_VertexBuffer = std::make_unique<Flibbert::OpenGLVertexBuffer>(
-		    positions, 4 * 4 * sizeof(float));
-		Flibbert::VertexBufferLayout layout;
-		layout.Push<float>(2);
-		layout.Push<float>(2);
+		m_VAO = Flibbert::VertexArray::Create();
+		m_VertexBuffer = Flibbert::VertexBuffer::Create(positions, 4 * 4 * sizeof(float));
+		Flibbert::BufferLayout layout = {
+		    {Flibbert::ShaderDataType::Float2, "something"},
+		    {Flibbert::ShaderDataType::Float2, "something2"},
+		};
+		m_VertexBuffer->SetLayout(layout);
+		m_VAO->AddBuffer(*m_VertexBuffer);
+		m_IndexBuffer = Flibbert::IndexBuffer::Create(indices, 6);
 
-		m_VAO->AddBuffer(*m_VertexBuffer, layout);
-		m_IndexBuffer = std::make_unique<Flibbert::OpenGLIndexBuffer>(indices, 6);
-
-		m_Shader = std::make_unique<Flibbert::OpenGLShader>(SHADER_DIR "/Basic.vert",
-		                                                    SHADER_DIR "/Basic.frag");
+		m_Shader =
+		    Flibbert::Shader::Create(SHADER_DIR "/Basic.vert", SHADER_DIR "/Basic.frag");
 		m_Shader->Bind();
-		m_Texture = std::make_unique<Flibbert::OpenGLTexture>(TEXTURE_DIR "/neko.png");
+
+		m_Texture = Flibbert::Texture::Create(TEXTURE_DIR "/neko.png");
 		m_Shader->SetUniform1i("u_Texture", 0);
 	}
 
@@ -45,11 +48,10 @@ namespace Demo
 
 	void DemoCamera3D::OnRender()
 	{
-		Flibbert::OpenGLRendererBackend* renderer =
-		    static_cast<Flibbert::OpenGLRendererBackend*>(
-			Flibbert::Application::Get().GetRenderer()->GetBackend());
+		Flibbert::RendererBackend* renderer =
+		    Flibbert::Application::Get().GetRenderer()->GetBackend();
 
-		m_Texture->Bind();
+		m_Texture->Bind(0);
 
 		{
 			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationA);

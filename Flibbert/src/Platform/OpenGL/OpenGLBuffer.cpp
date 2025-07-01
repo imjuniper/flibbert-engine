@@ -1,6 +1,6 @@
 #include "Platform/OpenGL/OpenGLBuffer.h"
 
-#include <external/glad.h>
+#include <glad.h>
 
 namespace Flibbert
 {

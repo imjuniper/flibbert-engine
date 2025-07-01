@@ -13,7 +13,7 @@ namespace Flibbert
 		Renderer();
 		~Renderer() = default;
 
-		RendererBackend* GetBackend() const { return m_Backend; }
+		[[nodiscard]] RendererBackend* GetBackend() const { return m_Backend; }
 
 	private:
 		RendererBackend* m_Backend;

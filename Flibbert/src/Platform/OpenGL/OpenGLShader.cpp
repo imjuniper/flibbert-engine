@@ -1,6 +1,6 @@
 #include "Platform/OpenGL/OpenGLShader.h"
 
-#include <external/glad.h>
+#include <glad.h>
 
 #include <fstream>
 
@@ -86,30 +86,29 @@ namespace Flibbert
 		glUseProgram(0);
 	}
 
-	void OpenGLShader::SetUniform1i(const std::string& name, int value)
+	void OpenGLShader::SetUniform1i(const std::string& name, const int value)
 	{
 		glUniform1i(GetUniformLocation(name), value);
 	}
 
-	void OpenGLShader::SetUniform1f(const std::string& name, float value)
+	void OpenGLShader::SetUniform1f(const std::string& name, const float value)
 	{
 		glUniform1f(GetUniformLocation(name), value);
 	}
 
-	void OpenGLShader::SetUniform2f(const std::string& name, float v0, float v1)
+	void OpenGLShader::SetUniform2f(const std::string& name, const glm::vec2& value)
 	{
-		glUniform2f(GetUniformLocation(name), v0, v1);
+		glUniform2f(GetUniformLocation(name), value.x, value.y);
 	}
 
-	void OpenGLShader::SetUniform4f(const std::string& name, float v0, float v1, float v2,
-	                                float v3)
+	void OpenGLShader::SetUniform4f(const std::string& name, const glm::vec4& value)
 	{
-		glUniform4f(GetUniformLocation(name), v0, v1, v2, v3);
+		glUniform4f(GetUniformLocation(name), value.x, value.y, value.z, value.w);
 	}
 
-	void OpenGLShader::SetUniformMat4f(const std::string& name, glm::mat4& matrix)
+	void OpenGLShader::SetUniformMat4f(const std::string& name, const glm::mat4& value)
 	{
-		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]);
+		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &value[0][0]);
 	}
 
 	int OpenGLShader::GetUniformLocation(const std::string& name)

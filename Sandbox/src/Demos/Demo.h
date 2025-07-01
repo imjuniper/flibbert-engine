@@ -2,8 +2,6 @@
 
 #include <Flibbert.h>
 
-#include <external/imgui/imgui.h>
-
 #include <functional>
 #include <iostream>
 #include <string>

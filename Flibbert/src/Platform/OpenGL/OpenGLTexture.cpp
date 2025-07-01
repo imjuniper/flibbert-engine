@@ -1,11 +1,13 @@
 #include "Platform/OpenGL/OpenGLTexture.h"
 
+#include <glad.h>
+
 #define STB_IMAGE_IMPLEMENTATION
-#include <external/stb_image.h>
+#include <stb_image.h>
 
 namespace Flibbert
 {
-	OpenGLTexture::OpenGLTexture(const std::string& path) : m_Path(path)
+	OpenGLTexture::OpenGLTexture(const std::string& path) : m_RendererID(0)
 	{
 		FBT_PROFILE_FUNCTION();
 

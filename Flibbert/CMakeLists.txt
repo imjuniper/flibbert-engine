@@ -30,6 +30,7 @@ include(Dependencies.cmake)
 # Project
 add_library(Flibbert STATIC
         src/fbtpch.h
+        src/Flibbert.h
         src/Flibbert/Core/Application.cpp
         src/Flibbert/Core/Application.h
         src/Flibbert/Core/Camera.cpp
@@ -42,9 +43,17 @@ add_library(Flibbert STATIC
         src/Flibbert/Core/Log.h
         src/Flibbert/Core/PlatformDetection.h
         src/Flibbert/Debug/Instrumentor.h
+        src/Flibbert/Renderer/Buffer.cpp
+        src/Flibbert/Renderer/Buffer.h
         src/Flibbert/Renderer/Renderer.cpp
         src/Flibbert/Renderer/Renderer.h
         src/Flibbert/Renderer/RendererBackend.h
+        src/Flibbert/Renderer/Shader.cpp
+        src/Flibbert/Renderer/Shader.h
+        src/Flibbert/Renderer/Texture.cpp
+        src/Flibbert/Renderer/Texture.h
+        src/Flibbert/Renderer/VertexArray.cpp
+        src/Flibbert/Renderer/VertexArray.h
         src/Platform/Desktop/Window.cpp
         src/Platform/Desktop/Window.h
         src/Platform/OpenGL/OpenGLBuffer.cpp
@@ -58,7 +67,10 @@ add_library(Flibbert STATIC
         src/Platform/OpenGL/OpenGLVertexArray.cpp
         src/Platform/OpenGL/OpenGLVertexArray.h)
 
-target_include_directories(Flibbert PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
+target_include_directories(Flibbert
+        PUBLIC
+        "${CMAKE_CURRENT_SOURCE_DIR}/src"
+        "${CMAKE_CURRENT_SOURCE_DIR}/vendor")
 
 target_precompile_headers(Flibbert PRIVATE src/fbtpch.h)
 
@@ -66,7 +78,6 @@ target_compile_definitions(Flibbert PRIVATE RGFW_EXPORT FBT_PROFILE=0)
 
 target_link_libraries(Flibbert PUBLIC glm imgui spdlog)
 
-# Stuff for rgfw
 if (APPLE)
     target_link_libraries(Flibbert
             PRIVATE

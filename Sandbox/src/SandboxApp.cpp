@@ -1,11 +1,13 @@
-#include <Flibbert.h>
-#include <Flibbert/Core/EntryPoint.h>
-
 #include "Demos/Demo.h"
 #include "Demos/DemoCamera3D.h"
 #include "Demos/DemoClearColor.h"
 #include "Demos/DemoFloppyBirb.h"
 #include "Demos/DemoTexture2D.h"
+
+#include <Flibbert.h>
+#include <Flibbert/Core/EntryPoint.h>
+
+#include <imgui.h>
 
 class Sandbox : public Flibbert::Application
 {

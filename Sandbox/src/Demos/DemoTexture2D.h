@@ -1,20 +1,19 @@
 #pragma once
 
 #include "Demos/Demo.h"
-#include <Flibbert.h>
 
-#include <memory>
+#include <Flibbert.h>
 
 namespace Demo
 {
 	class DemoTexture2D : public Demo
 	{
 	private:
-		std::unique_ptr<Flibbert::OpenGLVertexArray> m_VAO;
-		std::unique_ptr<Flibbert::OpenGLVertexBuffer> m_VertexBuffer;
-		std::unique_ptr<Flibbert::OpenGLIndexBuffer> m_IndexBuffer;
-		std::unique_ptr<Flibbert::OpenGLShader> m_Shader;
-		std::unique_ptr<Flibbert::OpenGLTexture> m_Texture;
+		Flibbert::VertexArray* m_VAO;
+		Flibbert::VertexBuffer* m_VertexBuffer;
+		Flibbert::IndexBuffer* m_IndexBuffer;
+		Flibbert::Shader* m_Shader;
+		Flibbert::Texture* m_Texture;
 
 		glm::mat4 m_Projection, m_View;
 		glm::vec3 m_TranslationA, m_TranslationB;

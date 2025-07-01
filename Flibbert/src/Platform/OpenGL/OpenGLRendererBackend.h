@@ -13,7 +13,7 @@ struct RGFW_window;
 
 namespace Flibbert
 {
-	class OpenGLRendererBackend : public Flibbert::RendererBackend
+	class OpenGLRendererBackend : public RendererBackend
 	{
 	public:
 		OpenGLRendererBackend();
@@ -23,7 +23,6 @@ namespace Flibbert
 		void SetClearColor(const glm::vec4& color) override;
 		void Clear() override;
 
-		void Draw(const OpenGLVertexArray& va, const OpenGLIndexBuffer& ib,
-		          const OpenGLShader& shader) const;
+		void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) const override;
 	};
 } // namespace Flibbert

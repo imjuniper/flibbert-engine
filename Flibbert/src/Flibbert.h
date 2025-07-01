@@ -8,12 +8,9 @@
 #include "Flibbert/Core/Input.h"
 #include "Flibbert/Core/KeyCodes.h"
 
+#include "Flibbert/Renderer/Buffer.h"
 #include "Flibbert/Renderer/Renderer.h"
 #include "Flibbert/Renderer/RendererBackend.h"
-
-// @todo remove all those from public API
-#include "Platform/OpenGL/OpenGLBuffer.h"
-#include "Platform/OpenGL/OpenGLRendererBackend.h"
-#include "Platform/OpenGL/OpenGLShader.h"
-#include "Platform/OpenGL/OpenGLTexture.h"
-#include "Platform/OpenGL/OpenGLVertexArray.h"
+#include "Flibbert/Renderer/Shader.h"
+#include "Flibbert/Renderer/Texture.h"
+#include "Flibbert/Renderer/VertexArray.h"

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Demos/Demo.h"
+
 #include <Flibbert.h>
 
 #include <memory>
@@ -10,11 +11,11 @@ namespace Demo
 	class Entity
 	{
 	public:
-		std::unique_ptr<Flibbert::OpenGLVertexArray> m_VAO;
-		std::unique_ptr<Flibbert::OpenGLVertexBuffer> m_VertexBuffer;
-		std::unique_ptr<Flibbert::OpenGLIndexBuffer> m_IndexBuffer;
-		std::unique_ptr<Flibbert::OpenGLShader> m_Shader;
-		std::unique_ptr<Flibbert::OpenGLTexture> m_Texture;
+		Flibbert::VertexArray* m_VAO;
+		Flibbert::VertexBuffer* m_VertexBuffer;
+		Flibbert::IndexBuffer* m_IndexBuffer;
+		Flibbert::Shader* m_Shader;
+		Flibbert::Texture* m_Texture;
 
 		glm::vec2 m_Position;
 		glm::vec2 m_Size;

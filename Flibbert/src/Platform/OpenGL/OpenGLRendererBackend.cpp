@@ -1,9 +1,9 @@
 #include "Platform/OpenGL/OpenGLRendererBackend.h"
 
-#include <external/RGFW.h>
+#include <rgfw/RGFW.h>
 
 #define GLAD_GL_IMPLEMENTATION
-#include <external/glad.h>
+#include <glad.h>
 
 /*
 void OpenGLMessageCallback(unsigned source, unsigned type, unsigned id, unsigned severity,
@@ -68,13 +68,12 @@ namespace Flibbert
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	void OpenGLRendererBackend::Draw(const OpenGLVertexArray& va, const OpenGLIndexBuffer& ib,
-	                                 const OpenGLShader& shader) const
+	void OpenGLRendererBackend::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) const
 	{
-		va.Bind();
-		ib.Bind();
+		vertexArray.Bind();
+		indexBuffer.Bind();
 		shader.Bind();
 
-		glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, indexBuffer.GetCount(), GL_UNSIGNED_INT, nullptr);
 	}
 } // namespace Flibbert

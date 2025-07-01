@@ -1,8 +1,8 @@
-add_subdirectory(src/external/glm)
-add_subdirectory(src/external/spdlog)
+add_subdirectory(vendor/glm)
+add_subdirectory(vendor/spdlog)
 
 # ImGui
-set(IMGUI_PATH ${CMAKE_CURRENT_SOURCE_DIR}/src/external/imgui)
+set(IMGUI_PATH ${CMAKE_CURRENT_SOURCE_DIR}/vendor/imgui)
 add_library(imgui STATIC
         "${IMGUI_PATH}/imconfig.h"
         "${IMGUI_PATH}/imgui.cpp"

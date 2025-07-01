@@ -1,5 +1,7 @@
 #include "Demos/Demo.h"
 
+#include <imgui.h>
+
 namespace Demo
 {
 	DemoMenu::DemoMenu(Demo*& currentDemoPointer) : m_CurrentDemo(currentDemoPointer) {}

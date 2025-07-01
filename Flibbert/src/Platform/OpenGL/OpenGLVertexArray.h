@@ -1,20 +1,19 @@
 #pragma once
 
+#include "Flibbert/Renderer/VertexArray.h"
+
 namespace Flibbert
 {
-	class OpenGLVertexBuffer;
-	class VertexBufferLayout;
-
-	class OpenGLVertexArray
+	class OpenGLVertexArray : public VertexArray
 	{
 	public:
 		OpenGLVertexArray();
-		~OpenGLVertexArray();
+		~OpenGLVertexArray() override;
 
-		void AddBuffer(const OpenGLVertexBuffer& vb,
-		               const VertexBufferLayout& layout) const;
-		void Bind() const;
-		void Unbind() const;
+		void Bind() const override;
+		void Unbind() const override;
+
+		void AddBuffer(const VertexBuffer& vertexBuffer) const override;
 
 	private:
 		uint32_t m_RendererID;

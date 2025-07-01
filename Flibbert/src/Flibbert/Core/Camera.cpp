@@ -4,13 +4,13 @@
 #include "Flibbert/Core/Input.h"
 #include "Platform/Desktop/Window.h"
 
-#include <external/glm/glm/gtc/matrix_transform.hpp>
-#include <external/glm/glm/gtc/quaternion.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
-#include <external/glm/glm/gtx/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 #undef GLM_ENABLE_EXPERIMENTAL
 
-#include <external/RGFW.h>
+#include <rgfw/RGFW.h>
 
 using namespace Flibbert;
 

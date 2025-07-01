@@ -4,11 +4,11 @@
 #include "Flibbert/Renderer/RendererBackend.h"
 #include "Platform/Desktop/Window.h"
 
-#include <external/imgui/backends/imgui_impl_opengl3.h>
-#include <external/imgui/imgui.h>
+#include <backends/imgui_impl_opengl3.h>
+#include <imgui.h>
 #define RGFW_IMGUI_IMPLEMENTATION
 
-#include <external/imgui_impl_rgfw.h>
+#include <rgfw/imgui_impl_rgfw.h>
 
 namespace Flibbert
 {

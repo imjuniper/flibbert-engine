@@ -12,10 +12,11 @@ namespace Flibbert
 			case API::OpenGL:
 				m_Backend = new OpenGLRendererBackend();
 			case API::None:
-				// HZ_CORE_ASSERT(false, "Renderer::API::None is currently not
-				// supported!");
+				// assert(false, "Renderer::API::None is currently not supported!");
 				break;
 		}
+
+		// assert(false, "Unknown Renderer::API!");
 	}
 
 	void Renderer::InitGraphicsContext(void* window)
@@ -25,9 +26,10 @@ namespace Flibbert
 				OpenGLRendererBackend::InitGraphicsContext(
 				    static_cast<RGFW_window*>(window));
 			case API::None:
-				// HZ_CORE_ASSERT(false, "Renderer::API::None is currently not
-				// supported!");
+				// assert(false, "Renderer::API::None is currently not supported!");
 				break;
 		}
+
+		// assert(false, "Unknown Renderer::API!");
 	}
 } // namespace Flibbert

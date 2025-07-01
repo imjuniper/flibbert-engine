@@ -6,7 +6,7 @@
 #define RGFW_IMPLEMENTATION
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wc++11-narrowing"
-#include <external/RGFW.h>
+#include <rgfw/RGFW.h>
 #pragma clang diagnostic pop
 
 namespace Flibbert
@@ -14,7 +14,7 @@ namespace Flibbert
 	Window::Window(const WindowProps& props)
 	{
 		// @todo check if this is needed on other platforms than macOS
-		if (Application::Get().GetRenderer()->GetAPI() == Renderer::API::OpenGL) {
+		if (Renderer::GetAPI() == Renderer::API::OpenGL) {
 			RGFW_setGLHint(RGFW_glMajor, 4);
 #ifdef FBT_PLATFORM_MACOS
 			/* Set OpenGL version to 4.1 on macOS */

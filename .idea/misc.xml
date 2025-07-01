@@ -10,7 +10,7 @@
       <file path="$PROJECT_DIR$/Sandbox/src" />
     </sourceRoots>
     <libraryRoots>
-      <file path="$PROJECT_DIR$/Flibbert/src/external" />
+      <file path="$PROJECT_DIR$/Flibbert/vendor" />
     </libraryRoots>
     <excludeRoots>
       <file path="$PROJECT_DIR$/.cache" />

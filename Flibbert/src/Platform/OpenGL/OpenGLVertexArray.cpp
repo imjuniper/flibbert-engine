@@ -2,8 +2,41 @@
 
 #include "Platform/OpenGL/OpenGLBuffer.h"
 
+#include <glad.h>
+
 namespace Flibbert
 {
+	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
+	{
+		switch (type) {
+			case ShaderDataType::Float:
+				return GL_FLOAT;
+			case ShaderDataType::Float2:
+				return GL_FLOAT;
+			case ShaderDataType::Float3:
+				return GL_FLOAT;
+			case ShaderDataType::Float4:
+				return GL_FLOAT;
+			case ShaderDataType::Mat3:
+				return GL_FLOAT;
+			case ShaderDataType::Mat4:
+				return GL_FLOAT;
+			case ShaderDataType::Int:
+				return GL_INT;
+			case ShaderDataType::Int2:
+				return GL_INT;
+			case ShaderDataType::Int3:
+				return GL_INT;
+			case ShaderDataType::Int4:
+				return GL_INT;
+			case ShaderDataType::Bool:
+				return GL_BOOL;
+			default:
+				// assert(false, "Unknown ShaderDataType!");
+				return 0;
+		}
+	}
+
 	OpenGLVertexArray::OpenGLVertexArray() : m_RendererID(0)
 	{
 		glGenVertexArrays(1, &m_RendererID);
@@ -14,22 +47,6 @@ namespace Flibbert
 		glDeleteVertexArrays(1, &m_RendererID);
 	}
 
-	void OpenGLVertexArray::AddBuffer(const OpenGLVertexBuffer& vb,
-	                                  const VertexBufferLayout& layout) const
-	{
-		Bind();
-		vb.Bind();
-		const auto& elements = layout.GetElements();
-		size_t offset = 0;
-		for (size_t i = 0; i < elements.size(); i++) {
-			const auto& element = elements[i];
-			glEnableVertexAttribArray(i);
-			glVertexAttribPointer(i, element.count, element.type, element.normalized,
-			                      layout.GetStride(), (const void*)offset);
-			offset += element.count * VertexBufferElement::GetSizeOfType(element.type);
-		}
-	}
-
 	void OpenGLVertexArray::Bind() const
 	{
 		glBindVertexArray(m_RendererID);
@@ -38,5 +55,22 @@ namespace Flibbert
 	void OpenGLVertexArray::Unbind() const
 	{
 		glBindVertexArray(0);
+	}
+
+	void OpenGLVertexArray::AddBuffer(const VertexBuffer& vertexBuffer) const
+	{
+		Bind();
+		vertexBuffer.Bind();
+
+		const auto& layout = vertexBuffer.GetLayout();
+		size_t i = 0;
+		for (const auto& element : layout) {
+			glEnableVertexAttribArray(i);
+			glVertexAttribPointer(i, element.GetComponentCount(),
+			                      ShaderDataTypeToOpenGLBaseType(element.Type),
+			                      element.Normalized ? GL_TRUE : GL_FALSE,
+			                      layout.GetStride(), (const void*)element.Offset);
+			i++;
+		}
 	}
 } // namespace Flibbert

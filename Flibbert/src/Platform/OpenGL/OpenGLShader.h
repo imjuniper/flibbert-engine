@@ -1,28 +1,28 @@
 #pragma once
 
-#include <glm/glm.hpp>
+#include "Flibbert/Renderer/Shader.h"
 
 #include <string>
 #include <unordered_map>
 
 namespace Flibbert
 {
-	class OpenGLShader
+	class OpenGLShader : public Shader
 	{
 	public:
 		OpenGLShader(const std::string& vertexShaderFilepath,
 		             const std::string& fragmentShaderFilepath);
-		~OpenGLShader();
+		~OpenGLShader() override;
 
-		void Bind() const;
-		void Unbind() const;
+		void Bind() const override;
+		void Unbind() const override;
 
 		// Set uniforms
-		void SetUniform1i(const std::string& name, int value);
-		void SetUniform1f(const std::string& name, float value);
-		void SetUniform2f(const std::string& name, float v0, float v1);
-		void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
-		void SetUniformMat4f(const std::string& name, glm::mat4& matrix);
+		void SetUniform1i(const std::string& name, int value) override;
+		void SetUniform1f(const std::string& name, float value) override;
+		void SetUniform2f(const std::string& name, const glm::vec2& value) override;
+		void SetUniform4f(const std::string& name, const glm::vec4& value) override;
+		void SetUniformMat4f(const std::string& name, const glm::mat4& value) override;
 
 	private:
 		std::string LoadShader(const std::string& filepath);
