@@ -11,6 +11,7 @@ namespace Demo
 	      m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
 	      m_TranslationA(100, 100, 0), m_TranslationB(300, 100, 0)
 	{
+		m_Renderer = Flibbert::Application::Get().GetRenderer()->GetBackend();
 		// clang-format off
 		float positions[] = {
 		    -100.0f, -75.0f, 0.0f, 0.0f,
@@ -46,9 +47,6 @@ namespace Demo
 
 	void DemoTexture2D::OnRender()
 	{
-		Flibbert::RendererBackend* renderer =
-		    Flibbert::Application::Get().GetRenderer()->GetBackend();
-
 		m_Texture->Bind(0);
 
 		{
@@ -56,7 +54,7 @@ namespace Demo
 			glm::mat4 mvp = m_Projection * m_View * model;
 			m_Shader->Bind();
 			m_Shader->SetUniformMat4f("u_MVP", mvp);
-			renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
+			m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
 		}
 
 		{
@@ -64,7 +62,7 @@ namespace Demo
 			glm::mat4 mvp = m_Projection * m_View * model;
 			m_Shader->Bind();
 			m_Shader->SetUniformMat4f("u_MVP", mvp);
-			renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
+			m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
 		}
 	}
 

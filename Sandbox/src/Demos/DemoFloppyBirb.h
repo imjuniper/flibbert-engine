@@ -51,6 +51,7 @@ namespace Demo
 	class DemoFloppyBirb : public Demo
 	{
 	private:
+		Flibbert::RendererBackend* m_Renderer;
 		glm::mat4 m_Projection, m_View;
 
 		Birb m_Birb;

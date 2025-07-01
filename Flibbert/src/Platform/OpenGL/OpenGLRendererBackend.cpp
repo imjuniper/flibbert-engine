@@ -60,6 +60,7 @@ namespace Flibbert
 
 	void OpenGLRendererBackend::SetClearColor(const glm::vec4& color)
 	{
+		RendererBackend::SetClearColor(color);
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
 

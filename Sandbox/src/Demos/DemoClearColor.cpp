@@ -4,16 +4,23 @@
 
 #include <imgui.h>
 
-
 namespace Demo
 {
-	DemoClearColor::DemoClearColor() : m_ClearColor{1.0f, 0.0f, 0.0f, 0.0f} {}
+	DemoClearColor::DemoClearColor() : m_ClearColor{1.0f, 0.0f, 0.0f, 0.0f}, m_InitialColor()
+	{
+		m_Renderer = Flibbert::Application::Get().GetRenderer()->GetBackend();
+		m_InitialColor = m_Renderer->GetClearColor();
+	}
+
+	DemoClearColor::~DemoClearColor()
+	{
+		m_Renderer->SetClearColor(m_InitialColor);
+	}
 
 	void DemoClearColor::OnRender()
 	{
-		Flibbert::RendererBackend* renderer =
-		    Flibbert::Application::Get().GetRenderer()->GetBackend();
-		renderer->SetClearColor({m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], m_ClearColor[3]});
+		m_Renderer->SetClearColor(
+		    {m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], m_ClearColor[3]});
 	}
 
 	void DemoClearColor::OnImGuiRender()

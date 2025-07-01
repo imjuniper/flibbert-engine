@@ -8,6 +8,7 @@ namespace Demo
 {
 	DemoCamera3D::DemoCamera3D() : m_TranslationA(-10, 5, 0), m_TranslationB(0, 0, 0)
 	{
+		m_Renderer = Flibbert::Application::Get().GetRenderer()->GetBackend();
 		m_Camera = new Camera(65.0f, -1.0f, 1.0f);
 		// clang-format off
 		float positions[] = {
@@ -48,9 +49,6 @@ namespace Demo
 
 	void DemoCamera3D::OnRender()
 	{
-		Flibbert::RendererBackend* renderer =
-		    Flibbert::Application::Get().GetRenderer()->GetBackend();
-
 		m_Texture->Bind(0);
 
 		{
@@ -58,7 +56,7 @@ namespace Demo
 			glm::mat4 mvp = m_Camera->GetProjection() * m_Camera->GetView() * model;
 			m_Shader->Bind();
 			m_Shader->SetUniformMat4f("u_MVP", mvp);
-			renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
+			m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
 		}
 
 		{
@@ -66,7 +64,7 @@ namespace Demo
 			glm::mat4 mvp = m_Camera->GetProjection() * m_Camera->GetView() * model;
 			m_Shader->Bind();
 			m_Shader->SetUniformMat4f("u_MVP", mvp);
-			renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
+			m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
 		}
 	}
 

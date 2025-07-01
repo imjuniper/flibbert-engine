@@ -1,7 +1,8 @@
 #pragma once
-#include "Buffer.h"
-#include "Shader.h"
-#include "VertexArray.h"
+
+#include "Flibbert/Renderer/Buffer.h"
+#include "Flibbert/Renderer/Shader.h"
+#include "Flibbert/Renderer/VertexArray.h"
 
 namespace Flibbert
 {
@@ -11,9 +12,13 @@ namespace Flibbert
 		RendererBackend() = default;
 		virtual ~RendererBackend() = default;
 
-		virtual void SetClearColor(const glm::vec4& color) = 0;
+		[[nodiscard]] virtual glm::vec4 GetClearColor() const { return m_clearColor; }
+		virtual void SetClearColor(const glm::vec4& color) { m_clearColor = color; }
 		virtual void Clear() = 0;
 
 		virtual void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) const = 0;
+
+	protected:
+		glm::vec4 m_clearColor = glm::vec4(0.f);
 	};
 } // namespace Flibbert

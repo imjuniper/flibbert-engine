@@ -9,6 +9,7 @@ namespace Demo
 	class DemoTexture2D : public Demo
 	{
 	private:
+		Flibbert::RendererBackend* m_Renderer;
 		Flibbert::VertexArray* m_VAO;
 		Flibbert::VertexBuffer* m_VertexBuffer;
 		Flibbert::IndexBuffer* m_IndexBuffer;

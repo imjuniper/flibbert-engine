@@ -103,6 +103,7 @@ namespace Demo
 	    : m_Projection(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f)),
 	      m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))), m_Birb(), m_Pipe()
 	{
+		m_Renderer = Flibbert::Application::Get().GetRenderer()->GetBackend();
 	}
 
 	void DemoFloppyBirb::OnUpdate(float deltaTime)
@@ -112,16 +113,13 @@ namespace Demo
 
 	void DemoFloppyBirb::OnRender()
 	{
-		Flibbert::RendererBackend* renderer =
-		    Flibbert::Application::Get().GetRenderer()->GetBackend();
-
 		{
 			glm::mat4 model =
 			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position, 0));
 			glm::mat4 mvp = m_Projection * m_View * model;
 			m_Pipe.m_Shader->Bind();
 			m_Pipe.m_Shader->SetUniformMat4f("u_MVP", mvp);
-			renderer->Draw(*m_Pipe.m_VAO, *m_Pipe.m_IndexBuffer, *m_Pipe.m_Shader);
+			m_Renderer->Draw(*m_Pipe.m_VAO, *m_Pipe.m_IndexBuffer, *m_Pipe.m_Shader);
 		}
 
 		{
@@ -131,7 +129,7 @@ namespace Demo
 			glm::mat4 mvp = m_Projection * m_View * model;
 			m_Pipe.m_Shader->Bind();
 			m_Pipe.m_Shader->SetUniformMat4f("u_MVP", mvp);
-			renderer->Draw(*m_Pipe.m_VAO, *m_Pipe.m_IndexBuffer, *m_Pipe.m_Shader);
+			m_Renderer->Draw(*m_Pipe.m_VAO, *m_Pipe.m_IndexBuffer, *m_Pipe.m_Shader);
 		}
 
 		// Bird
@@ -141,7 +139,7 @@ namespace Demo
 			glm::mat4 mvp = m_Projection * m_View * model;
 			m_Birb.m_Shader->Bind();
 			m_Birb.m_Shader->SetUniformMat4f("u_MVP", mvp);
-			renderer->Draw(*m_Birb.m_VAO, *m_Birb.m_IndexBuffer, *m_Birb.m_Shader);
+			m_Renderer->Draw(*m_Birb.m_VAO, *m_Birb.m_IndexBuffer, *m_Birb.m_Shader);
 		}
 	}
 
