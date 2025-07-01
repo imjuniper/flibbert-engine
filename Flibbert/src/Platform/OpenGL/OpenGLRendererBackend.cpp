@@ -69,11 +69,17 @@ namespace Flibbert
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	void OpenGLRendererBackend::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) const
+	void OpenGLRendererBackend::Draw(const VertexArray& vertexArray,
+	                                 const IndexBuffer& indexBuffer, Shader& shader,
+	                                 const glm::mat4& viewProjection,
+	                                 const glm::mat4& transform) const
 	{
 		vertexArray.Bind();
 		indexBuffer.Bind();
 		shader.Bind();
+
+		shader.SetUniformMat4f("u_ViewProjection", viewProjection);
+		shader.SetUniformMat4f("u_Transform", transform);
 
 		glDrawElements(GL_TRIANGLES, indexBuffer.GetCount(), GL_UNSIGNED_INT, nullptr);
 	}

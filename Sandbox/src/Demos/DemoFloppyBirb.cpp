@@ -15,11 +15,11 @@ namespace Demo
 		m_Size = glm::vec2(50, 50);
 
 		// clang-format off
-		float positions[] = {
-			m_Size.x / -2.0f, m_Size.y / -2.0f, 0.0f, 0.0f,
-			m_Size.x / 2.0f,  m_Size.y / -2.0f, 1.0f, 0.0f,
-			m_Size.x / 2.0f,  m_Size.y / 2.0f,  1.0f, 1.0f,
-			m_Size.x / -2.0f, m_Size.y / 2.0f,  0.0f, 1.0f,
+		float vertices[] = {
+			m_Size.x / -2.0f, m_Size.y / -2.0f,
+			m_Size.x / 2.0f,  m_Size.y / -2.0f,
+			m_Size.x / 2.0f,  m_Size.y / 2.0f,
+			m_Size.x / -2.0f, m_Size.y / 2.0f,
 		};
 
 		uint32_t indices[] = {
@@ -29,14 +29,14 @@ namespace Demo
 		// clang-format on
 
 		m_VAO = Flibbert::VertexArray::Create();
-		m_VertexBuffer = Flibbert::VertexBuffer::Create(positions, 4 * 4 * sizeof(float));
+		m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices, sizeof(vertices));
 		Flibbert::BufferLayout layout = {
-		    {Flibbert::ShaderDataType::Float2, "something"},
-		    {Flibbert::ShaderDataType::Float2, "something2"},
+		    {Flibbert::ShaderDataType::Float2, "a_Position"},
 		};
 		m_VertexBuffer->SetLayout(layout);
 		m_VAO->AddBuffer(*m_VertexBuffer);
-		m_IndexBuffer = Flibbert::IndexBuffer::Create(indices, 6);
+		m_IndexBuffer =
+		    Flibbert::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 
 		m_Shader = Flibbert::Shader::Create(SHADER_DIR "/DemoBirb/Birb.vert",
 		                                    SHADER_DIR "/DemoBirb/Birb.frag");
@@ -68,11 +68,11 @@ namespace Demo
 		m_Size = glm::vec2(50, 150);
 
 		// clang-format off
-		float positions[] = {
-			m_Size.x / -2.0f, m_Size.y / -2.0f, 0.0f, 0.0f,
-			m_Size.x / 2.0f,  m_Size.y / -2.0f, 1.0f, 0.0f,
-			m_Size.x / 2.0f,  m_Size.y / 2.0f,  1.0f, 1.0f,
-			m_Size.x / -2.0f, m_Size.y / 2.0f,  0.0f, 1.0f,
+		float vertices[] = {
+			m_Size.x / -2.0f, m_Size.y / -2.0f,
+			m_Size.x / 2.0f,  m_Size.y / -2.0f,
+			m_Size.x / 2.0f,  m_Size.y / 2.0f,
+			m_Size.x / -2.0f, m_Size.y / 2.0f,
 		};
 
 		uint32_t indices[] = {
@@ -82,14 +82,14 @@ namespace Demo
 		// clang-format on
 
 		m_VAO = Flibbert::VertexArray::Create();
-		m_VertexBuffer = Flibbert::VertexBuffer::Create(positions, 4 * 4 * sizeof(float));
+		m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices, sizeof(vertices));
 		Flibbert::BufferLayout layout = {
-		    {Flibbert::ShaderDataType::Float2, "something"},
-		    {Flibbert::ShaderDataType::Float2, "something2"},
+		    {Flibbert::ShaderDataType::Float2, "a_Position"},
 		};
 		m_VertexBuffer->SetLayout(layout);
 		m_VAO->AddBuffer(*m_VertexBuffer);
-		m_IndexBuffer = Flibbert::IndexBuffer::Create(indices, 6);
+		m_IndexBuffer =
+		    Flibbert::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 
 		m_Shader = Flibbert::Shader::Create(SHADER_DIR "/DemoBirb/Pipe.vert",
 		                                    SHADER_DIR "/DemoBirb/Pipe.frag");
@@ -101,7 +101,7 @@ namespace Demo
 #pragma region Scene
 	DemoFloppyBirb::DemoFloppyBirb()
 	    : m_Projection(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f)),
-	      m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))), m_Birb(), m_Pipe()
+	      m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0)))
 	{
 		m_Renderer = Flibbert::Application::Get().GetRenderer()->GetBackend();
 	}
@@ -114,32 +114,26 @@ namespace Demo
 	void DemoFloppyBirb::OnRender()
 	{
 		{
-			glm::mat4 model =
+			glm::mat4 transform =
 			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position, 0));
-			glm::mat4 mvp = m_Projection * m_View * model;
-			m_Pipe.m_Shader->Bind();
-			m_Pipe.m_Shader->SetUniformMat4f("u_MVP", mvp);
-			m_Renderer->Draw(*m_Pipe.m_VAO, *m_Pipe.m_IndexBuffer, *m_Pipe.m_Shader);
+			m_Renderer->Draw(*m_Pipe.m_VAO, *m_Pipe.m_IndexBuffer, *m_Pipe.m_Shader,
+			                 m_Projection * m_View, transform);
 		}
 
 		{
-			glm::mat4 model =
+			glm::mat4 transform =
 			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position.x + 250.0f,
 			                                              m_Pipe.m_Position.y, 0));
-			glm::mat4 mvp = m_Projection * m_View * model;
-			m_Pipe.m_Shader->Bind();
-			m_Pipe.m_Shader->SetUniformMat4f("u_MVP", mvp);
-			m_Renderer->Draw(*m_Pipe.m_VAO, *m_Pipe.m_IndexBuffer, *m_Pipe.m_Shader);
+			m_Renderer->Draw(*m_Pipe.m_VAO, *m_Pipe.m_IndexBuffer, *m_Pipe.m_Shader,
+			                 m_Projection * m_View, transform);
 		}
 
 		// Bird
 		{
-			glm::mat4 model =
+			glm::mat4 transform =
 			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Birb.m_Position, 0));
-			glm::mat4 mvp = m_Projection * m_View * model;
-			m_Birb.m_Shader->Bind();
-			m_Birb.m_Shader->SetUniformMat4f("u_MVP", mvp);
-			m_Renderer->Draw(*m_Birb.m_VAO, *m_Birb.m_IndexBuffer, *m_Birb.m_Shader);
+			m_Renderer->Draw(*m_Birb.m_VAO, *m_Birb.m_IndexBuffer, *m_Birb.m_Shader,
+			                 m_Projection * m_View, transform);
 		}
 	}
 

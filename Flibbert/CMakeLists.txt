@@ -33,8 +33,6 @@ add_library(Flibbert STATIC
         src/Flibbert.h
         src/Flibbert/Core/Application.cpp
         src/Flibbert/Core/Application.h
-        src/Flibbert/Core/Camera.cpp
-        src/Flibbert/Core/Camera.h
         src/Flibbert/Core/EntryPoint.h
         src/Flibbert/Core/Input.cpp
         src/Flibbert/Core/Input.h
@@ -43,8 +41,14 @@ add_library(Flibbert STATIC
         src/Flibbert/Core/Log.h
         src/Flibbert/Core/PlatformDetection.h
         src/Flibbert/Debug/Instrumentor.h
+        src/Flibbert/Renderer/2D/Camera2D.cpp
+        src/Flibbert/Renderer/2D/Camera2D.h
+        src/Flibbert/Renderer/3D/Camera3D.cpp
+        src/Flibbert/Renderer/3D/Camera3D.h
         src/Flibbert/Renderer/Buffer.cpp
         src/Flibbert/Renderer/Buffer.h
+        src/Flibbert/Renderer/Camera.cpp
+        src/Flibbert/Renderer/Camera.h
         src/Flibbert/Renderer/Renderer.cpp
         src/Flibbert/Renderer/Renderer.h
         src/Flibbert/Renderer/RendererBackend.h

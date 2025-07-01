@@ -23,6 +23,8 @@ namespace Flibbert
 		void SetClearColor(const glm::vec4& color) override;
 		void Clear() override;
 
-		void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer, const Shader& shader) const override;
+		void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer,
+		          Shader& shader, const glm::mat4& viewProjection,
+		          const glm::mat4& transform) const override;
 	};
 } // namespace Flibbert

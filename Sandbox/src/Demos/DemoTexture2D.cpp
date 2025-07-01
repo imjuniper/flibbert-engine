@@ -13,7 +13,7 @@ namespace Demo
 	{
 		m_Renderer = Flibbert::Application::Get().GetRenderer()->GetBackend();
 		// clang-format off
-		float positions[] = {
+		float vertices[] = {
 		    -100.0f, -75.0f, 0.0f, 0.0f,
 		    100.0f,  -75.0f, 1.0f, 0.0f,
 		    100.0f,  75.0f,  1.0f, 1.0f,
@@ -27,14 +27,14 @@ namespace Demo
 		// clang-format on
 
 		m_VAO = Flibbert::VertexArray::Create();
-		m_VertexBuffer = Flibbert::VertexBuffer::Create(positions, 4 * 4 * sizeof(float));
+		m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices, sizeof(vertices));
 		Flibbert::BufferLayout layout = {
-		    {Flibbert::ShaderDataType::Float2, "something"},
-		    {Flibbert::ShaderDataType::Float2, "something2"},
+		    {Flibbert::ShaderDataType::Float2, "a_Position"},
+		    {Flibbert::ShaderDataType::Float2, "a_TexCoord"},
 		};
 		m_VertexBuffer->SetLayout(layout);
 		m_VAO->AddBuffer(*m_VertexBuffer);
-		m_IndexBuffer = Flibbert::IndexBuffer::Create(indices, 6);
+		m_IndexBuffer = Flibbert::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 
 		m_Shader =
 		    Flibbert::Shader::Create(SHADER_DIR "/Basic.vert", SHADER_DIR "/Basic.frag");
@@ -50,19 +50,13 @@ namespace Demo
 		m_Texture->Bind(0);
 
 		{
-			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationA);
-			glm::mat4 mvp = m_Projection * m_View * model;
-			m_Shader->Bind();
-			m_Shader->SetUniformMat4f("u_MVP", mvp);
-			m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
+			glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_TranslationA);
+			m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader, m_Projection * m_View, transform);
 		}
 
 		{
-			glm::mat4 model = glm::translate(glm::mat4(1.0f), m_TranslationB);
-			glm::mat4 mvp = m_Projection * m_View * model;
-			m_Shader->Bind();
-			m_Shader->SetUniformMat4f("u_MVP", mvp);
-			m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader);
+			glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_TranslationB);
+			m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader, m_Projection * m_View, transform);
 		}
 	}
 

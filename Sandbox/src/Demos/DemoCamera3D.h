@@ -16,7 +16,7 @@ namespace Demo
 		Flibbert::Shader* m_Shader;
 		Flibbert::Texture* m_Texture;
 
-		Camera* m_Camera;
+		Flibbert::Camera3D* m_Camera;
 		glm::vec3 m_TranslationA, m_TranslationB;
 
 	public:
