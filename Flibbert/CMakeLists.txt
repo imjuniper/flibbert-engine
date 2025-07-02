@@ -84,6 +84,8 @@ target_link_libraries(Flibbert PUBLIC glm imgui spdlog)
 
 if (APPLE)
     target_link_libraries(Flibbert
+            PUBLIC
+            metal
             PRIVATE
             "-framework Cocoa"
             "-framework OpenGL"

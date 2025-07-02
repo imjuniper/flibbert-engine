@@ -1,4 +1,5 @@
 add_subdirectory(vendor/glm)
+add_subdirectory(vendor/metal-cpp)
 add_subdirectory(vendor/spdlog)
 
 # ImGui
