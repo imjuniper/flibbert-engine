@@ -7,3 +7,9 @@ add IndexBuffer to VertexArray
 figure out an actual naming convention
     rename folders to be PascalCase (src -> Source), similar to UE, but also more consistent
     in a similar feeling vein, split the engine in public and private folders to prevent access to wrong APIs
+
+Metal resources:
+    https://github.com/ColleagueRiley/RGFW/blob/main/examples/metal/metal.m
+    https://github.com/trojanfoe/metal-cpp-glfw
+    https://github.com/o-micron/metal-imgui-example
+    https://developer.apple.com/videos/play/wwdc2022/10160/
