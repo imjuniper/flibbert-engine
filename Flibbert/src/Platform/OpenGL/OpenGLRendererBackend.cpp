@@ -32,9 +32,8 @@ namespace Flibbert
 {
 	void OpenGLRendererBackend::InitGraphicsContext(RGFW_window* window)
 	{
-		RGFW_window_makeCurrent(window);
-		int status = gladLoadGL((GLADloadfunc)RGFW_getProcAddress);
-		assert(status);
+		// int status = gladLoadGL((GLADloadfunc)RGFW_getProcAddress);
+		// assert(status);
 
 		FBT_CORE_INFO("OpenGL Info:");
 		FBT_CORE_INFO("  Vendor: {0}", (char*)glGetString(GL_VENDOR));
@@ -42,7 +41,7 @@ namespace Flibbert
 		FBT_CORE_INFO("  Version: {0}", (char*)glGetString(GL_VERSION));
 	}
 
-	OpenGLRendererBackend::OpenGLRendererBackend()
+	OpenGLRendererBackend::OpenGLRendererBackend(RGFW_window* window)
 	{
 		// @todo would be great to use this, but macOS is stuck on OpenGL 4.1...
 		// once metal is implemented, add this

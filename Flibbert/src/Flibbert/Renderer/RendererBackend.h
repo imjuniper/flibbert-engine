@@ -4,12 +4,15 @@
 #include "Flibbert/Renderer/Shader.h"
 #include "Flibbert/Renderer/VertexArray.h"
 
+struct RGFW_window;
+
 namespace Flibbert
 {
 	class RendererBackend
 	{
 	public:
 		RendererBackend() = default;
+		explicit RendererBackend(RGFW_window* window) {};
 		virtual ~RendererBackend() = default;
 
 		[[nodiscard]] virtual glm::vec4 GetClearColor() const { return m_clearColor; }

@@ -60,6 +60,8 @@ add_library(Flibbert STATIC
         src/Flibbert/Renderer/VertexArray.h
         src/Platform/Desktop/Window.cpp
         src/Platform/Desktop/Window.h
+        src/Platform/Metal/MetalRendererBackend.cpp
+        src/Platform/Metal/MetalRendererBackend.h
         src/Platform/OpenGL/OpenGLBuffer.cpp
         src/Platform/OpenGL/OpenGLBuffer.h
         src/Platform/OpenGL/OpenGLRendererBackend.cpp

@@ -132,6 +132,17 @@ _APPKIT_PRIVATE_DEF_SEL( initWithFrame_,
 _APPKIT_PRIVATE_DEF_SEL( initWithTitle_,
 						"initWithTitle:" );
 
+/* Start Juni edit */
+_APPKIT_PRIVATE_DEF_SEL( setLayer_,
+						"setLayer:" );
+	
+_APPKIT_PRIVATE_DEF_SEL( setOpaque_,
+						"setOpaque:" );
+
+_APPKIT_PRIVATE_DEF_SEL( setWantsLayer_,
+						"setWantsLayer:" );
+/* End Juni edit */
+
 _APPKIT_PRIVATE_DEF_SEL( setContentView_,
 						"setContentView:" );
 

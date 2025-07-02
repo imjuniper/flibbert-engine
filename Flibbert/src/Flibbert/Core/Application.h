@@ -2,6 +2,11 @@
 
 struct RGFW_window;
 
+namespace MTL
+{
+	class RenderPassDescriptor;
+} // namespace MTL
+
 namespace Flibbert
 {
 	class Renderer;
@@ -31,6 +36,8 @@ namespace Flibbert
 		float m_TimeStep = 0.0f;
 		float m_FrameTime = 0.0f;
 		float m_LastFrameTime = 0.0f;
+
+		MTL::RenderPassDescriptor* m_ImGuiRenderPassDescriptor = nullptr;
 
 	private:
 		static Application* s_Instance;

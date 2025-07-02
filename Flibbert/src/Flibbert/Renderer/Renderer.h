@@ -7,10 +7,10 @@ namespace Flibbert
 	class Renderer
 	{
 	public:
-		enum class API { None, OpenGL /*, DirectX11, DirectX12, Metal, Vulkan*/ };
+		enum class API { None, OpenGL, DirectX11, DirectX12, Metal, Vulkan };
 
 	public:
-		Renderer();
+		explicit Renderer(void* window);
 		~Renderer() = default;
 
 		[[nodiscard]] RendererBackend* GetBackend() const { return m_Backend; }
