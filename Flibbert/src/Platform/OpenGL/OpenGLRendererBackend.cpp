@@ -24,7 +24,7 @@ void OpenGLMessageCallback(unsigned source, unsigned type, unsigned id, unsigned
                         return;
         }
 
-        FBT_CORE_ASSERT(false, "Unknown severity level!");
+        FBT_CORE_ENSURE_MSG(false, "Unknown severity level!");
 }
 */
 
@@ -34,7 +34,7 @@ namespace Flibbert
 	{
 		RGFW_window_makeCurrent(window);
 		int status = gladLoadGL((GLADloadfunc)RGFW_getProcAddress);
-		assert(status);
+		FBT_CORE_ENSURE(status);
 
 		FBT_CORE_INFO("OpenGL Info:");
 		FBT_CORE_INFO("  Vendor: {0}", (char*)glGetString(GL_VENDOR));

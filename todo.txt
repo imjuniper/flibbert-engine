@@ -1,8 +1,10 @@
-create assert macros
 implement Camera2D and abstract Camera class
     following that, should eventually remove ViewProjection from parameters in Renderer::Draw
+        actually, look into uniform buffers!
 add IndexBuffer to VertexArray
     similarly, remove from Renderer::Draw
 figure out an actual naming convention
     rename folders to be PascalCase (src -> Source), similar to UE, but also more consistent
     in a similar feeling vein, split the engine in public and private folders to prevent access to wrong APIs
+
+look into IWYU: https://github.com/include-what-you-use/include-what-you-use/blob/master/docs/IWYUPragmas.md

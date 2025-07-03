@@ -9,6 +9,9 @@
 	#endif
 #endif
 
+#include "Flibbert/Core/Base.h"
+
+#include "Flibbert/Core/AssertionMacros.h"
 #include "Flibbert/Core/Log.h"
 #include "Flibbert/Debug/Instrumentor.h"
 

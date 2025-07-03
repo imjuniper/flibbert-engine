@@ -33,6 +33,9 @@ add_library(Flibbert STATIC
         src/Flibbert.h
         src/Flibbert/Core/Application.cpp
         src/Flibbert/Core/Application.h
+        src/Flibbert/Core/AssertionMacros.cpp
+        src/Flibbert/Core/AssertionMacros.h
+        src/Flibbert/Core/Base.h
         src/Flibbert/Core/EntryPoint.h
         src/Flibbert/Core/Input.cpp
         src/Flibbert/Core/Input.h

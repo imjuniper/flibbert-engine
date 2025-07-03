@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Flibbert/Core/AssertionMacros.h"
+
 #include <string>
 #include <vector>
 
@@ -46,7 +48,7 @@ namespace Flibbert
 			case ShaderDataType::Bool:
 				return 1;
 			default:
-				// assert(false, "Unknown ShaderDataType!");
+				FBT_CORE_ENSURE_MSG(false, "Unknown ShaderDataType!");
 				return 0;
 		}
 	}
@@ -92,7 +94,7 @@ namespace Flibbert
 				case ShaderDataType::Bool:
 					return 1;
 				default:
-					// assert(false, "Unknown ShaderDataType!");
+					FBT_CORE_ENSURE_MSG(false, "Unknown ShaderDataType!");
 					return 0;
 			}
 		}

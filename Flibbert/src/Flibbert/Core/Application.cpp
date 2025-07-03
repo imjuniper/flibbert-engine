@@ -18,9 +18,8 @@ namespace Flibbert
 	{
 		FBT_PROFILE_FUNCTION();
 
-		if (s_Instance != nullptr) {
-			FBT_CORE_CRITICAL("Application already exists!");
-			assert(s_Instance != nullptr);
+		if (!FBT_CORE_ENSURE_MSG(s_Instance == nullptr, "Application already exists!")) {
+			return;
 		}
 		s_Instance = this;
 
@@ -99,13 +98,13 @@ namespace Flibbert
 
 	Window& Application::GetWindow() const
 	{
-		assert(m_Window != nullptr);
+		FBT_CORE_ENSURE(m_Window != nullptr);
 		return *m_Window;
 	}
 
 	Renderer& Application::GetRenderer() const
 	{
-		assert(m_Renderer != nullptr);
+		FBT_CORE_ENSURE(m_Renderer != nullptr);
 		return *m_Renderer;
 	}
 } // namespace Flibbert

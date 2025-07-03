@@ -24,7 +24,7 @@ namespace Flibbert
 			case ShaderDataType::Bool:
 				return GL_BOOL;
 			default:
-				// assert(false, "Unknown ShaderDataType!");
+				FBT_CORE_ENSURE_MSG(false, "Unknown ShaderDataType!");
 				return 0;
 		}
 	}

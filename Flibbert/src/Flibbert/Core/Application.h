@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Flibbert/Core/AssertionMacros.h"
+
 #include <memory>
 #include <string>
 
@@ -10,20 +12,18 @@ namespace Flibbert
 	class Renderer;
 	class Window;
 
-	struct LaunchArguments
-	{
+	struct LaunchArguments {
 		int Count;
 		char** Arguments;
 
 		const char* operator[](const int index) const
 		{
-			//assert(index < Count);
+			FBT_CORE_ENSURE(index < Count);
 			return Arguments[index];
 		}
 	};
 
-	struct ApplicationInfo
-	{
+	struct ApplicationInfo {
 		std::string Name;
 		LaunchArguments LaunchArguments;
 	};

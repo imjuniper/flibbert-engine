@@ -22,9 +22,10 @@ namespace Flibbert
 	{
 		switch (Renderer::GetAPI()) {
 			case Renderer::API::OpenGL:
-				// return std::make_shared<OpenGLShader>(name, vertexSrc, fragmentSrc);
-				FBT_CORE_ERROR("Cannot create shader with strings yet");
-				assert(false);
+				// return std::make_shared<OpenGLShader>(name, vertexSrc,
+				// fragmentSrc);
+				FBT_CORE_ENSURE_MSG(false,
+				                    "Cannot create OpenGL shader with strings yet");
 				return nullptr;
 			default:
 				return nullptr;
