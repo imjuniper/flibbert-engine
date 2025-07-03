@@ -1,5 +1,6 @@
 #include "Flibbert/Renderer/Renderer.h"
 
+#include "Flibbert/Core/Application.h"
 #include "Platform/OpenGL/OpenGLRendererBackend.h"
 
 namespace Flibbert
@@ -10,13 +11,22 @@ namespace Flibbert
 	{
 		switch (s_API) {
 			case API::OpenGL:
-				m_Backend = new OpenGLRendererBackend();
-			case API::None:
-				// assert(false, "Renderer::API::None is currently not supported!");
+				m_Backend = std::make_unique<OpenGLRendererBackend>();
 				break;
+			default:
+				FBT_CORE_CRITICAL("Unsupported or unknown Renderer::API");
+				assert(false);
 		}
+	}
 
-		// assert(false, "Unknown Renderer::API!");
+	RendererBackend& Renderer::GetBackend() const
+	{
+		return *m_Backend;
+	}
+
+	Renderer& Renderer::Get()
+	{
+		return Application::Get().GetRenderer();
 	}
 
 	void Renderer::InitGraphicsContext(void* window)
@@ -25,11 +35,10 @@ namespace Flibbert
 			case API::OpenGL:
 				OpenGLRendererBackend::InitGraphicsContext(
 				    static_cast<RGFW_window*>(window));
-			case API::None:
-				// assert(false, "Renderer::API::None is currently not supported!");
 				break;
+			default:
+				FBT_CORE_CRITICAL("Unsupported or unknown Renderer::API");
+				assert(false);
 		}
-
-		// assert(false, "Unknown Renderer::API!");
 	}
 } // namespace Flibbert

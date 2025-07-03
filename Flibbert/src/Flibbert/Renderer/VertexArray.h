@@ -14,6 +14,6 @@ namespace Flibbert
 
 		virtual void AddBuffer(const VertexBuffer& vertexBuffer) const = 0;
 
-		static VertexArray* Create();
+		static std::shared_ptr<VertexArray> Create();
 	};
 } // namespace Flibbert

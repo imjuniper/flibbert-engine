@@ -7,14 +7,14 @@
 
 #if defined(FBT_PLATFORM_WINDOWS) || defined(FBT_PLATFORM_MACOS)
 
-extern Flibbert::Application* Flibbert::CreateApplication();
+extern Flibbert::Application* Flibbert::CreateApplication(LaunchArguments arguments);
 
 int main(int argc, char** argv)
 {
 	Flibbert::Log::Init();
 
 	FBT_PROFILE_BEGIN_SESSION("Startup", "FlibbertProfile-Startup.json");
-	auto app = Flibbert::CreateApplication();
+	auto app = Flibbert::CreateApplication({ argc, argv });
 	FBT_PROFILE_END_SESSION();
 
 	FBT_PROFILE_BEGIN_SESSION("Runtime", "FlibbertProfile-Runtime.json");

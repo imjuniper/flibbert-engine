@@ -7,18 +7,19 @@ namespace Flibbert
 	class Renderer
 	{
 	public:
-		enum class API { None, OpenGL /*, DirectX11, DirectX12, Metal, Vulkan*/ };
+		enum class API { None, OpenGL, Vulkan, Metal, DirectX11, DirectX12 };
 
 	public:
 		Renderer();
 		~Renderer() = default;
 
-		[[nodiscard]] RendererBackend* GetBackend() const { return m_Backend; }
+		[[nodiscard]] RendererBackend& GetBackend() const;
 
 	private:
-		RendererBackend* m_Backend;
+		std::unique_ptr<RendererBackend> m_Backend;
 
 	public:
+		static Renderer& Get();
 		static void InitGraphicsContext(void* window);
 		static API GetAPI() { return s_API; }
 

@@ -16,7 +16,7 @@ private:
 	Demo::DemoMenu* m_demoMenu;
 
 public:
-	Sandbox()
+	explicit Sandbox(const Flibbert::ApplicationInfo& info) : Application(info)
 	{
 		m_currentDemo = nullptr;
 		m_demoMenu = new Demo::DemoMenu(m_currentDemo);
@@ -54,7 +54,10 @@ public:
 	}
 };
 
-Flibbert::Application* Flibbert::CreateApplication()
+Flibbert::Application* Flibbert::CreateApplication(LaunchArguments arguments)
 {
-	return new Sandbox();
+	ApplicationInfo info;
+	info.Name = "Sandbox";
+	info.LaunchArguments = arguments;
+	return new Sandbox(info);
 }

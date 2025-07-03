@@ -5,17 +5,13 @@
 
 namespace Flibbert
 {
-	Texture* Texture::Create(const std::string& path)
+	std::shared_ptr<Texture> Texture::Create(const std::string& path)
 	{
 		switch (Renderer::GetAPI()) {
 			case Renderer::API::OpenGL:
-				return new OpenGLTexture(path);
-			case Renderer::API::None:
-				// assert(false, "Renderer::API::None is currently not supported!");
-				break;
+				return std::make_shared<OpenGLTexture>(path);
+			default:
+				return nullptr;
 		}
-
-		// assert(false, "Unknown Renderer::API!");
-		return nullptr;
 	}
 } // namespace Flibbert

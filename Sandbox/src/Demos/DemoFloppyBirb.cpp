@@ -100,10 +100,10 @@ namespace Demo
 
 #pragma region Scene
 	DemoFloppyBirb::DemoFloppyBirb()
-	    : m_Projection(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f)),
+	    : m_Renderer(Flibbert::Renderer::Get().GetBackend()),
+	      m_Projection(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f)),
 	      m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0)))
 	{
-		m_Renderer = Flibbert::Application::Get().GetRenderer()->GetBackend();
 	}
 
 	void DemoFloppyBirb::OnUpdate(float deltaTime)
@@ -116,24 +116,24 @@ namespace Demo
 		{
 			glm::mat4 transform =
 			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position, 0));
-			m_Renderer->Draw(*m_Pipe.m_VAO, *m_Pipe.m_IndexBuffer, *m_Pipe.m_Shader,
-			                 m_Projection * m_View, transform);
+			m_Renderer.Draw(*m_Pipe.m_VAO, *m_Pipe.m_IndexBuffer, *m_Pipe.m_Shader,
+			                m_Projection * m_View, transform);
 		}
 
 		{
 			glm::mat4 transform =
 			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position.x + 250.0f,
 			                                              m_Pipe.m_Position.y, 0));
-			m_Renderer->Draw(*m_Pipe.m_VAO, *m_Pipe.m_IndexBuffer, *m_Pipe.m_Shader,
-			                 m_Projection * m_View, transform);
+			m_Renderer.Draw(*m_Pipe.m_VAO, *m_Pipe.m_IndexBuffer, *m_Pipe.m_Shader,
+			                m_Projection * m_View, transform);
 		}
 
 		// Bird
 		{
 			glm::mat4 transform =
 			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Birb.m_Position, 0));
-			m_Renderer->Draw(*m_Birb.m_VAO, *m_Birb.m_IndexBuffer, *m_Birb.m_Shader,
-			                 m_Projection * m_View, transform);
+			m_Renderer.Draw(*m_Birb.m_VAO, *m_Birb.m_IndexBuffer, *m_Birb.m_Shader,
+			                m_Projection * m_View, transform);
 		}
 	}
 

@@ -5,17 +5,13 @@
 
 namespace Flibbert
 {
-	VertexArray* VertexArray::Create()
+	std::shared_ptr<VertexArray> VertexArray::Create()
 	{
 		switch (Renderer::GetAPI()) {
 			case Renderer::API::OpenGL:
-				return new OpenGLVertexArray();
-			case Renderer::API::None:
-				// assert(false, "Renderer::API::None is currently not supported!");
-				break;
+				return std::make_shared<OpenGLVertexArray>();
+			default:
+				return nullptr;
 		}
-
-		// assert(false, "Unknown Renderer::API!");
-		return nullptr;
 	}
 } // namespace Flibbert

@@ -9,12 +9,13 @@ namespace Demo
 	class DemoTexture2D : public Demo
 	{
 	private:
-		Flibbert::RendererBackend* m_Renderer;
-		Flibbert::VertexArray* m_VAO;
-		Flibbert::VertexBuffer* m_VertexBuffer;
-		Flibbert::IndexBuffer* m_IndexBuffer;
-		Flibbert::Shader* m_Shader;
-		Flibbert::Texture* m_Texture;
+		Flibbert::RendererBackend& m_Renderer;
+
+		std::shared_ptr<Flibbert::VertexArray> m_VAO;
+		std::shared_ptr<Flibbert::VertexBuffer> m_VertexBuffer;
+		std::shared_ptr<Flibbert::IndexBuffer> m_IndexBuffer;
+		std::shared_ptr<Flibbert::Shader> m_Shader;
+		std::shared_ptr<Flibbert::Texture> m_Texture;
 
 		glm::mat4 m_Projection, m_View;
 		glm::vec3 m_TranslationA, m_TranslationB;

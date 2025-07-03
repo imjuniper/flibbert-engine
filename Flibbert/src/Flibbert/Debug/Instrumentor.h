@@ -12,7 +12,6 @@
 
 namespace Flibbert
 {
-
 	using FloatingPointMicroseconds = std::chrono::duration<double, std::micro>;
 
 	struct ProfileResult {
@@ -42,7 +41,7 @@ namespace Flibbert
 				// beginning new one. Subsequent profiling output meant for the
 				// original session will end up in the newly opened session instead.
 				// That's better than having badly formatted profiling output.
-				if (Flibbert::Log::GetCoreLogger()) // Edge case: BeginSession()
+				if (Log::GetCoreLogger()) // Edge case: BeginSession()
 				                                    // might be before Log::Init()
 				{
 					FBT_CORE_ERROR("Instrumentor::BeginSession('{0}') when "
@@ -57,7 +56,7 @@ namespace Flibbert
 				m_CurrentSession = new InstrumentationSession({name});
 				WriteHeader();
 			} else {
-				if (Flibbert::Log::GetCoreLogger()) // Edge case: BeginSession()
+				if (Log::GetCoreLogger()) // Edge case: BeginSession()
 				                                    // might be before Log::Init()
 				{
 					FBT_CORE_ERROR(

@@ -1,5 +1,5 @@
 fix camera rotation when right-clicking (mouse not captured)
-use smart pointers!
+create assert macros
 implement Camera2D and abstract Camera class
     following that, should eventually remove ViewProjection from parameters in Renderer::Draw
 add IndexBuffer to VertexArray

@@ -18,9 +18,11 @@ namespace Flibbert
 
 		[[nodiscard]] virtual const std::string& GetName() const { return m_Name; }
 
-		static Shader* Create(const std::string& vertexPath,
-		                      const std::string& fragmentPath);
-		static Shader* Create(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc);
+		static std::shared_ptr<Shader> Create(const std::string& vertexPath,
+		                                      const std::string& fragmentPath);
+		static std::shared_ptr<Shader> Create(const std::string& name,
+		                                      const std::string& vertexSrc,
+		                                      const std::string& fragmentSrc);
 
 	protected:
 		std::string m_Name;

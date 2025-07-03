@@ -11,11 +11,11 @@ namespace Demo
 	class Entity
 	{
 	public:
-		Flibbert::VertexArray* m_VAO;
-		Flibbert::VertexBuffer* m_VertexBuffer;
-		Flibbert::IndexBuffer* m_IndexBuffer;
-		Flibbert::Shader* m_Shader;
-		Flibbert::Texture* m_Texture;
+		std::shared_ptr<Flibbert::VertexArray> m_VAO;
+		std::shared_ptr<Flibbert::VertexBuffer> m_VertexBuffer;
+		std::shared_ptr<Flibbert::IndexBuffer> m_IndexBuffer;
+		std::shared_ptr<Flibbert::Shader> m_Shader;
+		std::shared_ptr<Flibbert::Texture> m_Texture;
 
 		glm::vec2 m_Position;
 		glm::vec2 m_Size;
@@ -51,7 +51,8 @@ namespace Demo
 	class DemoFloppyBirb : public Demo
 	{
 	private:
-		Flibbert::RendererBackend* m_Renderer;
+		Flibbert::RendererBackend& m_Renderer;
+
 		glm::mat4 m_Projection, m_View;
 
 		Birb m_Birb;

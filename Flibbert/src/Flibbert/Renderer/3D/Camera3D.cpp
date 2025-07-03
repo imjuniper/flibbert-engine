@@ -22,7 +22,7 @@ namespace Flibbert
 		m_ForwardDirection = glm::vec3(0, 0, -1);
 		m_Position = glm::vec3(0, 0, 6);
 		RecalculateView();
-		RGFW_window* windowHandle = Application::Get().GetWindow()->GetNativeWindow();
+		RGFW_window* windowHandle = Application::Get().GetWindow().GetNativeWindow();
 		OnResize(windowHandle->r.w, windowHandle->r.h);
 	}
 

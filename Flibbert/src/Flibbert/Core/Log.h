@@ -11,7 +11,6 @@
 
 namespace Flibbert
 {
-
 	class Log
 	{
 	public:
@@ -30,7 +29,6 @@ namespace Flibbert
 		static std::shared_ptr<spdlog::logger> s_CoreLogger;
 		static std::shared_ptr<spdlog::logger> s_ClientLogger;
 	};
-
 } // namespace Flibbert
 
 template <typename OStream, glm::length_t L, typename T, glm::qualifier Q>

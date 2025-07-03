@@ -5,31 +5,25 @@
 
 namespace Flibbert
 {
-	VertexBuffer* VertexBuffer::Create(const float* vertices, const uint32_t size)
+	std::shared_ptr<VertexBuffer> VertexBuffer::Create(const float* vertices,
+	                                                   const uint32_t size)
 	{
 		switch (Renderer::GetAPI()) {
 			case Renderer::API::OpenGL:
-				return new OpenGLVertexBuffer(vertices, size);
-			case Renderer::API::None:
-				// assert(false, "Renderer::API::None is currently not supported!");
-				break;
+				return std::make_shared<OpenGLVertexBuffer>(vertices, size);
+			default:
+				return nullptr;
 		}
-
-		// assert(false, "Unknown Renderer::API!");
-		return nullptr;
 	}
 
-	IndexBuffer* IndexBuffer::Create(const uint32_t* indices, const uint32_t size)
+	std::shared_ptr<IndexBuffer> IndexBuffer::Create(const uint32_t* indices,
+	                                                 const uint32_t size)
 	{
 		switch (Renderer::GetAPI()) {
 			case Renderer::API::OpenGL:
-				return new OpenGLIndexBuffer(indices, size);
-			case Renderer::API::None:
-				// assert(false, "Renderer::API::None is currently not supported!");
-				break;
+				return std::make_shared<OpenGLIndexBuffer>(indices, size);
+			default:
+				return nullptr;
 		}
-
-		// assert(false, "Unknown Renderer::API!");
-		return nullptr;
 	}
 } // namespace Flibbert

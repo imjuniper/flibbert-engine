@@ -5,32 +5,30 @@
 
 namespace Flibbert
 {
-	Shader* Shader::Create(const std::string& vertexPath, const std::string& fragmentPath)
+	std::shared_ptr<Shader> Shader::Create(const std::string& vertexPath,
+	                                       const std::string& fragmentPath)
 	{
 		switch (Renderer::GetAPI()) {
 			case Renderer::API::OpenGL:
-				return new OpenGLShader(vertexPath, fragmentPath);
-			case Renderer::API::None:
+				return std::make_shared<OpenGLShader>(vertexPath, fragmentPath);
+			default:
 				return nullptr;
 		}
-
-		return nullptr;
 	}
 
-	Shader* Shader::Create(const std::string& name, const std::string& vertexSrc,
-	                       const std::string& fragmentSrc)
+	std::shared_ptr<Shader> Shader::Create(const std::string& name,
+	                                       const std::string& vertexSrc,
+	                                       const std::string& fragmentSrc)
 	{
 		switch (Renderer::GetAPI()) {
 			case Renderer::API::OpenGL:
-				// return new OpenGLShader(name, vertexSrc, fragmentSrc);
-				assert(false);
+				// return std::make_shared<OpenGLShader>(name, vertexSrc, fragmentSrc);
 				FBT_CORE_ERROR("Cannot create shader with strings yet");
+				assert(false);
 				return nullptr;
-			case Renderer::API::None:
+			default:
 				return nullptr;
 		}
-
-		return nullptr;
 	}
 
 } // namespace Flibbert

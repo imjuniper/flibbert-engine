@@ -2,16 +2,17 @@
 
 #include "AssetPathsMacros.h"
 
+#include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 
 namespace Demo
 {
 	DemoTexture2D::DemoTexture2D()
-	    : m_Projection(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f)),
+	    : m_Renderer(Flibbert::Renderer::Get().GetBackend()),
+	      m_Projection(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f)),
 	      m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
 	      m_TranslationA(100, 100, 0), m_TranslationB(300, 100, 0)
 	{
-		m_Renderer = Flibbert::Application::Get().GetRenderer()->GetBackend();
 		// clang-format off
 		float vertices[] = {
 		    -100.0f, -75.0f, 0.0f, 0.0f,
@@ -34,7 +35,8 @@ namespace Demo
 		};
 		m_VertexBuffer->SetLayout(layout);
 		m_VAO->AddBuffer(*m_VertexBuffer);
-		m_IndexBuffer = Flibbert::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
+		m_IndexBuffer =
+		    Flibbert::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 
 		m_Shader =
 		    Flibbert::Shader::Create(SHADER_DIR "/Basic.vert", SHADER_DIR "/Basic.frag");
@@ -51,18 +53,20 @@ namespace Demo
 
 		{
 			glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_TranslationA);
-			m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader, m_Projection * m_View, transform);
+			m_Renderer.Draw(*m_VAO, *m_IndexBuffer, *m_Shader, m_Projection * m_View,
+			                transform);
 		}
 
 		{
 			glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_TranslationB);
-			m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader, m_Projection * m_View, transform);
+			m_Renderer.Draw(*m_VAO, *m_IndexBuffer, *m_Shader, m_Projection * m_View,
+			                transform);
 		}
 	}
 
 	void DemoTexture2D::OnImGuiRender()
 	{
-		ImGui::SliderFloat3("Translation A", &m_TranslationA.x, 0.0f, 960.0f);
-		ImGui::SliderFloat3("Translation B", &m_TranslationB.x, 0.0f, 960.0f);
+		ImGui::SliderFloat3("Translation A", glm::value_ptr(m_TranslationA), 0.0f, 960.0f);
+		ImGui::SliderFloat3("Translation B", glm::value_ptr(m_TranslationB), 0.0f, 960.0f);
 	}
 } // namespace Demo

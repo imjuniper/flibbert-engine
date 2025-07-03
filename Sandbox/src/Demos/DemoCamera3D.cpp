@@ -2,14 +2,17 @@
 
 #include "AssetPathsMacros.h"
 
+#include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 
 namespace Demo
 {
-	DemoCamera3D::DemoCamera3D() : m_TranslationA(-10, 5, 0), m_TranslationB(0, 0, 0)
+	DemoCamera3D::DemoCamera3D()
+	    : m_Renderer(Flibbert::Renderer::Get().GetBackend()),
+	      m_TranslationA(-10, 5, 0), m_TranslationB(0, 0, 0)
 	{
-		m_Renderer = Flibbert::Application::Get().GetRenderer()->GetBackend();
-		m_Camera = new Flibbert::Camera3D(65.0f, -1.0f, 1.0f);
+		m_Camera = std::make_unique<Flibbert::Camera3D>(65.0f, -1.0f, 1.0f);
+
 		// clang-format off
 		float vertices[] = {
 			-5.0f, -3.75f, 0.0f, 0.0f,
@@ -54,22 +57,20 @@ namespace Demo
 
 		{
 			glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_TranslationA);
-			m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader,
-			                 m_Camera->GetProjection() * m_Camera->GetView(),
-			                 transform);
+			m_Renderer.Draw(*m_VAO, *m_IndexBuffer, *m_Shader,
+			                m_Camera->GetProjection() * m_Camera->GetView(), transform);
 		}
 
 		{
 			glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_TranslationB);
-			m_Renderer->Draw(*m_VAO, *m_IndexBuffer, *m_Shader,
-			                 m_Camera->GetProjection() * m_Camera->GetView(),
-			                 transform);
+			m_Renderer.Draw(*m_VAO, *m_IndexBuffer, *m_Shader,
+			                m_Camera->GetProjection() * m_Camera->GetView(), transform);
 		}
 	}
 
 	void DemoCamera3D::OnImGuiRender()
 	{
-		ImGui::SliderFloat3("Translation A", &m_TranslationA.x, -10.0f, 10.0f);
-		ImGui::SliderFloat3("Translation B", &m_TranslationB.x, -10.0f, 10.0f);
+		ImGui::SliderFloat3("Translation A", glm::value_ptr(m_TranslationA), -10.0f, 10.0f);
+		ImGui::SliderFloat3("Translation B", glm::value_ptr(m_TranslationB), -10.0f, 10.0f);
 	}
 } // namespace Demo

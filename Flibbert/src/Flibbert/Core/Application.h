@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <string>
+
 struct RGFW_window;
 
 namespace Flibbert
@@ -7,10 +10,28 @@ namespace Flibbert
 	class Renderer;
 	class Window;
 
+	struct LaunchArguments
+	{
+		int Count;
+		char** Arguments;
+
+		const char* operator[](const int index) const
+		{
+			//assert(index < Count);
+			return Arguments[index];
+		}
+	};
+
+	struct ApplicationInfo
+	{
+		std::string Name;
+		LaunchArguments LaunchArguments;
+	};
+
 	class Application
 	{
 	public:
-		Application();
+		explicit Application(const ApplicationInfo& info);
 		virtual ~Application();
 
 		static Application& Get();
@@ -20,12 +41,12 @@ namespace Flibbert
 		void Run();
 
 		[[nodiscard]] float GetTime() const;
-		[[nodiscard]] Window* GetWindow() const { return m_Window; }
-		[[nodiscard]] Renderer* GetRenderer() const { return m_Renderer; }
+		[[nodiscard]] Window& GetWindow() const;
+		[[nodiscard]] Renderer& GetRenderer() const;
 
 	private:
-		Window* m_Window = nullptr;
-		Renderer* m_Renderer = nullptr;
+		std::unique_ptr<Window> m_Window = nullptr;
+		std::unique_ptr<Renderer> m_Renderer = nullptr;
 		bool m_Running = false;
 
 		float m_TimeStep = 0.0f;
@@ -37,5 +58,5 @@ namespace Flibbert
 	};
 
 	// Defined in client/app
-	Application* CreateApplication();
+	Application* CreateApplication(LaunchArguments arguments);
 } // namespace Flibbert
