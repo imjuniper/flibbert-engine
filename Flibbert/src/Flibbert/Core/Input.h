@@ -9,8 +9,8 @@ namespace Flibbert
 	class Input
 	{
 	public:
-		static bool IsKeyDown(KeyCode keycode);
-		static bool IsKeyUp(KeyCode keycode);
+		static bool IsKeyDown(Key key);
+		static bool IsKeyUp(Key key);
 		static bool IsMouseButtonDown(MouseButton button);
 
 		static glm::vec2 GetMousePosition();

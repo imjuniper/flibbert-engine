@@ -1,4 +1,3 @@
-fix camera rotation when right-clicking (mouse not captured)
 create assert macros
 implement Camera2D and abstract Camera class
     following that, should eventually remove ViewProjection from parameters in Renderer::Draw

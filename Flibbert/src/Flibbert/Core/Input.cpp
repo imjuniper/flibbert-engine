@@ -7,22 +7,22 @@
 
 namespace Flibbert
 {
-	bool Input::IsKeyDown(KeyCode keycode)
+	bool Input::IsKeyDown(Key key)
 	{
 		RGFW_window* windowHandle = Application::Get().GetWindow().GetNativeWindow();
-		return RGFW_isPressed(windowHandle, (RGFW_key)keycode);
+		return RGFW_isPressed(windowHandle, static_cast<RGFW_key>(key));
 	}
 
-	bool Input::IsKeyUp(KeyCode keycode)
+	bool Input::IsKeyUp(Key key)
 	{
 		RGFW_window* windowHandle = Application::Get().GetWindow().GetNativeWindow();
-		return RGFW_isReleased(windowHandle, (RGFW_key)keycode);
+		return RGFW_isReleased(windowHandle, static_cast<RGFW_key>(key));
 	}
 
 	bool Input::IsMouseButtonDown(MouseButton button)
 	{
 		RGFW_window* windowHandle = Application::Get().GetWindow().GetNativeWindow();
-		return RGFW_isMousePressed(windowHandle, (RGFW_mouseButton)button);
+		return RGFW_isMousePressed(windowHandle, static_cast<RGFW_mouseButton>(button));
 	}
 
 	glm::vec2 Input::GetMousePosition()

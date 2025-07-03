@@ -49,11 +49,11 @@ namespace Demo
 		m_CurrentYSpeed = m_CurrentYSpeed + m_FallAccel * deltaTime;
 		m_CurrentYSpeed = glm::max(m_CurrentYSpeed, m_MaxFallSpeed);
 
-		if (Flibbert::Input::IsKeyDown(Flibbert::KeyCode::Space) && !m_SpacePressed) {
+		if (Flibbert::Input::IsKeyDown(Flibbert::Key::Space) && !m_SpacePressed) {
 			m_SpacePressed = true;
 			FBT_INFO("The birb flops!");
 			m_CurrentYSpeed = m_FlopSpeed;
-		} else if (Flibbert::Input::IsKeyUp(Flibbert::KeyCode::Space)) {
+		} else if (Flibbert::Input::IsKeyUp(Flibbert::Key::Space)) {
 			m_SpacePressed = false;
 		}
 

@@ -2,6 +2,9 @@
 
 #include "Flibbert/Renderer/Camera.h"
 
+struct RGFW_window;
+struct RGFW_point;
+
 namespace Flibbert
 {
 	class Camera3D : public Camera
@@ -36,10 +39,8 @@ namespace Flibbert
 		float m_NearClip = 0.1f;
 		float m_FarClip = 100.0f;
 
-		glm::vec3 m_Position{0.0f, 0.0f, 0.0f};
-		glm::vec3 m_ForwardDirection{0.0f, 0.0f, 0.0f};
-
-		glm::vec2 m_LastMousePosition{0.0f, 0.0f};
+		glm::vec3 m_Position{0.0f};
+		glm::vec3 m_ForwardDirection{0.0f};
 
 		uint32_t m_ViewportWidth = 0, m_ViewportHeight = 0;
 	};

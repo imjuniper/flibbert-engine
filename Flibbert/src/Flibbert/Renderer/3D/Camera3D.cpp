@@ -12,7 +12,15 @@
 
 #include <rgfw/RGFW.h>
 
-using namespace Flibbert;
+bool g_MouseMoved = false;
+glm::vec2 g_MouseDelta{0.f};
+
+void OnMouseMove(RGFW_window* win, RGFW_point point, RGFW_point vector)
+{
+	if (!Flibbert::Input::IsMouseButtonDown(Flibbert::MouseButton::Right)) return;
+	g_MouseDelta = glm::vec2(vector.x, vector.y);
+	g_MouseMoved = true;
+}
 
 namespace Flibbert
 {
@@ -23,15 +31,13 @@ namespace Flibbert
 		m_Position = glm::vec3(0, 0, 6);
 		RecalculateView();
 		RGFW_window* windowHandle = Application::Get().GetWindow().GetNativeWindow();
+		// @todo don't?? i.e. make an actual input system
+		RGFW_setMousePosCallback(OnMouseMove);
 		OnResize(windowHandle->r.w, windowHandle->r.h);
 	}
 
 	bool Camera3D::OnUpdate(float ts)
 	{
-		glm::vec2 mousePos = Input::GetMousePosition();
-		glm::vec2 delta = (mousePos - m_LastMousePosition) * 0.002f;
-		m_LastMousePosition = mousePos;
-
 		if (!Input::IsMouseButtonDown(MouseButton::Right)) {
 			Input::SetCursorMode(CursorMode::Normal);
 			return false;
@@ -47,32 +53,32 @@ namespace Flibbert
 		float speed = 5.0f;
 
 		// Movement
-		if (Input::IsKeyDown(KeyCode::W)) {
+		if (Input::IsKeyDown(Key::W)) {
 			m_Position += m_ForwardDirection * speed * ts;
 			moved = true;
-		} else if (Input::IsKeyDown(KeyCode::S)) {
+		} else if (Input::IsKeyDown(Key::S)) {
 			m_Position -= m_ForwardDirection * speed * ts;
 			moved = true;
 		}
-		if (Input::IsKeyDown(KeyCode::A)) {
+		if (Input::IsKeyDown(Key::A)) {
 			m_Position -= rightDirection * speed * ts;
 			moved = true;
-		} else if (Input::IsKeyDown(KeyCode::D)) {
+		} else if (Input::IsKeyDown(Key::D)) {
 			m_Position += rightDirection * speed * ts;
 			moved = true;
 		}
-		if (Input::IsKeyDown(KeyCode::Q)) {
+		if (Input::IsKeyDown(Key::Q)) {
 			m_Position -= upDirection * speed * ts;
 			moved = true;
-		} else if (Input::IsKeyDown(KeyCode::E)) {
+		} else if (Input::IsKeyDown(Key::E)) {
 			m_Position += upDirection * speed * ts;
 			moved = true;
 		}
 
 		// Rotation
-		if (delta.x != 0.0f || delta.y != 0.0f) {
-			float pitchDelta = delta.y * GetRotationSpeed();
-			float yawDelta = delta.x * GetRotationSpeed();
+		if (g_MouseMoved) {
+			float pitchDelta = g_MouseDelta.y * GetRotationSpeed();
+			float yawDelta = g_MouseDelta.x * GetRotationSpeed();
 
 			glm::quat q = glm::normalize(
 			    glm::cross(glm::angleAxis(-pitchDelta, rightDirection),
@@ -80,6 +86,7 @@ namespace Flibbert
 			m_ForwardDirection = glm::rotate(q, m_ForwardDirection);
 
 			moved = true;
+			g_MouseMoved = false;
 		}
 
 		if (moved) {
@@ -101,7 +108,7 @@ namespace Flibbert
 
 	float Camera3D::GetRotationSpeed()
 	{
-		return 0.3f;
+		return 0.003f;
 	}
 
 	void Camera3D::RecalculateProjection()
