@@ -100,7 +100,7 @@ namespace Demo
 
 #pragma region Scene
 	DemoFloppyBirb::DemoFloppyBirb()
-	    : m_Renderer(Flibbert::Renderer::Get().GetBackend()),
+	    : m_Renderer(Flibbert::Renderer::Get()),
 	      m_Projection(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f)),
 	      m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0)))
 	{

@@ -3,6 +3,9 @@
 namespace Flibbert
 {
 	class RendererBackend;
+	class IndexBuffer;
+	class Shader;
+	class VertexArray;
 
 	class Renderer
 	{
@@ -13,7 +16,13 @@ namespace Flibbert
 		Renderer();
 		~Renderer() = default;
 
-		[[nodiscard]] RendererBackend& GetBackend() const;
+		[[nodiscard]] glm::vec4 GetClearColor() const;
+		void SetClearColor(const glm::vec4& color) const;
+		void Clear() const;
+
+		void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer,
+				  Shader& shader, const glm::mat4& viewProjection,
+				  const glm::mat4& transform) const;
 
 	private:
 		std::unique_ptr<RendererBackend> m_Backend;

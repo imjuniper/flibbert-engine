@@ -11,7 +11,6 @@
 
 #include "Flibbert/Renderer/Buffer.h"
 #include "Flibbert/Renderer/Renderer.h"
-#include "Flibbert/Renderer/RendererBackend.h"
 #include "Flibbert/Renderer/Shader.h"
 #include "Flibbert/Renderer/Texture.h"
 #include "Flibbert/Renderer/VertexArray.h"

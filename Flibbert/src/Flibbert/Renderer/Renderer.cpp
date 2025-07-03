@@ -19,9 +19,26 @@ namespace Flibbert
 		}
 	}
 
-	RendererBackend& Renderer::GetBackend() const
+	glm::vec4 Renderer::GetClearColor() const
 	{
-		return *m_Backend;
+		return m_Backend->GetClearColor();
+	}
+
+	void Renderer::SetClearColor(const glm::vec4& color) const
+	{
+		return m_Backend->SetClearColor(color);
+	}
+
+	void Renderer::Clear() const
+	{
+		return m_Backend->Clear();
+	}
+
+	void Renderer::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer,
+	                    Shader& shader, const glm::mat4& viewProjection,
+	                    const glm::mat4& transform) const
+	{
+		return m_Backend->Draw(vertexArray, indexBuffer, shader, viewProjection, transform);
 	}
 
 	Renderer& Renderer::Get()

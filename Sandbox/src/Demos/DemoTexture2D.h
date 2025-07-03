@@ -9,7 +9,7 @@ namespace Demo
 	class DemoTexture2D : public Demo
 	{
 	private:
-		Flibbert::RendererBackend& m_Renderer;
+		Flibbert::Renderer& m_Renderer;
 
 		std::shared_ptr<Flibbert::VertexArray> m_VAO;
 		std::shared_ptr<Flibbert::VertexBuffer> m_VertexBuffer;

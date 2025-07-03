@@ -8,8 +8,8 @@
 namespace Demo
 {
 	DemoCamera3D::DemoCamera3D()
-	    : m_Renderer(Flibbert::Renderer::Get().GetBackend()),
-	      m_TranslationA(-10, 5, 0), m_TranslationB(0, 0, 0)
+	    : m_Renderer(Flibbert::Renderer::Get()), m_TranslationA(-10, 5, 0),
+	      m_TranslationB(0, 0, 0)
 	{
 		m_Camera = std::make_unique<Flibbert::Camera3D>(65.0f, -1.0f, 1.0f);
 

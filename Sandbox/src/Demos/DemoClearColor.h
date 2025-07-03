@@ -7,7 +7,7 @@ namespace Demo
 	class DemoClearColor : public Demo
 	{
 	private:
-		Flibbert::RendererBackend& m_Renderer;
+		Flibbert::Renderer& m_Renderer;
 
 		glm::vec4 m_ClearColor;
 		glm::vec4 m_InitialColor;

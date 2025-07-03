@@ -72,7 +72,7 @@ namespace Flibbert
 		while (RGFW_window_shouldClose(m_Window->GetNativeWindow()) == RGFW_FALSE) {
 			while (RGFW_window_checkEvent(m_Window->GetNativeWindow()))
 				;
-			m_Renderer->GetBackend().Clear();
+			m_Renderer->Clear();
 
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplRgfw_NewFrame();
