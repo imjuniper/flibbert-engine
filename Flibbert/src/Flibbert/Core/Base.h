@@ -3,7 +3,7 @@
 
 #define FBT_EXPAND_MACRO(x) x
 
-#if _DEBUG
+#ifndef NDEBUG
 	#define FBT_ENABLE_ASSERTS
 
 	// See https://github.com/scottt/debugbreak

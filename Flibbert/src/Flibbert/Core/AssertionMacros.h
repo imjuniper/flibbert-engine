@@ -44,21 +44,21 @@ namespace Flibbert::Assert::Private
 		(!!(condition) || [] {                                                             \
 			static constexpr ::Flibbert::Assert::Private::AssertionInfo s_info(        \
 			    fmt, #condition, __builtin_FILE(), __builtin_LINE());                  \
-			::Flibbert::Assert::Private::EnsureImpl(core, s_info, __VA_ARGS__);        \
+			::Flibbert::Assert::Private::EnsureImpl(core, s_info, ##__VA_ARGS__);      \
 			FBT_DEBUG_BREAK();                                                         \
 			return false;                                                              \
 		}())
 
 	#define FBT_ENSURE(condition) FBT_ENSURE_IMPL(condition, false)
 	#define FBT_ENSURE_MSG(condition, fmt, ...)                                                \
-		FBT_ENSURE_IMPL_MSG(condition, false, fmt, __VA_ARGS__)
+		FBT_ENSURE_IMPL_MSG(condition, false, fmt, ##__VA_ARGS__)
 
 	#define FBT_CORE_ENSURE(condition) FBT_ENSURE_IMPL(condition, true)
 	#define FBT_CORE_ENSURE_MSG(condition, fmt, ...)                                           \
-		FBT_ENSURE_IMPL_MSG(condition, true, fmt, __VA_ARGS__)
+		FBT_ENSURE_IMPL_MSG(condition, true, fmt, ##__VA_ARGS__)
 #else
-	#define FBT_ENSURE(...)
-	#define FBT_ENSURE_MSG(...)
-	#define FBT_CORE_ENSURE(...)
-	#define FBT_CORE_ENSURE_MSG(...)
+	#define FBT_ENSURE(condition, ...) (!!(condition))
+	#define FBT_ENSURE_MSG(condition, ...) (!!(condition))
+	#define FBT_CORE_ENSURE(condition, ...) (!!(condition))
+	#define FBT_CORE_ENSURE_MSG(condition, ...) (!!(condition))
 #endif
