@@ -111,6 +111,12 @@ namespace Flibbert
 		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &value[0][0]);
 	}
 
+	void OpenGLShader::BindUniformBlock(const std::string& name, uint32_t binding)
+	{
+		uint32_t blockIndex = glGetUniformBlockIndex(m_RendererID, name.c_str());
+		glUniformBlockBinding(m_RendererID, blockIndex, binding);
+	}
+
 	int OpenGLShader::GetUniformLocation(const std::string& name)
 	{
 		if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())

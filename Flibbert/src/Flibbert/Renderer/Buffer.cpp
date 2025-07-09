@@ -26,4 +26,14 @@ namespace Flibbert
 				return nullptr;
 		}
 	}
+
+	std::shared_ptr<UniformBuffer> UniformBuffer::Create(uint32_t size, uint32_t binding)
+	{
+		switch (Renderer::GetAPI()) {
+			case Renderer::API::OpenGL:
+				return std::make_shared<OpenGLUniformBuffer>(size, binding);
+			default:
+				return nullptr;
+		}
+	}
 } // namespace Flibbert

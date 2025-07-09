@@ -49,4 +49,26 @@ namespace Flibbert
 	{
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
+
+	OpenGLUniformBuffer::OpenGLUniformBuffer(const uint32_t size, const uint32_t binding)
+	{
+		glGenBuffers(1, &m_RendererID);
+		glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
+		glBufferData(GL_UNIFORM_BUFFER, size, nullptr, GL_STATIC_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+		glBindBufferRange(GL_UNIFORM_BUFFER, binding, m_RendererID, 0, size);
+	}
+
+	OpenGLUniformBuffer::~OpenGLUniformBuffer()
+	{
+		glDeleteBuffers(1, &m_RendererID);
+	}
+
+	void OpenGLUniformBuffer::SetData(const void* data, const uint32_t size,
+	                                  const uint32_t offset)
+	{
+		glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
+		glBufferSubData(m_RendererID, offset, size, data);
+	}
 } // namespace Flibbert

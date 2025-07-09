@@ -44,6 +44,8 @@ namespace Demo
 
 		m_Texture = Flibbert::Texture::Create(TEXTURE_DIR "/neko.png");
 		m_Shader->SetUniform1i("u_Texture", 0);
+
+		m_CameraBuffer = Flibbert::UniformBuffer::Create(sizeof(Flibbert::CameraBuffer), 0);
 	}
 
 	void DemoCamera3D::OnUpdate(float deltaTime)
@@ -54,6 +56,11 @@ namespace Demo
 	void DemoCamera3D::OnRender()
 	{
 		m_Texture->Bind(0);
+
+		Flibbert::CameraBuffer buffer;
+		buffer.Projection = m_Camera->GetProjection();
+		buffer.View = m_Camera->GetView();
+		m_CameraBuffer->SetData(&buffer, sizeof(Flibbert::CameraBuffer));
 
 		{
 			glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_TranslationA);

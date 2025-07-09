@@ -78,7 +78,7 @@ namespace Flibbert
 		indexBuffer.Bind();
 		shader.Bind();
 
-		shader.SetUniformMat4f("u_ViewProjection", viewProjection);
+		// shader.SetUniformMat4f("u_ViewProjection", viewProjection);
 		shader.SetUniformMat4f("u_Transform", transform);
 
 		glDrawElements(GL_TRIANGLES, indexBuffer.GetCount(), GL_UNSIGNED_INT, nullptr);

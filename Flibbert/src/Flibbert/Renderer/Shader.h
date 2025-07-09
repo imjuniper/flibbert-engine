@@ -16,6 +16,8 @@ namespace Flibbert
 		virtual void SetUniform4f(const std::string& name, const glm::vec4& value) = 0;
 		virtual void SetUniformMat4f(const std::string& name, const glm::mat4& value) = 0;
 
+		virtual void BindUniformBlock(const std::string& name, uint32_t binding) = 0;
+
 		[[nodiscard]] virtual const std::string& GetName() const { return m_Name; }
 
 		static std::shared_ptr<Shader> Create(const std::string& vertexPath,

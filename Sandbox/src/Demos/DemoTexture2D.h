@@ -16,6 +16,7 @@ namespace Demo
 		std::shared_ptr<Flibbert::IndexBuffer> m_IndexBuffer;
 		std::shared_ptr<Flibbert::Shader> m_Shader;
 		std::shared_ptr<Flibbert::Texture> m_Texture;
+		std::shared_ptr<Flibbert::UniformBuffer> m_CameraBuffer;
 
 		glm::mat4 m_Projection, m_View;
 		glm::vec3 m_TranslationA, m_TranslationB;

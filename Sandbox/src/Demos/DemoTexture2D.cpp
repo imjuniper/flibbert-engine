@@ -43,6 +43,9 @@ namespace Demo
 		m_Shader->Bind();
 		m_Texture = Flibbert::Texture::Create(TEXTURE_DIR "/neko.png");
 		m_Shader->SetUniform1i("u_Texture", 0);
+
+		m_CameraBuffer = Flibbert::UniformBuffer::Create(sizeof(Flibbert::CameraBuffer), 0);
+		m_Shader->BindUniformBlock("Matrices", 0);
 	}
 
 	void DemoTexture2D::OnUpdate(float deltaTime) {}
@@ -50,6 +53,13 @@ namespace Demo
 	void DemoTexture2D::OnRender()
 	{
 		m_Texture->Bind(0);
+
+		Flibbert::CameraBuffer buffer;
+		buffer.Projection = m_Projection;
+		buffer.View = m_View;
+		m_CameraBuffer->SetData(&buffer.Projection, sizeof(Flibbert::CameraBuffer), 0);
+		m_CameraBuffer->SetData(&buffer.View, sizeof(Flibbert::CameraBuffer),
+		                        sizeof(glm::mat4));
 
 		{
 			glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_TranslationA);
