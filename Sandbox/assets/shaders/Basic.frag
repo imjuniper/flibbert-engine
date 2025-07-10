@@ -2,15 +2,15 @@
 
 out vec4 color;
 
-in VS_OUT
+in FRAGMENT_INPUTS
 {
     vec2 TexCoord;
-} fs_in;
+} fragment_inputs;
 
 uniform sampler2D u_Texture;
 
 void main(){
-    vec4 texColor = texture(u_Texture, fs_in.TexCoord);
+    vec4 texColor = texture(u_Texture, fragment_inputs.TexCoord);
     if (gl_FrontFacing)
         color = texColor;
     else

@@ -21,8 +21,7 @@ namespace Flibbert
 		void Clear() const;
 
 		void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer,
-				  Shader& shader, const glm::mat4& viewProjection,
-				  const glm::mat4& transform) const;
+		          Shader& shader, const glm::mat4& transform) const;
 
 	private:
 		std::unique_ptr<RendererBackend> m_Backend;

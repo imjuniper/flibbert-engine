@@ -3,8 +3,6 @@ update to C++ 20
     use better format library thingy
     replace std::string with std::string_view where applicable (shader bindings?)
 implement Camera2D and abstract Camera class
-    following that, should eventually remove ViewProjection from parameters in Renderer::Draw
-        actually, look into uniform buffers!
 add IndexBuffer to VertexArray
     similarly, remove from Renderer::Draw
 figure out an actual naming convention

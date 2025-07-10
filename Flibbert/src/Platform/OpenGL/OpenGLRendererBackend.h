@@ -1,13 +1,6 @@
 #pragma once
 
 #include "Flibbert/Renderer/RendererBackend.h"
-#include "Platform/OpenGL/OpenGLBuffer.h"
-#include "Platform/OpenGL/OpenGLShader.h"
-#include "Platform/OpenGL/OpenGLVertexArray.h"
-
-void GLClearErrors();
-
-bool GLCheckError(const char* function, const char* file, int line);
 
 struct RGFW_window;
 
@@ -24,7 +17,6 @@ namespace Flibbert
 		void Clear() override;
 
 		void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer,
-		          Shader& shader, const glm::mat4& viewProjection,
-		          const glm::mat4& transform) const override;
+		          Shader& shader, const glm::mat4& transform) const override;
 	};
 } // namespace Flibbert

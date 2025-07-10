@@ -52,6 +52,7 @@ namespace Demo
 	{
 	private:
 		Flibbert::Renderer& m_Renderer;
+		std::shared_ptr<Flibbert::UniformBuffer> m_CameraBuffer;
 
 		glm::mat4 m_Projection, m_View;
 

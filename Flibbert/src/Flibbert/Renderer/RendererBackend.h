@@ -22,8 +22,7 @@ namespace Flibbert
 		virtual void Clear() = 0;
 
 		virtual void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer,
-		                  Shader& shader, const glm::mat4& viewProjection,
-		                  const glm::mat4& transform) const = 0;
+		                  Shader& shader, const glm::mat4& transform) const = 0;
 
 	protected:
 		glm::vec4 m_clearColor = glm::vec4(0.f);

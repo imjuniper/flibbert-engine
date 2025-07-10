@@ -46,10 +46,9 @@ namespace Flibbert
 	}
 
 	void Renderer::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer,
-	                    Shader& shader, const glm::mat4& viewProjection,
-	                    const glm::mat4& transform) const
+	                    Shader& shader, const glm::mat4& transform) const
 	{
-		return m_Backend->Draw(vertexArray, indexBuffer, shader, viewProjection, transform);
+		return m_Backend->Draw(vertexArray, indexBuffer, shader, transform);
 	}
 
 	Renderer& Renderer::Get()
