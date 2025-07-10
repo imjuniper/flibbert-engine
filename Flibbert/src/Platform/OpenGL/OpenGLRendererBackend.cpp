@@ -49,13 +49,17 @@ namespace Flibbert
 
 	OpenGLRendererBackend::OpenGLRendererBackend()
 	{
+		// When removing support for OpenGL in macOS, migrate to 4.3+ and remove extension
+		// usage instead maybe?
 #ifndef NDEBUG
-		glEnable(GL_DEBUG_OUTPUT);
-		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-		glDebugMessageCallback(OpenGLMessageCallback, nullptr);
+		if (GLAD_GL_KHR_debug) {
+			glEnable(GL_DEBUG_OUTPUT);
+			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+			glDebugMessageCallback(OpenGLMessageCallback, nullptr);
 
-		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0,
-		                      NULL, GL_FALSE);
+			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE,
+			                      GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
+		}
 #endif
 
 		glEnable(GL_BLEND);
