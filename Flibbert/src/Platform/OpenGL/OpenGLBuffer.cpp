@@ -69,6 +69,6 @@ namespace Flibbert
 	                                  const uint32_t offset)
 	{
 		glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
-		glBufferSubData(m_RendererID, offset, size, data);
+		glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);
 	}
 } // namespace Flibbert
