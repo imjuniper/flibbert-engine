@@ -3,6 +3,7 @@
 #include "Flibbert/Core/Application.h"
 #include "Flibbert/Renderer/Renderer.h"
 
+#define RGFW_DEBUG
 #define RGFW_IMPLEMENTATION
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wc++11-narrowing"
@@ -15,6 +16,7 @@ namespace Flibbert
 	{
 		// @todo check if this is needed on other platforms than macOS
 		if (Renderer::GetAPI() == Renderer::API::OpenGL) {
+			RGFW_setGLHint(RGFW_glDebug, 1);
 			RGFW_setGLHint(RGFW_glMajor, 4);
 #ifdef FBT_PLATFORM_MACOS
 			/* Set OpenGL version to 4.1 on macOS */

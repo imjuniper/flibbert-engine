@@ -5,26 +5,25 @@
 #define GLAD_GL_IMPLEMENTATION
 #include <glad.h>
 
-/*
 void OpenGLMessageCallback(unsigned source, unsigned type, unsigned id, unsigned severity,
                            int length, const char* message, const void* userParam)
 {
-        switch (severity) {
-                case GL_DEBUG_SEVERITY_HIGH:
-                        FBT_CORE_CRITICAL(message);
-                        return;
-                case GL_DEBUG_SEVERITY_MEDIUM:
-                        FBT_CORE_ERROR(message);
-                        return;
-                case GL_DEBUG_SEVERITY_LOW:
-                        FBT_CORE_WARN(message);
-                        return;
-                case GL_DEBUG_SEVERITY_NOTIFICATION:
-                        FBT_CORE_TRACE(message);
-                        return;
-        }
+	switch (severity) {
+		case GL_DEBUG_SEVERITY_HIGH:
+			FBT_CORE_CRITICAL(message);
+			return;
+		case GL_DEBUG_SEVERITY_MEDIUM:
+			FBT_CORE_ERROR(message);
+			return;
+		case GL_DEBUG_SEVERITY_LOW:
+			FBT_CORE_WARN(message);
+			return;
+		case GL_DEBUG_SEVERITY_NOTIFICATION:
+			FBT_CORE_TRACE(message);
+			return;
+	}
 
-        FBT_CORE_ENSURE_MSG(false, "Unknown severity level!");
+	FBT_CORE_ENSURE_MSG(false, "Unknown severity level!");
 }
 */
 
@@ -44,15 +43,14 @@ namespace Flibbert
 
 	OpenGLRendererBackend::OpenGLRendererBackend()
 	{
-		// @todo would be great to use this, but macOS is stuck on OpenGL 4.1...
-		// once metal is implemented, add this
-		// #ifdef _DEBUG
-		// 	glEnable(GL_DEBUG_OUTPUT);
-		// 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-		// 	glDebugMessageCallback(OpenGLMessageCallback, nullptr);
-		//
-		// 	glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE,
-		// GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE); #endif
+#ifndef NDEBUG
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(OpenGLMessageCallback, nullptr);
+
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0,
+		                      NULL, GL_FALSE);
+#endif
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
