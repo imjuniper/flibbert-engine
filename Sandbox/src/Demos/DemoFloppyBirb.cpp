@@ -104,7 +104,7 @@ namespace Demo
 #pragma region Scene
 	DemoFloppyBirb::DemoFloppyBirb() : m_Renderer(Flibbert::Renderer::Get())
 	{
-		auto cameraMode = std::make_shared<Flibbert::Camera::OrthographicMode>();
+		auto cameraMode = std::make_shared<Flibbert::CameraModeOrthographic>();
 		cameraMode->Size = 540.0f;
 		cameraMode->NearClip = -1.0f;
 		cameraMode->FarClip = 1.0f;

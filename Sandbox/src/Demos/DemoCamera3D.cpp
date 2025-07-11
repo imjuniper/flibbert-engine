@@ -11,11 +11,16 @@ namespace Demo
 	    : m_Renderer(Flibbert::Renderer::Get()), m_TranslationA(-10, 5, 0),
 	      m_TranslationB(0, 0, 0)
 	{
-		auto cameraMode = std::make_shared<Flibbert::Camera::PerspectiveMode>();
-		cameraMode->VerticalFOV = 45.0f;
-		cameraMode->NearClip = 0.1f;
-		cameraMode->FarClip = 100.0f;
-		m_Camera = std::make_unique<Flibbert::Camera>(cameraMode, glm::vec3(0.0f, 0.0f, 6.0f));
+		m_CameraModePerspective = std::make_shared<Flibbert::CameraModePerspective>();
+		m_CameraModePerspective->VerticalFOV = 45.0f;
+		m_CameraModePerspective->NearClip = 0.1f;
+		m_CameraModePerspective->FarClip = 100.0f;
+		m_Camera = std::make_unique<Flibbert::Camera>(m_CameraModePerspective, glm::vec3(0.0f, 0.0f, 6.0f));
+
+		m_CameraModeOrthographic = std::make_shared<Flibbert::CameraModeOrthographic>();
+		m_CameraModeOrthographic->Size = 10.0f;
+		m_CameraModeOrthographic->NearClip = -1.0f;
+		m_CameraModeOrthographic->FarClip = 10.0f;
 
 		// clang-format off
 		float vertices[] = {
@@ -79,6 +84,13 @@ namespace Demo
 
 	void DemoCamera3D::OnImGuiRender()
 	{
+		if (ImGui::Checkbox("Orthographic Mode", &m_UsingOrthographicMode)) {
+			if (m_UsingOrthographicMode) {
+				m_Camera->SetCameraMode(m_CameraModeOrthographic);
+			} else {
+				m_Camera->SetCameraMode(m_CameraModePerspective);
+			}
+		}
 		ImGui::SliderFloat3("Translation A", glm::value_ptr(m_TranslationA), -10.0f, 10.0f);
 		ImGui::SliderFloat3("Translation B", glm::value_ptr(m_TranslationB), -10.0f, 10.0f);
 	}

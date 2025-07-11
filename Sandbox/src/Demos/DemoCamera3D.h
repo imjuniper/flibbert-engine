@@ -27,6 +27,11 @@ namespace Demo
 
 		std::unique_ptr<Flibbert::Camera> m_Camera;
 
+		std::shared_ptr<Flibbert::CameraModePerspective> m_CameraModePerspective;
+		std::shared_ptr<Flibbert::CameraModeOrthographic> m_CameraModeOrthographic;
+
+		bool m_UsingOrthographicMode = false;
+
 		glm::vec3 m_TranslationA, m_TranslationB;
 	};
 } // namespace Demo

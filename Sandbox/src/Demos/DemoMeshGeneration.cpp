@@ -10,7 +10,7 @@ namespace Demo
 {
 	DemoMeshGeneration::DemoMeshGeneration() : m_Renderer(Flibbert::Renderer::Get())
 	{
-		auto cameraMode = std::make_shared<Flibbert::Camera::PerspectiveMode>();
+		auto cameraMode = std::make_shared<Flibbert::CameraModePerspective>();
 		cameraMode->VerticalFOV = 45.0f;
 		cameraMode->NearClip = 0.1f;
 		cameraMode->FarClip = 100.0f;

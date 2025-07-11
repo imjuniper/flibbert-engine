@@ -24,8 +24,8 @@ void OnMouseMove(RGFW_window* win, RGFW_point point, RGFW_point vector)
 
 namespace Flibbert
 {
-#pragma region Camera::PerspectiveMode
-	bool Camera::PerspectiveMode::HandleMovement(float ts, glm::vec3& position)
+#pragma region CameraModePerspective
+	bool CameraModePerspective::HandleMovement(float ts, glm::vec3& position)
 	{
 		if (!Input::IsMouseButtonDown(MouseButton::Right)) {
 			Input::SetCursorMode(CursorMode::Normal);
@@ -79,19 +79,19 @@ namespace Flibbert
 		return moved;
 	}
 
-	glm::mat4 Camera::PerspectiveMode::CalculateProjection(const float aspectRatio) const
+	glm::mat4 CameraModePerspective::CalculateProjection(const float aspectRatio) const
 	{
 		return glm::perspective(glm::radians(VerticalFOV), aspectRatio, NearClip, FarClip);
 	}
 
-	glm::mat4 Camera::PerspectiveMode::CalculateView(const glm::vec3& position) const
+	glm::mat4 CameraModePerspective::CalculateView(const glm::vec3& position) const
 	{
 		return glm::lookAt(position, position + ForwardDirection, UpDirection);
 	}
-#pragma endregion Camera::PerspectiveMode
+#pragma endregion CameraModePerspective
 
-#pragma region Camera::OrthographicMode
-	bool Camera::OrthographicMode::HandleMovement(float ts, glm::vec3& position)
+#pragma region CameraModeOrthographic
+	bool CameraModeOrthographic::HandleMovement(float ts, glm::vec3& position)
 	{
 		if (!Input::IsMouseButtonDown(MouseButton::Right)) {
 			Input::SetCursorMode(CursorMode::Normal);
@@ -115,23 +115,22 @@ namespace Flibbert
 		return moved;
 	}
 
-	glm::mat4 Camera::OrthographicMode::CalculateProjection(float aspectRatio) const
+	glm::mat4 CameraModeOrthographic::CalculateProjection(float aspectRatio) const
 	{
 		const float orthoRight = Size * aspectRatio;
 		const float orthoTop = Size;
 		return glm::ortho(0.f, orthoRight, 0.f, orthoTop, NearClip, FarClip);
 	}
 
-	glm::mat4 Camera::OrthographicMode::CalculateView(const glm::vec3& position) const
+	glm::mat4 CameraModeOrthographic::CalculateView(const glm::vec3& position) const
 	{
 		return glm::inverse(glm::translate(glm::mat4(1.0f), position));
 	}
-#pragma endregion Camera::OrthographicMode
+#pragma endregion CameraModeOrthographic
 
 	Camera::Camera(const std::shared_ptr<CameraMode>& mode, const glm::vec3& position)
 	    : m_CameraMode(mode), m_Position(position)
 	{
-		m_ProjectionType = m_CameraMode->GetProjectionType();
 		m_ViewMatrix = m_CameraMode->CalculateView(m_Position);
 
 		RGFW_window* windowHandle = Application::Get().GetWindow().GetNativeWindow();
@@ -152,5 +151,18 @@ namespace Flibbert
 	{
 		m_AspectRatio = static_cast<float>(width) / static_cast<float>(height);
 		m_ProjectionMatrix = m_CameraMode->CalculateProjection(m_AspectRatio);
+	}
+
+	void Camera::SetCameraMode(const std::shared_ptr<CameraMode>& mode)
+	{
+		m_CameraMode = mode;
+		m_ProjectionMatrix = m_CameraMode->CalculateProjection(m_AspectRatio);
+		m_ViewMatrix = m_CameraMode->CalculateView(m_Position);
+	}
+
+	void Camera::SetPosition(const glm::vec3& position)
+	{
+		m_Position = position;
+		m_ViewMatrix = m_CameraMode->CalculateView(m_Position);
 	}
 } // namespace Flibbert
