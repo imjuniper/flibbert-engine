@@ -30,8 +30,6 @@ namespace Flibbert
 		m_WindowHandle = RGFW_createWindow(props.Title.c_str(),
 		                                   RGFW_RECT(0, 0, props.Width, props.Height),
 		                                   RGFW_windowCenter);
-
-		Renderer::InitGraphicsContext(m_WindowHandle);
 	}
 
 	Window::~Window()

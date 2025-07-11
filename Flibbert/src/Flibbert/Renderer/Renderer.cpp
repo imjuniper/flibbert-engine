@@ -7,18 +7,6 @@ namespace Flibbert
 {
 	Renderer::API Renderer::s_API = API::OpenGL;
 
-	void Renderer::InitGraphicsContext(void* window)
-	{
-		switch (s_API) {
-			case API::OpenGL:
-				OpenGLRendererBackend::InitGraphicsContext(
-				    static_cast<RGFW_window*>(window));
-				break;
-			default:
-				FBT_CORE_ENSURE_MSG(false, "Unsupported or unknown Renderer::API");
-		}
-	}
-
 	Renderer::Renderer()
 	{
 		switch (s_API) {

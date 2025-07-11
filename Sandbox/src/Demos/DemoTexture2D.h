@@ -8,6 +8,13 @@ namespace Demo
 {
 	class DemoTexture2D : public Demo
 	{
+	public:
+		DemoTexture2D();
+
+		void OnUpdate(float deltaTime) override;
+		void OnRender() override;
+		void OnImGuiRender() override;
+
 	private:
 		Flibbert::Renderer& m_Renderer;
 
@@ -18,14 +25,8 @@ namespace Demo
 		std::shared_ptr<Flibbert::Texture> m_Texture;
 		std::shared_ptr<Flibbert::UniformBuffer> m_CameraBuffer;
 
-		glm::mat4 m_Projection, m_View;
+		std::unique_ptr<Flibbert::Camera> m_Camera;
+
 		glm::vec3 m_TranslationA, m_TranslationB;
-
-	public:
-		DemoTexture2D();
-
-		void OnUpdate(float deltaTime) override;
-		void OnRender() override;
-		void OnImGuiRender() override;
 	};
 } // namespace Demo

@@ -8,6 +8,13 @@ namespace Demo
 {
 	class DemoCamera3D : public Demo
 	{
+	public:
+		DemoCamera3D();
+
+		void OnUpdate(float deltaTime) override;
+		void OnRender() override;
+		void OnImGuiRender() override;
+
 	private:
 		Flibbert::Renderer& m_Renderer;
 
@@ -18,15 +25,8 @@ namespace Demo
 		std::shared_ptr<Flibbert::Texture> m_Texture;
 		std::shared_ptr<Flibbert::UniformBuffer> m_CameraBuffer;
 
-		std::unique_ptr<Flibbert::Camera3D> m_Camera;
+		std::unique_ptr<Flibbert::Camera> m_Camera;
 
 		glm::vec3 m_TranslationA, m_TranslationB;
-
-	public:
-		DemoCamera3D();
-
-		void OnUpdate(float deltaTime) override;
-		void OnRender() override;
-		void OnImGuiRender() override;
 	};
 } // namespace Demo

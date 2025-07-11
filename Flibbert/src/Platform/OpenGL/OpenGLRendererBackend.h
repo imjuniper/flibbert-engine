@@ -11,8 +11,6 @@ namespace Flibbert
 	public:
 		OpenGLRendererBackend();
 
-		static void InitGraphicsContext(RGFW_window* window);
-
 		void SetClearColor(const glm::vec4& color) override;
 		void Clear() override;
 

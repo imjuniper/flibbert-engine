@@ -3,8 +3,7 @@
 #include "Flibbert/Core/Application.h"
 #include "Flibbert/Core/Log.h"
 
-#include "Flibbert/Renderer/2D/Camera2D.h"
-#include "Flibbert/Renderer/3D/Camera3D.h"
+#include "Flibbert/Renderer/Camera.h"
 
 #include "Flibbert/Core/Input.h"
 #include "Flibbert/Core/KeyCodes.h"

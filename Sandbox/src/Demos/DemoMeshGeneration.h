@@ -32,6 +32,16 @@ namespace Demo
 
 	class DemoMeshGeneration : public Demo
 	{
+	public:
+		DemoMeshGeneration();
+
+		void OnUpdate(float deltaTime) override;
+		void OnRender() override;
+		void OnImGuiRender() override;
+
+	private:
+		void GenerateMesh();
+
 	private:
 		Flibbert::Renderer& m_Renderer;
 
@@ -42,46 +52,37 @@ namespace Demo
 		std::shared_ptr<Flibbert::UniformBuffer> m_CameraBuffer;
 		std::shared_ptr<Flibbert::UniformBuffer> m_MeshGenUniformBuffer;
 
-		std::unique_ptr<Flibbert::Camera3D> m_Camera;
+		std::unique_ptr<Flibbert::Camera> m_Camera;
 
 		// Yeah this is ugly
 		UniformBufferObject m_UniformBuffer{
-		    {0.8f, 0.04f, -0.6f},
-		    0.f,
-		    30.f,
-		    50.f,
-		    {0.f, 0.f},
-		    100.f,
-		    10,
-		    0.45f,
-		    1.0f,
-		    {0.0f, 50.0f, 0.0f},
-		    0,
-		    1.0f,
-		    2.0f,
-		    {0.9f, 0.98f},
-		    {0.366f, 0.373f, 0.078f, 1.0f},
-		    {0.216f, 0.144f, 0.144f, 1.0f},
-		    0.0f,
-		    0.0f,
-		    0.2f,
-		    1.0f,
-		    glm::vec4(1.0f)
-		    //{0.411765f, 0.411765f, 0.411765f, 1.f} // Godot DIM_GRAY
-		};
+			    {0.8f, 0.04f, -0.6f},
+			    0.f,
+			    30.f,
+			    50.f,
+			    {0.f, 0.f},
+			    100.f,
+			    10,
+			    0.45f,
+			    1.0f,
+			    {0.0f, 50.0f, 0.0f},
+			    0,
+			    1.0f,
+			    2.0f,
+			    {0.9f, 0.98f},
+			    {0.366f, 0.373f, 0.078f, 1.0f},
+			    {0.216f, 0.144f, 0.144f, 1.0f},
+			    0.0f,
+			    0.0f,
+			    0.2f,
+			    1.0f,
+			    glm::vec4(1.0f)
+			    //{0.411765f, 0.411765f, 0.411765f, 1.f} // Godot DIM_GRAY
+			};
 
 		bool m_EnableWireframe = false;
 
 		uint16_t m_SideLength = 400;
 		float m_MeshScale = 0.5f;
-
-		void GenerateMesh();
-
-	public:
-		DemoMeshGeneration();
-
-		void OnUpdate(float deltaTime) override;
-		void OnRender() override;
-		void OnImGuiRender() override;
 	};
 } // namespace Demo

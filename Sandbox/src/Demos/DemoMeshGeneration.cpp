@@ -8,59 +8,13 @@
 
 namespace Demo
 {
-	void DemoMeshGeneration::GenerateMesh()
-	{
-		const float halfLength = (m_SideLength - 1) / 2.0f;
-
-		std::vector<float> vertices;
-
-		for (uint32_t x = 0; x < m_SideLength; ++x) {
-			for (uint32_t z = 0; z < m_SideLength; ++z) {
-				// Have to push them in reverse for some reason?
-				// Sinon je dois assigned les vertex CCW instead??
-				vertices.push_back((z - halfLength) * m_MeshScale);
-				vertices.push_back(0);
-				vertices.push_back((x - halfLength) * m_MeshScale);
-			}
-		}
-
-		FBT_INFO("Vertex count {:d}", vertices.size() / 3);
-
-		std::vector<uint32_t> indices;
-
-		for (uint32_t row = 0; row < m_SideLength * m_SideLength - m_SideLength;
-		     row += m_SideLength) {
-			for (uint32_t i = 0; i < m_SideLength - 1; ++i) {
-				const auto v0 = i + row;
-				const auto v1 = v0 + m_SideLength;
-				const auto v2 = v0 + m_SideLength + 1;
-				const auto v3 = v0 + 1;
-
-				indices.push_back(v0);
-				indices.push_back(v1);
-				indices.push_back(v3);
-				indices.push_back(v1);
-				indices.push_back(v2);
-				indices.push_back(v3);
-			}
-		}
-
-		FBT_INFO("Triangle count {:d}", indices.size() / 3);
-
-		m_VAO = Flibbert::VertexArray::Create();
-		m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices.data(),
-		                                                vertices.size() * sizeof(float));
-		Flibbert::BufferLayout layout = {
-		    {Flibbert::ShaderDataType::Float3, "a_Position"},
-		};
-		m_VertexBuffer->SetLayout(layout);
-		m_VAO->AddBuffer(*m_VertexBuffer);
-		m_IndexBuffer = Flibbert::IndexBuffer::Create(indices.data(), indices.size());
-	}
-
 	DemoMeshGeneration::DemoMeshGeneration() : m_Renderer(Flibbert::Renderer::Get())
 	{
-		m_Camera = std::make_unique<Flibbert::Camera3D>(65.0f, 0.1f, 100.0f);
+		auto cameraMode = std::make_shared<Flibbert::Camera::PerspectiveMode>();
+		cameraMode->VerticalFOV = 45.0f;
+		cameraMode->NearClip = 0.1f;
+		cameraMode->FarClip = 100.0f;
+		m_Camera = std::make_unique<Flibbert::Camera>(cameraMode);
 
 		// Set better default generation params
 		m_UniformBuffer.Seed = 135;
@@ -89,7 +43,7 @@ namespace Demo
 
 	void DemoMeshGeneration::OnRender()
 	{
-		Flibbert::CameraBuffer buffer{m_Camera->GetProjection(), m_Camera->GetView()};
+		Flibbert::CameraBuffer buffer{m_Camera->GetProjectionMatrix(), m_Camera->GetViewMatrix()};
 		m_CameraBuffer->SetData(&buffer, sizeof(Flibbert::CameraBuffer));
 
 		m_MeshGenUniformBuffer->SetData(&m_UniformBuffer, sizeof(UniformBufferObject));
@@ -115,7 +69,8 @@ namespace Demo
 		constexpr uint16_t sideLengthStepFast = 100;
 		if (ImGui::CollapsingHeader("Mesh Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
 			ImGui::Indent(16.0f);
-			ImGui::InputScalar("Side Length", ImGuiDataType_U16, &m_SideLength, &sideLengthStep, &sideLengthStepFast);
+			ImGui::InputScalar("Side Length", ImGuiDataType_U16, &m_SideLength,
+			                   &sideLengthStep, &sideLengthStepFast);
 			ImGui::SliderFloat("Mesh Scale", &m_MeshScale, 0.0f, 1.0f);
 			ImGui::Unindent(16.0f);
 		}
@@ -177,5 +132,55 @@ namespace Demo
 			                  glm::value_ptr(m_UniformBuffer.AmbientLight));
 			ImGui::Unindent(16.0f);
 		}
+	}
+
+	void DemoMeshGeneration::GenerateMesh()
+	{
+		const float halfLength = (m_SideLength - 1) / 2.0f;
+
+		std::vector<float> vertices;
+
+		for (uint32_t x = 0; x < m_SideLength; ++x) {
+			for (uint32_t z = 0; z < m_SideLength; ++z) {
+				// Have to push them in reverse for some reason?
+				// Sinon je dois assigned les vertex CCW instead??
+				vertices.push_back((z - halfLength) * m_MeshScale);
+				vertices.push_back(0);
+				vertices.push_back((x - halfLength) * m_MeshScale);
+			}
+		}
+
+		FBT_INFO("Vertex count {:d}", vertices.size() / 3);
+
+		std::vector<uint32_t> indices;
+
+		for (uint32_t row = 0; row < m_SideLength * m_SideLength - m_SideLength;
+		     row += m_SideLength) {
+			for (uint32_t i = 0; i < m_SideLength - 1; ++i) {
+				const auto v0 = i + row;
+				const auto v1 = v0 + m_SideLength;
+				const auto v2 = v0 + m_SideLength + 1;
+				const auto v3 = v0 + 1;
+
+				indices.push_back(v0);
+				indices.push_back(v1);
+				indices.push_back(v3);
+				indices.push_back(v1);
+				indices.push_back(v2);
+				indices.push_back(v3);
+			}
+		}
+
+		FBT_INFO("Triangle count {:d}", indices.size() / 3);
+
+		m_VAO = Flibbert::VertexArray::Create();
+		m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices.data(),
+		                                                vertices.size() * sizeof(float));
+		Flibbert::BufferLayout layout = {
+		    {Flibbert::ShaderDataType::Float3, "a_Position"},
+		};
+		m_VertexBuffer->SetLayout(layout);
+		m_VAO->AddBuffer(*m_VertexBuffer);
+		m_IndexBuffer = Flibbert::IndexBuffer::Create(indices.data(), indices.size());
 	}
 } // namespace Demo

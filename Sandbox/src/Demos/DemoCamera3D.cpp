@@ -11,14 +11,18 @@ namespace Demo
 	    : m_Renderer(Flibbert::Renderer::Get()), m_TranslationA(-10, 5, 0),
 	      m_TranslationB(0, 0, 0)
 	{
-		m_Camera = std::make_unique<Flibbert::Camera3D>();
+		auto cameraMode = std::make_shared<Flibbert::Camera::PerspectiveMode>();
+		cameraMode->VerticalFOV = 45.0f;
+		cameraMode->NearClip = 0.1f;
+		cameraMode->FarClip = 100.0f;
+		m_Camera = std::make_unique<Flibbert::Camera>(cameraMode, glm::vec3(0.0f, 0.0f, 6.0f));
 
 		// clang-format off
 		float vertices[] = {
-			-5.0f, -3.75f, 0.0f, 0.0f,
-			5.0f,  -3.75f, 1.0f, 0.0f,
-			5.0f,  3.75f,  1.0f, 1.0f,
-			-5.0f, 3.75f,  0.0f, 1.0f,
+			-5.0f, -3.75f, 0.0f, 0.0f, 0.0f,
+			5.0f,  -3.75f, 0.0f, 1.0f, 0.0f,
+			5.0f,  3.75f,  0.0f, 1.0f, 1.0f,
+			-5.0f, 3.75f,  0.0f, 0.0f, 1.0f,
 		};
 
 		uint32_t indices[] = {
@@ -30,7 +34,7 @@ namespace Demo
 		m_VAO = Flibbert::VertexArray::Create();
 		m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices, sizeof(vertices));
 		Flibbert::BufferLayout layout = {
-		    {Flibbert::ShaderDataType::Float2, "a_Position"},
+		    {Flibbert::ShaderDataType::Float3, "a_Position"},
 		    {Flibbert::ShaderDataType::Float2, "a_TexCoord"},
 		};
 		m_VertexBuffer->SetLayout(layout);
@@ -58,7 +62,8 @@ namespace Demo
 	{
 		m_Texture->Bind(0);
 
-		Flibbert::CameraBuffer buffer{m_Camera->GetProjection(), m_Camera->GetView()};
+		Flibbert::CameraBuffer buffer{m_Camera->GetProjectionMatrix(),
+		                              m_Camera->GetViewMatrix()};
 		m_CameraBuffer->SetData(&buffer, sizeof(Flibbert::CameraBuffer));
 
 		{

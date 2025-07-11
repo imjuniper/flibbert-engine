@@ -102,15 +102,15 @@ namespace Demo
 #pragma endregion Pipe
 
 #pragma region Scene
-	DemoFloppyBirb::DemoFloppyBirb()
-	    : m_Renderer(Flibbert::Renderer::Get()),
-	      m_Projection(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f)),
-	      m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0)))
+	DemoFloppyBirb::DemoFloppyBirb() : m_Renderer(Flibbert::Renderer::Get())
 	{
-		m_CameraBuffer = Flibbert::UniformBuffer::Create(sizeof(Flibbert::CameraBuffer), 0);
+		auto cameraMode = std::make_shared<Flibbert::Camera::OrthographicMode>();
+		cameraMode->Size = 540.0f;
+		cameraMode->NearClip = -1.0f;
+		cameraMode->FarClip = 1.0f;
+		m_Camera = std::make_unique<Flibbert::Camera>(cameraMode);
 
-		Flibbert::CameraBuffer buffer{m_Projection, m_View};
-		m_CameraBuffer->SetData(&buffer, sizeof(Flibbert::CameraBuffer));
+		m_CameraBuffer = Flibbert::UniformBuffer::Create(sizeof(Flibbert::CameraBuffer), 0);
 	}
 
 	void DemoFloppyBirb::OnUpdate(float deltaTime)
@@ -120,6 +120,10 @@ namespace Demo
 
 	void DemoFloppyBirb::OnRender()
 	{
+		Flibbert::CameraBuffer buffer{m_Camera->GetProjectionMatrix(),
+		                              m_Camera->GetViewMatrix()};
+		m_CameraBuffer->SetData(&buffer, sizeof(Flibbert::CameraBuffer));
+
 		{
 			glm::mat4 transform =
 			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position, 0));

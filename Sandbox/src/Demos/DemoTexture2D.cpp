@@ -8,17 +8,21 @@
 namespace Demo
 {
 	DemoTexture2D::DemoTexture2D()
-	    : m_Renderer(Flibbert::Renderer::Get()),
-	      m_Projection(glm::ortho(0.0f, 960.0f, 0.0f, 540.0f, -1.0f, 1.0f)),
-	      m_View(glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0))),
-	      m_TranslationA(100, 100, 0), m_TranslationB(300, 100, 0)
+	    : m_Renderer(Flibbert::Renderer::Get()), m_TranslationA(100, 100, 0),
+	      m_TranslationB(300, 100, 0)
 	{
+		auto cameraMode = std::make_shared<Flibbert::Camera::OrthographicMode>();
+		cameraMode->Size = 540.0f;
+		cameraMode->NearClip = -1.0f;
+		cameraMode->FarClip = 1.0f;
+		m_Camera = std::make_unique<Flibbert::Camera>(cameraMode);
+
 		// clang-format off
 		float vertices[] = {
-		    -100.0f, -75.0f, 0.0f, 0.0f,
-		    100.0f,  -75.0f, 1.0f, 0.0f,
-		    100.0f,  75.0f,  1.0f, 1.0f,
-		    -100.0f, 75.0f,  0.0f, 1.0f,
+		    -100.0f, -75.0f, 0.0f, 0.0f, 0.0f,
+		    100.0f,  -75.0f, 0.0f, 1.0f, 0.0f,
+		    100.0f,  75.0f,  0.0f, 1.0f, 1.0f,
+		    -100.0f, 75.0f,  0.0f, 0.0f, 1.0f,
 		};
 
 		uint32_t indices[] = {
@@ -30,7 +34,7 @@ namespace Demo
 		m_VAO = Flibbert::VertexArray::Create();
 		m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices, sizeof(vertices));
 		Flibbert::BufferLayout layout = {
-		    {Flibbert::ShaderDataType::Float2, "a_Position"},
+		    {Flibbert::ShaderDataType::Float3, "a_Position"},
 		    {Flibbert::ShaderDataType::Float2, "a_TexCoord"},
 		};
 		m_VertexBuffer->SetLayout(layout);
@@ -46,16 +50,19 @@ namespace Demo
 		m_Shader->BindUniformBlock("Matrices", 0);
 
 		m_CameraBuffer = Flibbert::UniformBuffer::Create(sizeof(Flibbert::CameraBuffer), 0);
-
-		Flibbert::CameraBuffer buffer{m_Projection, m_View};
-		m_CameraBuffer->SetData(&buffer, sizeof(Flibbert::CameraBuffer));
 	}
 
-	void DemoTexture2D::OnUpdate(float deltaTime) {}
+	void DemoTexture2D::OnUpdate(float deltaTime)
+	{
+		m_Camera->OnUpdate(deltaTime);
+	}
 
 	void DemoTexture2D::OnRender()
 	{
 		m_Texture->Bind(0);
+
+		const Flibbert::CameraBuffer buffer{m_Camera->GetProjectionMatrix(), m_Camera->GetViewMatrix()};
+		m_CameraBuffer->SetData(&buffer, sizeof(Flibbert::CameraBuffer));
 
 		{
 			glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_TranslationA);

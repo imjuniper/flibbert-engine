@@ -4,8 +4,6 @@
 
 namespace Demo
 {
-	DemoMenu::DemoMenu(Demo*& currentDemoPointer) : m_CurrentDemo(currentDemoPointer) {}
-
 	void DemoMenu::OnImGuiRender()
 	{
 		for (auto& demo : m_Demos) {

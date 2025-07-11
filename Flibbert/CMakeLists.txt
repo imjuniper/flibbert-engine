@@ -44,10 +44,6 @@ add_library(Flibbert STATIC
         src/Flibbert/Core/Log.h
         src/Flibbert/Core/PlatformDetection.h
         src/Flibbert/Debug/Instrumentor.h
-        src/Flibbert/Renderer/2D/Camera2D.cpp
-        src/Flibbert/Renderer/2D/Camera2D.h
-        src/Flibbert/Renderer/3D/Camera3D.cpp
-        src/Flibbert/Renderer/3D/Camera3D.h
         src/Flibbert/Renderer/Buffer.cpp
         src/Flibbert/Renderer/Buffer.h
         src/Flibbert/Renderer/Camera.cpp

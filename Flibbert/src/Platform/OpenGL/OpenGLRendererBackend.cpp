@@ -1,5 +1,8 @@
 #include "Platform/OpenGL/OpenGLRendererBackend.h"
 
+#include "Flibbert/Core/Application.h"
+
+#include "Platform/Desktop/Window.h"
 #include "Platform/OpenGL/OpenGLBuffer.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Platform/OpenGL/OpenGLVertexArray.h"
@@ -32,8 +35,9 @@ void OpenGLMessageCallback(unsigned source, unsigned type, unsigned id, unsigned
 
 namespace Flibbert
 {
-	void OpenGLRendererBackend::InitGraphicsContext(RGFW_window* window)
+	OpenGLRendererBackend::OpenGLRendererBackend()
 	{
+		RGFW_window* window = Application::Get().GetWindow().GetNativeWindow();
 		RGFW_window_makeCurrent(window);
 		int status = gladLoadGL(RGFW_getProcAddress);
 		FBT_CORE_ENSURE(status);
@@ -45,10 +49,7 @@ namespace Flibbert
 		              reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
 		FBT_CORE_INFO("  Version: {0}",
 		              reinterpret_cast<const char*>(glGetString(GL_VERSION)));
-	}
 
-	OpenGLRendererBackend::OpenGLRendererBackend()
-	{
 		// When removing support for OpenGL in macOS, migrate to 4.3+ and remove extension
 		// usage instead maybe?
 #ifndef NDEBUG

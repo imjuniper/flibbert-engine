@@ -15,16 +15,18 @@ namespace Demo
 		Demo() = default;
 		virtual ~Demo() = default;
 
-		virtual void OnUpdate(float deltaTime) {}
-		virtual void OnRender() {}
-		virtual void OnImGuiRender() {}
+		virtual void OnUpdate(float deltaTime) = 0;
+		virtual void OnRender() = 0;
+		virtual void OnImGuiRender() = 0;
 	};
 
 	class DemoMenu : public Demo
 	{
 	public:
-		explicit DemoMenu(Demo*& currentDemoPointer);
+		explicit DemoMenu(Demo*& currentDemoPointer) : m_CurrentDemo(currentDemoPointer) {}
 
+		void OnUpdate(float deltaTime) override {}
+		void OnRender() override {}
 		void OnImGuiRender() override;
 
 		template <typename T>

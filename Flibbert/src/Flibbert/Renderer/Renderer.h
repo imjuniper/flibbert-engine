@@ -28,7 +28,6 @@ namespace Flibbert
 
 	public:
 		static Renderer& Get();
-		static void InitGraphicsContext(void* window);
 		static API GetAPI() { return s_API; }
 
 	private:
