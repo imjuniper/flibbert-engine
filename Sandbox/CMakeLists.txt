@@ -11,6 +11,8 @@ add_executable(Sandbox
         src/Demos/DemoClearColor.h
         src/Demos/DemoFloppyBirb.cpp
         src/Demos/DemoFloppyBirb.h
+        src/Demos/DemoMeshGeneration.cpp
+        src/Demos/DemoMeshGeneration.h
         src/Demos/DemoTexture2D.cpp
         src/Demos/DemoTexture2D.h)
 

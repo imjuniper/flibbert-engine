@@ -2,6 +2,7 @@
 #include "Demos/DemoCamera3D.h"
 #include "Demos/DemoClearColor.h"
 #include "Demos/DemoFloppyBirb.h"
+#include "Demos/DemoMeshGeneration.h"
 #include "Demos/DemoTexture2D.h"
 
 #include <Flibbert.h>
@@ -26,6 +27,7 @@ public:
 		m_demoMenu->RegisterDemo<Demo::DemoTexture2D>("2D Texture");
 		m_demoMenu->RegisterDemo<Demo::DemoFloppyBirb>("Floppy Birb");
 		m_demoMenu->RegisterDemo<Demo::DemoCamera3D>("3D Camera");
+		m_demoMenu->RegisterDemo<Demo::DemoMeshGeneration>("Mesh Generation");
 	}
 
 	~Sandbox() override

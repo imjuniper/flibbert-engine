@@ -24,11 +24,9 @@ void OnMouseMove(RGFW_window* win, RGFW_point point, RGFW_point vector)
 
 namespace Flibbert
 {
-	Camera3D::Camera3D(float verticalFOV, float nearClip, float farClip)
+	Camera3D::Camera3D(const float verticalFOV, const float nearClip, const float farClip)
 	    : m_VerticalFOV(verticalFOV), m_NearClip(nearClip), m_FarClip(farClip)
 	{
-		m_ForwardDirection = glm::vec3(0, 0, -1);
-		m_Position = glm::vec3(0, 0, 6);
 		RecalculateView();
 		RGFW_window* windowHandle = Application::Get().GetWindow().GetNativeWindow();
 		// @todo don't?? i.e. make an actual input system
@@ -36,7 +34,7 @@ namespace Flibbert
 		OnResize(windowHandle->r.w, windowHandle->r.h);
 	}
 
-	bool Camera3D::OnUpdate(float ts)
+	bool Camera3D::OnUpdate(const float ts)
 	{
 		if (!Input::IsMouseButtonDown(MouseButton::Right)) {
 			Input::SetCursorMode(CursorMode::Normal);
@@ -47,8 +45,8 @@ namespace Flibbert
 
 		bool moved = false;
 
-		constexpr glm::vec3 upDirection(0.0f, 1.0f, 0.0f);
-		glm::vec3 rightDirection = glm::cross(m_ForwardDirection, upDirection);
+		const glm::vec3 rightDirection =
+		    glm::normalize(glm::cross(m_ForwardDirection, m_UpDirection));
 
 		float speed = 5.0f;
 
@@ -68,10 +66,10 @@ namespace Flibbert
 			moved = true;
 		}
 		if (Input::IsKeyDown(Key::Q)) {
-			m_Position -= upDirection * speed * ts;
+			m_Position -= m_UpDirection * speed * ts;
 			moved = true;
 		} else if (Input::IsKeyDown(Key::E)) {
-			m_Position += upDirection * speed * ts;
+			m_Position += m_UpDirection * speed * ts;
 			moved = true;
 		}
 
@@ -96,13 +94,9 @@ namespace Flibbert
 		return moved;
 	}
 
-	void Camera3D::OnResize(uint32_t width, uint32_t height)
+	void Camera3D::OnResize(const uint32_t width, const uint32_t height)
 	{
-		if (width == m_ViewportWidth && height == m_ViewportHeight) return;
-
-		m_ViewportWidth = width;
-		m_ViewportHeight = height;
-
+		m_AspectRatio = static_cast<float>(width) / static_cast<float>(height);
 		RecalculateProjection();
 	}
 
@@ -113,16 +107,12 @@ namespace Flibbert
 
 	void Camera3D::RecalculateProjection()
 	{
-		m_Projection =
-		    glm::perspectiveFov(glm::radians(m_VerticalFOV), (float)m_ViewportWidth,
-		                        (float)m_ViewportHeight, m_NearClip, m_FarClip);
-		m_InverseProjection = glm::inverse(m_Projection);
+		m_Projection = glm::perspective(glm::radians(m_VerticalFOV), m_AspectRatio,
+		                                m_NearClip, m_FarClip);
 	}
 
 	void Camera3D::RecalculateView()
 	{
-		m_View =
-		    glm::lookAt(m_Position, m_Position + m_ForwardDirection, glm::vec3(0, 1, 0));
-		m_InverseView = glm::inverse(m_View);
+		m_View = glm::lookAt(m_Position, m_Position + m_ForwardDirection, m_UpDirection);
 	}
 } // namespace Flibbert
