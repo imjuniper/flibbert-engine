@@ -566,7 +566,7 @@ void ImGui_ImplRgfw_NewFrame()
 
     // Setup display size (every frame to accommodate for window resizing)
     RGFW_rect size = bd->Window->r;
-    io.DisplaySize = ImVec2((float)size.w, (float)size.h);
+    io.DisplaySize = ImVec2((float)std::max(size.w, 0), (float)std::max(size.h, 0));
 
     // Setup time step
     // (Accept RGFW_getTime() not returning a monotonically increasing value. Seems to happens on disconnecting peripherals and probably on VMs and Emscripten, see #6491, #6189, #6114, #3644)

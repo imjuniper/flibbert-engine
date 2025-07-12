@@ -13,7 +13,7 @@ namespace Demo
 		auto cameraMode = std::make_shared<Flibbert::CameraModePerspective>();
 		cameraMode->VerticalFOV = 45.0f;
 		cameraMode->NearClip = 0.1f;
-		cameraMode->FarClip = 100.0f;
+		cameraMode->FarClip = 1000.0f;
 		m_Camera = std::make_unique<Flibbert::Camera>(cameraMode);
 
 		// Set better default generation params

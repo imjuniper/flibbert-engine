@@ -10,6 +10,8 @@
 #include <glm/gtx/quaternion.hpp>
 #undef GLM_ENABLE_EXPERIMENTAL
 
+#include <glad.h>
+
 #include <rgfw/RGFW.h>
 
 bool g_MouseMoved = false;
@@ -20,6 +22,14 @@ void OnMouseMove(RGFW_window* win, RGFW_point point, RGFW_point vector)
 	if (!Flibbert::Input::IsMouseButtonDown(Flibbert::MouseButton::Right)) return;
 	g_MouseDelta = glm::vec2(vector.x, vector.y);
 	g_MouseMoved = true;
+}
+
+void OnWindowResize(RGFW_window* win, RGFW_rect r)
+{
+	const int width = std::max(r.w, 0);
+	const int height = std::max(r.h, 0);
+	glViewport(0, 0, width, height);
+	Flibbert::Application::Get().GetWindow().OnWindowResize();
 }
 
 namespace Flibbert
@@ -133,9 +143,13 @@ namespace Flibbert
 	{
 		m_ViewMatrix = m_CameraMode->CalculateView(m_Position);
 
-		RGFW_window* windowHandle = Application::Get().GetWindow().GetNativeWindow();
+		Window& window = Application::Get().GetWindow();
+		Application::Get().GetWindow().SetWindowResizedCallback([this](Window& window) {
+			OnResize(window);
+		});
 		RGFW_setMousePosCallback(OnMouseMove);
-		OnResize(windowHandle->r.w, windowHandle->r.h);
+		RGFW_setWindowResizedCallback(OnWindowResize);
+		OnResize(window);
 	}
 
 	bool Camera::OnUpdate(const float ts)
@@ -147,9 +161,12 @@ namespace Flibbert
 		return moved;
 	}
 
-	void Camera::OnResize(const uint32_t width, const uint32_t height)
+	void Camera::OnResize(Window& window)
 	{
-		m_AspectRatio = static_cast<float>(width) / static_cast<float>(height);
+		RGFW_window* windowHandle = window.GetNativeWindow();
+		const float width = std::max(static_cast<float>(windowHandle->r.w), 0.0f);
+		const float height = std::max(static_cast<float>(windowHandle->r.h), 0.0f);
+		m_AspectRatio = width / height;
 		m_ProjectionMatrix = m_CameraMode->CalculateProjection(m_AspectRatio);
 	}
 

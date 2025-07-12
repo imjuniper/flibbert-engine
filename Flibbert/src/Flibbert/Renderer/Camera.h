@@ -5,6 +5,8 @@ struct RGFW_point;
 
 namespace Flibbert
 {
+	class Window;
+	
 	struct CameraBuffer {
 		glm::mat4 Projection;
 		glm::mat4 View;
@@ -70,7 +72,7 @@ namespace Flibbert
 		                const glm::vec3& position = glm::vec3(0.0f, 0.0f, 0.0f));
 
 		bool OnUpdate(float ts);
-		void OnResize(uint32_t width, uint32_t height);
+		void OnResize(Window& window);
 
 		void SetCameraMode(const std::shared_ptr<CameraMode>& mode);
 		void SetPosition(const glm::vec3& position);

@@ -18,7 +18,19 @@ namespace Flibbert
 
 		[[nodiscard]] RGFW_window* GetNativeWindow() const { return m_WindowHandle; }
 
+		void SetWindowResizedCallback(const std::function<void(Window&)>& callback)
+		{
+			m_WindowResizedCallback = callback;
+		}
+		void OnWindowResize()
+		{
+			if (m_WindowResizedCallback)
+				m_WindowResizedCallback(*this);
+		}
+
 	private:
 		RGFW_window* m_WindowHandle = nullptr;
+
+		std::function<void(Window&)> m_WindowResizedCallback;
 	};
 } // namespace Flibbert
