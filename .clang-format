@@ -1,13 +1,14 @@
 ---
 BasedOnStyle: LLVM
 AccessModifierOffset: -8
-AllowShortFunctionsOnASingleLine: Inline
-AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortFunctionsOnASingleLine: Inline # Change to empty?
+AllowShortIfStatementsOnASingleLine: WithoutElse # remove?
 BreakTemplateDeclarations: Yes
-BreakBeforeBraces: Linux
+BreakBeforeBraces: Linux # Use Custom with BraceWrapping? I kinda like UE's style minus the ifs
 ColumnLimit: 100
 EmptyLineAfterAccessModifier: Never
 EmptyLineBeforeAccessModifier: Always
+FixNamespaceComments: true
 IndentAccessModifiers: false
 IndentCaseLabels: true
 IndentPPDirectives: BeforeHash
@@ -15,7 +16,7 @@ IndentWidth: 8
 InsertNewlineAtEOF: true
 LineEnding: LF
 MaxEmptyLinesToKeep: 1
-NamespaceIndentation: All
+NamespaceIndentation: All # remove and use WrapNamespaceBodyWithEmptyLines: Always? Would look a bit cleaner
 PackConstructorInitializers: BinPack
 TabWidth: 8
 UseTab: AlignWithSpaces

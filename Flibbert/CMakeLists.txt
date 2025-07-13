@@ -43,6 +43,11 @@ add_library(Flibbert STATIC
         src/Flibbert/Core/Log.cpp
         src/Flibbert/Core/Log.h
         src/Flibbert/Core/PlatformDetection.h
+        src/Flibbert/Core/StringName.cpp
+        src/Flibbert/Core/StringName.h
+        src/Flibbert/Core/StringUtils.cpp
+        src/Flibbert/Core/StringUtils.h
+        src/Flibbert/Core/Types.h
         src/Flibbert/Debug/Instrumentor.h
         src/Flibbert/Renderer/Buffer.cpp
         src/Flibbert/Renderer/Buffer.h

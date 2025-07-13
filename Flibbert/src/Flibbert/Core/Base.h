@@ -1,7 +1,11 @@
 #pragma once
-// this should probably have a better name than base?
+// this should probably have a better name than base? Core? CoreMinimal like UE?
+// Also some stuff should probably be private.
 
-#define FBT_EXPAND_MACRO(x) x
+#include "Flibbert/Core/PlatformDetection.h"
+#include "Flibbert/Core/Types.h"
+
+#include <memory>
 
 #ifndef NDEBUG
 	#define FBT_ENABLE_ASSERTS
@@ -23,3 +27,8 @@
 #else
 	#define FBT_DEBUG_BREAK()
 #endif
+
+#define FBT_EXPAND_MACRO(x) x
+
+#include "Flibbert/Core/AssertionMacros.h"
+#include "Flibbert/Core/Log.h"
