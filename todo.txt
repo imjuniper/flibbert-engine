@@ -1,7 +1,3 @@
-update to C++ 20
-    replace ##__VA_ARGS__ with __VA_OPT__(,) __VA_ARGS__
-    use better format library thingy
-    replace std::string with std::string_view where applicable (shader bindings?)
 add IndexBuffer to VertexArray
     similarly, remove from Renderer::Draw
 figure out an actual naming convention

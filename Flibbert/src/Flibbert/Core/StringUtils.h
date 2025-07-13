@@ -7,7 +7,6 @@ namespace Flibbert
 	// Some of them might move to a String class whenever that happens
 	namespace StringUtils
 	{
-		uint32_t Hash(const std::string& string);
-		uint32_t Hash(const char* string);
+		uint32_t Hash(std::string_view string);
 	} // namespace StringUtils
 } // namespace Flibbert

@@ -1,19 +1,21 @@
 #include "Flibbert/Core/AssertionMacros.h"
 
-#include <filesystem>
-#include <sstream>
+#include <format>
 
 namespace Flibbert::Assert::Private
 {
 	std::string GetAssertionMessage(const AssertionInfo& info)
 	{
-		std::stringstream ss;
-		ss << "Assertion '" << info.Condition << "' failed at "
-		   << std::filesystem::path(info.File).filename().string() << ":" << info.Line;
+		std::string message;
 
-		if (info.Format != nullptr) {
-			ss << "\n\t" << info.Format;
+		if (info.CustomMessage != nullptr) {
+			message = std::format("Assertion {} failed at {}:{}\n\t{}", info.Condition,
+			                      info.File, info.Line, info.CustomMessage);
+		} else {
+			message = std::format("Assertion {} failed at {}:{}", info.Condition,
+			                      info.File, info.Line);
 		}
-		return ss.str();
+
+		return message;
 	}
 } // namespace Flibbert::Assert::Private

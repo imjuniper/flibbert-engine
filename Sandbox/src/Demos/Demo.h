@@ -30,14 +30,14 @@ namespace Demo
 		void OnImGuiRender() override;
 
 		template <typename T>
-		void RegisterDemo(const std::string& name)
+		void RegisterDemo(std::string_view name)
 		{
 			FBT_INFO("Registering demo {}", name);
-			m_Demos.push_back(std::make_pair(name, []() { return new T(); }));
+			m_Demos.push_back(std::make_pair(name.data(), []() { return new T(); }));
 		}
 
 	private:
 		Demo*& m_CurrentDemo;
-		std::vector<std::pair<std::string, std::function<Demo*()>>> m_Demos;
+		std::vector<std::pair<const char*, std::function<Demo*()>>> m_Demos;
 	};
 } // namespace Demo

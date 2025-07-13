@@ -8,8 +8,7 @@ namespace Flibbert
 	class StringName
 	{
 	public:
-		StringName(const char* name);
-		StringName(const std::string& name);
+		StringName(std::string_view name);
 
 		bool IsValid() const;
 

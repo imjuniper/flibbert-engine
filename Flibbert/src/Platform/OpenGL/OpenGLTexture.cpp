@@ -7,7 +7,7 @@
 
 namespace Flibbert
 {
-	OpenGLTexture::OpenGLTexture(const std::string& path) : m_RendererID(0)
+	OpenGLTexture::OpenGLTexture(std::string_view path) : m_RendererID(0)
 	{
 		FBT_PROFILE_FUNCTION();
 
@@ -16,8 +16,8 @@ namespace Flibbert
 		void* data = nullptr;
 		{
 			FBT_PROFILE_SCOPE(
-			    "stbi_load - OpenGLTexture::OpenGLTexture(const std::string&)");
-			data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+			    "stbi_load - OpenGLTexture::OpenGLTexture(std::string_view)");
+			data = stbi_load(path.data(), &width, &height, &channels, 0);
 		}
 		if (data == nullptr) return;
 

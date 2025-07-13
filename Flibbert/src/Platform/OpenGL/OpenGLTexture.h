@@ -9,7 +9,7 @@ namespace Flibbert
 	class OpenGLTexture : public Texture
 	{
 	public:
-		explicit OpenGLTexture(const std::string& path);
+		explicit OpenGLTexture(std::string_view path);
 		~OpenGLTexture() override;
 
 		void Bind(uint32_t slot) const override;

@@ -14,7 +14,7 @@ namespace Flibbert
 		[[nodiscard]] uint32_t GetHeight() const { return m_Height; }
 		[[nodiscard]] bool IsLoaded() const { return m_Loaded; }
 
-		static std::shared_ptr<Texture> Create(const std::string& path);
+		static std::shared_ptr<Texture> Create(std::string_view path);
 
 	protected:
 		std::string m_Path;

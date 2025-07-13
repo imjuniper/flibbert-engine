@@ -6,8 +6,8 @@
 
 namespace Flibbert
 {
-	OpenGLShader::OpenGLShader(const std::string& vertexShaderFilepath,
-	                           const std::string& fragmentShaderFilepath)
+	OpenGLShader::OpenGLShader(std::string_view vertexShaderFilepath,
+	                           std::string_view fragmentShaderFilepath)
 	    : m_VertexShaderFilePath(vertexShaderFilepath),
 	      m_FragmentShaderFilePath(fragmentShaderFilepath), m_RendererID(0)
 	{
@@ -22,9 +22,9 @@ namespace Flibbert
 		glDeleteProgram(m_RendererID);
 	}
 
-	std::string OpenGLShader::LoadShader(const std::string& filepath)
+	std::string OpenGLShader::LoadShader(std::string_view filepath)
 	{
-		std::ifstream stream(filepath);
+		std::ifstream stream(filepath.data());
 
 		std::stringstream ss;
 		ss << stream.rdbuf();
@@ -35,6 +35,7 @@ namespace Flibbert
 	uint32_t OpenGLShader::CompileShader(uint32_t type, const std::string& source)
 	{
 		uint32_t id = glCreateShader(type);
+		// source is not a std::string_view to ensure it's null-terminated
 		const char* src = source.c_str();
 		glShaderSource(id, 1, &src, nullptr);
 		glCompileShader(id);
@@ -47,10 +48,8 @@ namespace Flibbert
 			char* message = (char*)alloca(length * sizeof(char));
 			glGetShaderInfoLog(id, length, &length, message);
 
-			std::cout << "Failed to compile "
-				  << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader"
-				  << std::endl;
-			std::cout << message << std::endl;
+			FBT_CORE_ERROR("Failed to compile {} shader:\n\t{}",
+			               (type == GL_VERTEX_SHADER ? "vertex" : "fragment"), message);
 			glDeleteShader(id);
 			return 0;
 		}
@@ -86,48 +85,44 @@ namespace Flibbert
 		glUseProgram(0);
 	}
 
-	void OpenGLShader::SetUniform1i(const std::string& name, const int value)
+	void OpenGLShader::SetUniform1i(std::string_view name, const int value)
 	{
 		glUniform1i(GetUniformLocation(name), value);
 	}
 
-	void OpenGLShader::SetUniform1f(const std::string& name, const float value)
+	void OpenGLShader::SetUniform1f(std::string_view name, const float value)
 	{
 		glUniform1f(GetUniformLocation(name), value);
 	}
 
-	void OpenGLShader::SetUniform2f(const std::string& name, const glm::vec2& value)
+	void OpenGLShader::SetUniform2f(std::string_view name, const glm::vec2& value)
 	{
 		glUniform2f(GetUniformLocation(name), value.x, value.y);
 	}
 
-	void OpenGLShader::SetUniform4f(const std::string& name, const glm::vec4& value)
+	void OpenGLShader::SetUniform4f(std::string_view name, const glm::vec4& value)
 	{
 		glUniform4f(GetUniformLocation(name), value.x, value.y, value.z, value.w);
 	}
 
-	void OpenGLShader::SetUniformMat4f(const std::string& name, const glm::mat4& value)
+	void OpenGLShader::SetUniformMat4f(std::string_view name, const glm::mat4& value)
 	{
 		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &value[0][0]);
 	}
 
-	void OpenGLShader::BindUniformBlock(const std::string& name, uint32_t binding)
+	void OpenGLShader::BindUniformBlock(std::string_view name, uint32_t binding)
 	{
-		uint32_t blockIndex = glGetUniformBlockIndex(m_RendererID, name.c_str());
+		uint32_t blockIndex = glGetUniformBlockIndex(m_RendererID, name.data());
 		glUniformBlockBinding(m_RendererID, blockIndex, binding);
 	}
 
-	int OpenGLShader::GetUniformLocation(const std::string& name)
+	int OpenGLShader::GetUniformLocation(std::string_view name)
 	{
-		if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
-			return m_UniformLocationCache[name];
+		int location = glGetUniformLocation(m_RendererID, name.data());
+		if (location == -1) {
+			FBT_CORE_WARN("Uniform {} doesn't exist", name);
+		}
 
-		int location = glGetUniformLocation(m_RendererID, name.c_str());
-		if (location == -1)
-			std::cout << "[Warning] uniform '" << name << "' doesn't exist!"
-				  << std::endl;
-
-		m_UniformLocationCache[name] = location;
 		return location;
 	}
 } // namespace Flibbert

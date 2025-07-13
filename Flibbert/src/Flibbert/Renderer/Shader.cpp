@@ -5,8 +5,8 @@
 
 namespace Flibbert
 {
-	std::shared_ptr<Shader> Shader::Create(const std::string& vertexPath,
-	                                       const std::string& fragmentPath)
+	std::shared_ptr<Shader> Shader::Create(std::string_view vertexPath,
+	                                       std::string_view fragmentPath)
 	{
 		switch (Renderer::GetAPI()) {
 			case Renderer::API::OpenGL:
@@ -16,9 +16,8 @@ namespace Flibbert
 		}
 	}
 
-	std::shared_ptr<Shader> Shader::Create(const std::string& name,
-	                                       const std::string& vertexSrc,
-	                                       const std::string& fragmentSrc)
+	std::shared_ptr<Shader> Shader::Create(std::string_view name, std::string_view vertexSrc,
+	                                       std::string_view fragmentSrc)
 	{
 		switch (Renderer::GetAPI()) {
 			case Renderer::API::OpenGL:

@@ -7,7 +7,7 @@ namespace Demo
 	void DemoMenu::OnImGuiRender()
 	{
 		for (auto& demo : m_Demos) {
-			if (ImGui::Button(demo.first.c_str())) {
+			if (ImGui::Button(demo.first)) {
 				m_CurrentDemo = demo.second();
 			}
 		}

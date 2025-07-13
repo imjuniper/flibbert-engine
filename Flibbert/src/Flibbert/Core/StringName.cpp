@@ -4,9 +4,7 @@
 
 namespace Flibbert
 {
-	StringName::StringName(const char* name) : m_Name(name), m_Hash(StringUtils::Hash(name)) {}
-
-	StringName::StringName(const std::string& name)
+	StringName::StringName(std::string_view name)
 	    : m_Name(name.data()), m_Hash(StringUtils::Hash(name))
 	{
 	}

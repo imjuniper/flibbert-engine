@@ -62,7 +62,7 @@ namespace Flibbert
 
 		BufferElement() = default;
 
-		BufferElement(ShaderDataType type, const std::string& name, bool normalized = false)
+		BufferElement(ShaderDataType type, std::string_view name, bool normalized = false)
 		    : Name(name), Type(type), Size(GetShaderDataTypeSize(type)), Offset(0),
 		      Normalized(normalized)
 		{
