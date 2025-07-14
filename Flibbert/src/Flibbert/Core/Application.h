@@ -39,7 +39,6 @@ namespace Flibbert
 
 		void Run();
 
-		[[nodiscard]] float GetTime() const;
 		[[nodiscard]] Window& GetWindow() const;
 		[[nodiscard]] Renderer& GetRenderer() const;
 
@@ -56,9 +55,9 @@ namespace Flibbert
 		std::unique_ptr<Renderer> m_Renderer = nullptr;
 		bool m_Running = false;
 
-		float m_TimeStep = 0.0f;
-		float m_FrameTime = 0.0f;
-		float m_LastFrameTime = 0.0f;
+		double m_TimeStep = 0.0;
+		double m_FrameTime = 0.0;
+		double m_LastFrameTime = 0.0;
 
 	private:
 		static Application* s_Instance;

@@ -46,6 +46,7 @@ add_library(Flibbert STATIC
         src/Flibbert/Core/StringName.h
         src/Flibbert/Core/StringUtils.cpp
         src/Flibbert/Core/StringUtils.h
+        src/Flibbert/Core/Platform.h
         src/Flibbert/Core/Types.h
         src/Flibbert/Input/Input.cpp
         src/Flibbert/Input/Input.h
@@ -65,6 +66,7 @@ add_library(Flibbert STATIC
         src/Flibbert/Renderer/Texture.h
         src/Flibbert/Renderer/VertexArray.cpp
         src/Flibbert/Renderer/VertexArray.h
+        src/Platform/Desktop/DesktopPlatform.cpp
         src/Platform/Desktop/Window.cpp
         src/Platform/Desktop/Window.h
         src/Platform/OpenGL/OpenGLBuffer.cpp

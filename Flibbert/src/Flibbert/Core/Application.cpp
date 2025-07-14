@@ -1,12 +1,11 @@
 #include "Flibbert/Core/Application.h"
 
+#include "Flibbert/Core/Platform.h"
 #include "Flibbert/Input/Input.h"
 #include "Flibbert/Renderer/Renderer.h"
 #include "Platform/Desktop/Window.h"
 
 #include <imgui.h>
-
-#include <rgfw/RGFW.h>
 
 namespace Flibbert
 {
@@ -71,15 +70,16 @@ namespace Flibbert
 		while (m_Running) {
 			m_Window->ProcessEvents();
 
-			const float time = GetTime();
+			const double time = Platform::GetTime();
 			m_FrameTime = time - m_LastFrameTime;
-			m_TimeStep = glm::min<float>(m_FrameTime, 0.0333f);
+			m_TimeStep = std::min(m_FrameTime, 0.0333);
 			m_LastFrameTime = time;
 
 			{
 				FBT_PROFILE_SCOPE("Application::Run OnUpdate Frame");
 				m_Renderer->Clear();
-				OnUpdate(m_TimeStep);
+				OnUpdate(static_cast<float>(
+				    m_FrameTime)); // @todo see if using double would be better
 			}
 
 			{
@@ -106,11 +106,6 @@ namespace Flibbert
 	void Application::DispatchInputEvent(const std::shared_ptr<InputEvent>& event)
 	{
 		OnInput(event);
-	}
-
-	float Application::GetTime() const
-	{
-		return static_cast<float>(RGFW_getTime()); // @todo Move this somewhere else
 	}
 
 	Window& Application::GetWindow() const
