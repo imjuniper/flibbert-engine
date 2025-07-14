@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Flibbert/Core/Base.h"
+#include "Flibbert/Input/InputEvent.h"
 
 struct RGFW_window;
 
@@ -15,16 +16,25 @@ namespace Flibbert
 	// Needs to be the reparented probably
 	class Window
 	{
-		// is it worth passing by const ref?
 		using OnWindowResizedDelegate =
-		    MulticastDelegate<Window& /*window*/, const glm::u32vec2& /*size*/>;
+		    MulticastDelegate<Window&, const glm::u32vec2 /*size*/>;
+
 		using OnWindowMovedDelegate =
-		    MulticastDelegate<Window& /*window*/, const glm::u32vec2& /*position*/>;
+		    MulticastDelegate<Window&, const glm::u32vec2 /*position*/>;
+
+		using OnWindowClosedDelegate = MulticastDelegate<Window&>;
 
 	public:
 		explicit Window(const WindowProps& props = WindowProps());
 
 		~Window();
+
+		void InitImGui();
+		void BeginImGuiFrame();
+		void ShutdownImGui();
+
+		void ProcessEvents();
+		void SwapBuffers();
 
 		[[nodiscard]] glm::u32vec2 GetSize() const;
 		[[nodiscard]] glm::u32vec2 GetPosition() const;
@@ -32,24 +42,19 @@ namespace Flibbert
 
 		[[nodiscard]] RGFW_window* GetNativeWindow() const { return m_WindowHandle; }
 
-		OnWindowResizedDelegate GetWindowResizedDelegate() const;
-
-		OnWindowResizedDelegate GetWindowMovedDelegate() const;
+	public:
+		OnWindowResizedDelegate OnWindowResized;
+		OnWindowMovedDelegate OnWindowMoved;
+		OnWindowClosedDelegate OnWindowClosed;
 
 	private:
-		friend class Application;
-
-		void OnWindowResized();
-		void OnWindowMoved();
+		void OnSetCursorMode(CursorMode mode);
 
 	private:
 		RGFW_window* m_WindowHandle = nullptr;
 
-		glm::u32vec2 m_Position;
-		glm::u32vec2 m_Size;
-		float m_AspectRatio;
-
-		OnWindowResizedDelegate m_WindowResizedDelegate;
-		OnWindowMovedDelegate m_WindowMovedDelegate;
+		glm::u32vec2 m_Position{0};
+		glm::u32vec2 m_Size{0};
+		float m_AspectRatio = 0.f;
 	};
 } // namespace Flibbert

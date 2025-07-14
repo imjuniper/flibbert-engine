@@ -1,5 +1,6 @@
 add IndexBuffer to VertexArray
     similarly, remove from Renderer::Draw
+create a system for Imgui
 figure out an actual naming convention
     rename folders to be PascalCase (src -> Source), similar to UE, but also more consistent with the subfolders
 split the engine in public and private folders to prevent access to wrong APIs

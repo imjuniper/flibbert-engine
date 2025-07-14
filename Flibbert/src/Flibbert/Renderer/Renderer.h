@@ -1,8 +1,9 @@
 #pragma once
 
+#include "Flibbert/Renderer/RendererBackend.h"
+
 namespace Flibbert
 {
-	class RendererBackend;
 	class IndexBuffer;
 	class Shader;
 	class VertexArray;
@@ -15,6 +16,11 @@ namespace Flibbert
 	public:
 		Renderer();
 		~Renderer() = default;
+
+		void InitImGui() const;
+		void BeginImGuiFrame() const;
+		void EndImGuiFrame() const;
+		void ShutdownImGui() const;
 
 		[[nodiscard]] glm::vec4 GetClearColor() const;
 		void SetClearColor(const glm::vec4& color) const;

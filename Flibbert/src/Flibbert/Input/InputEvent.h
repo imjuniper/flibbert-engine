@@ -2,9 +2,8 @@
 
 namespace Flibbert
 {
-	enum class Key : uint8_t {
-
-		KeyNULL = 0,
+	enum class Key {
+		None = 0,
 		Escape = '\033',
 		Backtick = '`',
 		Num0 = '0',
@@ -115,23 +114,31 @@ namespace Flibbert
 		ScrollLock,
 		PrintScreen,
 		Pause,
-		KeyLast = 255 /* padding for alignment ~(175 by default) */
 	};
-
-	enum class KeyState { None = -1, Pressed, Held, Released };
 
 	enum class CursorMode { Normal = 0, Hidden = 1, Locked = 2 };
 
-	typedef enum class MouseButton : uint8_t {
-		Left,
-		Middle,
-		Right,
-		ScrollUp,
-		ScrollDown,
-		Button0,
-		Button1,
-		Button2,
-		Button3,
-		Button4
-	} Button;
+	enum class MouseButton { Left = 0, Middle = 1, Right = 2, ScrollUp = 3, ScrollDown = 4 };
+
+	struct InputEvent {
+		virtual ~InputEvent() = default;
+	};
+
+	struct InputEventKey final : InputEvent {
+		Key Key;
+		bool IsPressed = false;
+	};
+
+	struct InputEventMouse : InputEvent {
+		glm::vec2 Position;
+	};
+
+	struct InputEventMouseButton final : InputEventMouse {
+		MouseButton Button;
+		bool IsPressed = false;
+	};
+
+	struct InputEventMouseMovement final : InputEventMouse {
+		glm::vec2 MovementDelta;
+	};
 } // namespace Flibbert

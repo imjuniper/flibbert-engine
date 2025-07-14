@@ -11,6 +11,7 @@ namespace Flibbert
 {
 	class Renderer;
 	class Window;
+	struct InputEvent;
 
 	struct LaunchArguments {
 		int Count;
@@ -36,15 +37,19 @@ namespace Flibbert
 
 		static Application& Get();
 
-		virtual void Render(float ts) = 0;
-
 		void Run();
 
 		[[nodiscard]] float GetTime() const;
 		[[nodiscard]] Window& GetWindow() const;
 		[[nodiscard]] Renderer& GetRenderer() const;
 
-		MulticastDelegate<glm::i32vec2> OnMouseMove;
+	private:
+		virtual void OnUpdate(float ts) = 0;
+		virtual void OnImguiRender() = 0;
+		virtual void OnInput(const std::shared_ptr<InputEvent>& event) = 0;
+
+		void HandleWindowClosed(Window& window);
+		void DispatchInputEvent(const std::shared_ptr<InputEvent>& event);
 
 	private:
 		std::unique_ptr<Window> m_Window = nullptr;

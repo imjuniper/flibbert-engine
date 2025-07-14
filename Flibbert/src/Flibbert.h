@@ -3,9 +3,9 @@
 #include "Flibbert/Core/Base.h"
 
 #include "Flibbert/Core/Application.h"
-#include "Flibbert/Core/Input.h"
-#include "Flibbert/Core/KeyCodes.h"
 #include "Flibbert/Core/StringName.h"
+#include "Flibbert/Input/Input.h"
+#include "Flibbert/Input/InputEvent.h"
 
 #include "Flibbert/Renderer/Buffer.h"
 #include "Flibbert/Renderer/Camera.h"

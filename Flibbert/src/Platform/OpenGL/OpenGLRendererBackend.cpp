@@ -7,6 +7,8 @@
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Platform/OpenGL/OpenGLVertexArray.h"
 
+#include <backends/imgui_impl_opengl3.h>
+
 #include <rgfw/RGFW.h>
 
 #define GLAD_GL_IMPLEMENTATION
@@ -42,10 +44,7 @@ namespace Flibbert
 		int status = gladLoadGL(RGFW_getProcAddress);
 		FBT_CORE_ENSURE(status);
 
-		window.GetWindowResizedDelegate().Add(
-		    [this](Window& window, const glm::u32vec2& size) {
-			    OnWindowResized(window, size);
-		    });
+		window.OnWindowResized.Add(FBT_BIND_EVENT(OpenGLRendererBackend::OnWindowResized));
 
 		FBT_CORE_INFO("OpenGL Info:");
 		FBT_CORE_INFO("  Vendor: {0}",
@@ -72,6 +71,31 @@ namespace Flibbert
 		glEnable(GL_LINE_SMOOTH);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+
+	void OpenGLRendererBackend::InitImGui()
+	{
+#ifdef FBT_PLATFORM_MACOS
+		/* Set OpenGL version to 4.1 on macOS */
+		ImGui_ImplOpenGL3_Init("#version 410");
+#else
+		ImGui_ImplOpenGL3_Init("#version 460");
+#endif
+	}
+
+	void OpenGLRendererBackend::BeginImGuiFrame()
+	{
+		ImGui_ImplOpenGL3_NewFrame();
+	}
+
+	void OpenGLRendererBackend::EndImGuiFrame()
+	{
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	}
+
+	void OpenGLRendererBackend::ShutdownImGui()
+	{
+		ImGui_ImplOpenGL3_Shutdown();
 	}
 
 	void OpenGLRendererBackend::SetClearColor(const glm::vec4& color)

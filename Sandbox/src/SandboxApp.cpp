@@ -38,20 +38,33 @@ public:
 		delete m_currentDemo;
 	}
 
-	void Render(const float ts) override
+	void OnUpdate(const float ts) override
 	{
 		if (m_currentDemo) {
 			m_currentDemo->OnUpdate(ts);
 			m_currentDemo->OnRender();
+		}
+	}
+
+	void OnImguiRender() override
+	{
+		if (m_currentDemo) {
 			ImGui::Begin("Sandbox");
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-			            1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+				    1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			if (m_currentDemo != m_demoMenu && ImGui::Button("<--")) {
 				delete m_currentDemo;
 				m_currentDemo = m_demoMenu;
 			}
 			m_currentDemo->OnImGuiRender();
 			ImGui::End();
+		}
+	}
+
+	void OnInput(const std::shared_ptr<Flibbert::InputEvent>& event) override
+	{
+		if (m_currentDemo) {
+			m_currentDemo->OnInput(event);
 		}
 	}
 };

@@ -10,7 +10,7 @@ namespace Demo
 		DemoClearColor();
 		~DemoClearColor() override;
 
-		void OnUpdate(float deltaTime) override {}
+		void OnUpdate(float ts) override {}
 		void OnRender() override;
 		void OnImGuiRender() override;
 

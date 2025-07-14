@@ -46,20 +46,21 @@ namespace Demo
 		m_Shader->BindUniformBlock("Matrices", 0);
 	}
 
-	void Birb::OnUpdate(float deltaTime)
+	void Birb::OnUpdate(float ts)
 	{
-		m_CurrentYSpeed = m_CurrentYSpeed + m_FallAccel * deltaTime;
+		m_Position.y += m_CurrentYSpeed * ts;
+		m_CurrentYSpeed = m_CurrentYSpeed + m_FallAccel * ts;
 		m_CurrentYSpeed = glm::max(m_CurrentYSpeed, m_MaxFallSpeed);
+	}
 
-		if (Flibbert::Input::IsKeyDown(Flibbert::Key::Space) && !m_SpacePressed) {
-			m_SpacePressed = true;
+	void Birb::OnInput(const std::shared_ptr<Flibbert::InputEvent>& event)
+	{
+		auto keyEvent = dynamic_pointer_cast<Flibbert::InputEventKey>(event);
+		if (!keyEvent) return;
+		if (keyEvent->IsPressed && keyEvent->Key == Flibbert::Key::Space) {
 			FBT_INFO("The birb flops!");
 			m_CurrentYSpeed = m_FlopSpeed;
-		} else if (Flibbert::Input::IsKeyUp(Flibbert::Key::Space)) {
-			m_SpacePressed = false;
 		}
-
-		m_Position.y += m_CurrentYSpeed * deltaTime;
 	}
 #pragma endregion Birb
 
@@ -113,9 +114,9 @@ namespace Demo
 		m_CameraBuffer = Flibbert::UniformBuffer::Create(sizeof(Flibbert::CameraBuffer), 0);
 	}
 
-	void DemoFloppyBirb::OnUpdate(float deltaTime)
+	void DemoFloppyBirb::OnUpdate(float ts)
 	{
-		m_Birb.OnUpdate(deltaTime);
+		m_Birb.OnUpdate(ts);
 	}
 
 	void DemoFloppyBirb::OnRender()
@@ -152,6 +153,11 @@ namespace Demo
 	{
 		ImGui::Text("Floppy Birb!");
 		ImGui::Text("Position (%.2f, %.2f)", m_Birb.m_Position.x, m_Birb.m_Position.y);
+	}
+
+	void DemoFloppyBirb::OnInput(const std::shared_ptr<Flibbert::InputEvent>& event)
+	{
+		m_Birb.OnInput(event);
 	}
 #pragma endregion Scene
 } // namespace Demo

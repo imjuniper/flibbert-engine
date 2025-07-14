@@ -1,10 +1,7 @@
 #pragma once
 
-#include "Flibbert/Core/Base.h"
 #include "Flibbert/Core/Log.h"
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wc++17-extensions"
 namespace Flibbert::Assert::Private
 {
 	struct AssertionInfo {
@@ -30,7 +27,6 @@ namespace Flibbert::Assert::Private
 		logger->critical(GetAssertionMessage(info), std::forward<Args>(args)...);
 	}
 } // namespace Flibbert::Assert::Private
-#pragma clang diagnostic pop
 
 #ifdef FBT_ENABLE_ASSERTS
 	#define FBT_ENSURE_IMPL(condition, core)                                                   \

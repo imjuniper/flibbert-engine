@@ -13,6 +13,11 @@ namespace Flibbert
 	public:
 		OpenGLRendererBackend();
 
+		void InitImGui() override;
+		void BeginImGuiFrame() override;
+		void EndImGuiFrame() override;
+		void ShutdownImGui() override;
+
 		void SetClearColor(const glm::vec4& color) override;
 		void Clear() override;
 

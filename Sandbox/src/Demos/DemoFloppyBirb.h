@@ -12,7 +12,8 @@ namespace Demo
 	{
 	public:
 		virtual ~Entity() = default;
-		virtual void OnUpdate(float deltaTime) {}
+		virtual void OnUpdate(float ts) {}
+		virtual void OnInput(const std::shared_ptr<Flibbert::InputEvent>& event) {}
 
 	public:
 		std::shared_ptr<Flibbert::VertexArray> m_VAO;
@@ -30,7 +31,8 @@ namespace Demo
 	public:
 		Birb();
 
-		void OnUpdate(float deltaTime) override;
+		void OnUpdate(float ts) override;
+		void OnInput(const std::shared_ptr<Flibbert::InputEvent>& event) override;
 	private:
 		float m_CurrentYSpeed = 0;
 		float m_MaxFallSpeed = -400;
@@ -51,9 +53,10 @@ namespace Demo
 	public:
 		DemoFloppyBirb();
 
-		void OnUpdate(float deltaTime) override;
+		void OnUpdate(float ts) override;
 		void OnRender() override;
 		void OnImGuiRender() override;
+		void OnInput(const std::shared_ptr<Flibbert::InputEvent>& event) override;
 
 	private:
 		Flibbert::Renderer& m_Renderer;

@@ -6,6 +6,7 @@ struct RGFW_point;
 namespace Flibbert
 {
 	class Window;
+	struct InputEvent;
 
 	struct CameraBuffer {
 		glm::mat4 Projection;
@@ -21,6 +22,7 @@ namespace Flibbert
 
 		virtual CameraProjectionType GetProjectionType() const = 0;
 		virtual bool HandleMovement(float ts, glm::vec3& position) = 0;
+		virtual bool HandleInput(const std::shared_ptr<InputEvent>& event, glm::vec3& position) = 0;
 		virtual glm::mat4 CalculateProjection(float aspectRatio) const = 0;
 		virtual glm::mat4 CalculateView(const glm::vec3& position) const = 0;
 	};
@@ -35,6 +37,7 @@ namespace Flibbert
 			return CameraProjectionType::Perspective;
 		}
 		bool HandleMovement(float ts, glm::vec3& position) override;
+		bool HandleInput(const std::shared_ptr<InputEvent>& event, glm::vec3& position) override;
 		glm::mat4 CalculateProjection(float aspectRatio) const override;
 		glm::mat4 CalculateView(const glm::vec3& position) const override;
 
@@ -56,6 +59,7 @@ namespace Flibbert
 			return CameraProjectionType::Orthographic;
 		}
 		bool HandleMovement(float ts, glm::vec3& position) override;
+		bool HandleInput(const std::shared_ptr<InputEvent>& event, glm::vec3& position) override;
 		glm::mat4 CalculateProjection(float aspectRatio) const override;
 		glm::mat4 CalculateView(const glm::vec3& position) const override;
 
@@ -71,7 +75,9 @@ namespace Flibbert
 		explicit Camera(const std::shared_ptr<CameraMode>& mode,
 		                const glm::vec3& position = glm::vec3(0.0f, 0.0f, 0.0f));
 
-		bool OnUpdate(float ts);
+		void OnUpdate(float ts);
+		void OnInput(const std::shared_ptr<InputEvent>& event);
+
 		void OnResize(Window& window, glm::u32vec2 size);
 
 		void SetCameraMode(const std::shared_ptr<CameraMode>& mode);
@@ -83,11 +89,13 @@ namespace Flibbert
 	private:
 		std::shared_ptr<CameraMode> m_CameraMode;
 
+		bool m_ShouldHandleInput = false;
+
 		float m_AspectRatio;
 
 		glm::vec3 m_Position;
 
-		glm::mat4 m_ProjectionMatrix;
-		glm::mat4 m_ViewMatrix;
+		glm::mat4 m_ProjectionMatrix{};
+		glm::mat4 m_ViewMatrix{};
 	};
 } // namespace Flibbert

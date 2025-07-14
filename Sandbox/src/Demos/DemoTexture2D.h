@@ -11,9 +11,10 @@ namespace Demo
 	public:
 		DemoTexture2D();
 
-		void OnUpdate(float deltaTime) override;
+		void OnUpdate(float ts) override;
 		void OnRender() override;
 		void OnImGuiRender() override;
+		void OnInput(const std::shared_ptr<Flibbert::InputEvent>& event) override;
 
 	private:
 		Flibbert::Renderer& m_Renderer;

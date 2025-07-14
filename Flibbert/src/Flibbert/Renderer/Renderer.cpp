@@ -18,6 +18,26 @@ namespace Flibbert
 		}
 	}
 
+	void Renderer::InitImGui() const
+	{
+		m_Backend->InitImGui();
+	}
+
+	void Renderer::BeginImGuiFrame() const
+	{
+		m_Backend->BeginImGuiFrame();
+	}
+
+	void Renderer::EndImGuiFrame() const
+	{
+		m_Backend->EndImGuiFrame();
+	}
+
+	void Renderer::ShutdownImGui() const
+	{
+		m_Backend->ShutdownImGui();
+	}
+
 	glm::vec4 Renderer::GetClearColor() const
 	{
 		return m_Backend->GetClearColor();

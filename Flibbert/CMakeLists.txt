@@ -39,9 +39,6 @@ add_library(Flibbert STATIC
         src/Flibbert/Core/Delegates.cpp
         src/Flibbert/Core/Delegates.h
         src/Flibbert/Core/EntryPoint.h
-        src/Flibbert/Core/Input.cpp
-        src/Flibbert/Core/Input.h
-        src/Flibbert/Core/KeyCodes.h
         src/Flibbert/Core/Log.cpp
         src/Flibbert/Core/Log.h
         src/Flibbert/Core/PlatformDetection.h
@@ -50,6 +47,10 @@ add_library(Flibbert STATIC
         src/Flibbert/Core/StringUtils.cpp
         src/Flibbert/Core/StringUtils.h
         src/Flibbert/Core/Types.h
+        src/Flibbert/Input/Input.cpp
+        src/Flibbert/Input/Input.h
+        src/Flibbert/Input/InputEvent.cpp
+        src/Flibbert/Input/InputEvent.h
         src/Flibbert/Debug/Instrumentor.h
         src/Flibbert/Renderer/Buffer.cpp
         src/Flibbert/Renderer/Buffer.h

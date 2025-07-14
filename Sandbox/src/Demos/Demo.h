@@ -15,9 +15,10 @@ namespace Demo
 		Demo() = default;
 		virtual ~Demo() = default;
 
-		virtual void OnUpdate(float deltaTime) = 0;
+		virtual void OnUpdate(float ts) = 0;
 		virtual void OnRender() = 0;
 		virtual void OnImGuiRender() = 0;
+		virtual void OnInput(const std::shared_ptr<Flibbert::InputEvent>& event) {}
 	};
 
 	class DemoMenu : public Demo
@@ -25,7 +26,7 @@ namespace Demo
 	public:
 		explicit DemoMenu(Demo*& currentDemoPointer) : m_CurrentDemo(currentDemoPointer) {}
 
-		void OnUpdate(float deltaTime) override {}
+		void OnUpdate(float ts) override {}
 		void OnRender() override {}
 		void OnImGuiRender() override;
 

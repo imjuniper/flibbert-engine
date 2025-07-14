@@ -5,8 +5,6 @@
 #include "Flibbert/Core/PlatformDetection.h"
 #include "Flibbert/Core/Types.h"
 
-#include <memory>
-
 #ifndef NDEBUG
 	#define FBT_ENABLE_ASSERTS
 
@@ -28,9 +26,8 @@
 	#define FBT_DEBUG_BREAK()
 #endif
 
-#define FBT_EXPAND_MACRO(x) x
+#include "Flibbert/Core/Log.h"
 
 #include "Flibbert/Core/AssertionMacros.h"
-#include "Flibbert/Core/Log.h"
 
 #include "Flibbert/Core/Delegates.h"

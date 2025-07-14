@@ -1,9 +1,6 @@
 #pragma once
 
-#include "Flibbert/Core/AssertionMacros.h"
-
-#include <string>
-#include <vector>
+#include "Flibbert/Core/Base.h"
 
 namespace Flibbert
 {

@@ -52,9 +52,9 @@ namespace Demo
 		m_CameraBuffer = Flibbert::UniformBuffer::Create(sizeof(Flibbert::CameraBuffer), 0);
 	}
 
-	void DemoTexture2D::OnUpdate(float deltaTime)
+	void DemoTexture2D::OnUpdate(float ts)
 	{
-		m_Camera->OnUpdate(deltaTime);
+		m_Camera->OnUpdate(ts);
 	}
 
 	void DemoTexture2D::OnRender()
@@ -79,5 +79,10 @@ namespace Demo
 	{
 		ImGui::SliderFloat3("Translation A", glm::value_ptr(m_TranslationA), 0.0f, 960.0f);
 		ImGui::SliderFloat3("Translation B", glm::value_ptr(m_TranslationB), 0.0f, 960.0f);
+	}
+
+	void DemoTexture2D::OnInput(const std::shared_ptr<Flibbert::InputEvent>& event)
+	{
+		m_Camera->OnInput(event);
 	}
 } // namespace Demo

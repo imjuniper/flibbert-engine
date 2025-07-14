@@ -8,7 +8,7 @@ namespace Flibbert
 	class StringName
 	{
 	public:
-		StringName(std::string_view name);
+		explicit StringName(std::string_view name);
 
 		bool IsValid() const;
 

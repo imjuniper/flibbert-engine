@@ -1,7 +1,7 @@
 #include "Flibbert/Renderer/Camera.h"
 
 #include "Flibbert/Core/Application.h"
-#include "Flibbert/Core/Input.h"
+#include "Flibbert/Input/Input.h"
 #include "Platform/Desktop/Window.h"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -10,68 +10,60 @@
 #include <glm/gtx/quaternion.hpp>
 #undef GLM_ENABLE_EXPERIMENTAL
 
-#include <glad.h>
-
-#include <rgfw/RGFW.h>
-
-bool g_MouseMoved = false;
-glm::vec2 g_MouseDelta{0.f};
-
 namespace Flibbert
 {
 #pragma region CameraModePerspective
 	bool CameraModePerspective::HandleMovement(float ts, glm::vec3& position)
 	{
-		if (!Input::IsMouseButtonDown(MouseButton::Right)) {
-			Input::SetCursorMode(CursorMode::Normal);
-			return false;
-		}
-
-		Input::SetCursorMode(CursorMode::Locked);
-
 		bool moved = false;
 
 		glm::vec3 RightDirection =
 		    glm::normalize(glm::cross(ForwardDirection, UpDirection));
 
 		// Movement
-		if (Input::IsKeyDown(Key::W)) {
+		if (Input::Get().IsKeyPressed(Key::W)) {
 			position += ForwardDirection * MovementSpeed * ts;
 			moved = true;
-		} else if (Input::IsKeyDown(Key::S)) {
+		} else if (Input::Get().IsKeyPressed(Key::S)) {
 			position -= ForwardDirection * MovementSpeed * ts;
 			moved = true;
 		}
-		if (Input::IsKeyDown(Key::A)) {
+		if (Input::Get().IsKeyPressed(Key::A)) {
 			position -= RightDirection * MovementSpeed * ts;
 			moved = true;
-		} else if (Input::IsKeyDown(Key::D)) {
+		} else if (Input::Get().IsKeyPressed(Key::D)) {
 			position += RightDirection * MovementSpeed * ts;
 			moved = true;
 		}
-		if (Input::IsKeyDown(Key::Q)) {
+		if (Input::Get().IsKeyPressed(Key::Q)) {
 			position -= UpDirection * MovementSpeed * ts;
 			moved = true;
-		} else if (Input::IsKeyDown(Key::E)) {
+		} else if (Input::Get().IsKeyPressed(Key::E)) {
 			position += UpDirection * MovementSpeed * ts;
 			moved = true;
 		}
 
-		// Rotation
-		if (g_MouseMoved) {
-			float pitchDelta = g_MouseDelta.y * RotationSpeed;
-			float yawDelta = g_MouseDelta.x * RotationSpeed;
-
-			glm::quat q = glm::normalize(
-			    glm::cross(glm::angleAxis(-pitchDelta, RightDirection),
-			               glm::angleAxis(-yawDelta, glm::vec3(0.f, 1.0f, 0.0f))));
-			ForwardDirection = glm::rotate(q, ForwardDirection);
-
-			moved = true;
-			g_MouseMoved = false;
-		}
-
 		return moved;
+	}
+
+	bool CameraModePerspective::HandleInput(const std::shared_ptr<InputEvent>& event,
+	                                        glm::vec3& position)
+	{
+		auto mouseMovementEvent = dynamic_pointer_cast<InputEventMouseMovement>(event);
+		if (!mouseMovementEvent) return false;
+
+		glm::vec3 RightDirection =
+		    glm::normalize(glm::cross(ForwardDirection, UpDirection));
+
+		float pitchDelta = mouseMovementEvent->MovementDelta.y * RotationSpeed;
+		float yawDelta = mouseMovementEvent->MovementDelta.x * RotationSpeed;
+
+		glm::quat q = glm::normalize(
+		    glm::cross(glm::angleAxis(-pitchDelta, RightDirection),
+		               glm::angleAxis(-yawDelta, glm::vec3(0.f, 1.0f, 0.0f))));
+		ForwardDirection = glm::rotate(q, ForwardDirection);
+
+		return true;
 	}
 
 	glm::mat4 CameraModePerspective::CalculateProjection(const float aspectRatio) const
@@ -88,26 +80,23 @@ namespace Flibbert
 #pragma region CameraModeOrthographic
 	bool CameraModeOrthographic::HandleMovement(float ts, glm::vec3& position)
 	{
-		if (!Input::IsMouseButtonDown(MouseButton::Right)) {
-			Input::SetCursorMode(CursorMode::Normal);
-			return false;
-		}
-
-		Input::SetCursorMode(CursorMode::Locked);
-
-		bool moved = false;
-
-		if (g_MouseMoved) {
-			float xDelta = g_MouseDelta.x * MovementSpeed;
-			float yDelta = g_MouseDelta.y * MovementSpeed;
-
-			position.x += xDelta;
-			position.y += -yDelta;
-			moved = true;
-			g_MouseMoved = false;
-		}
-
+		static constexpr bool moved = false;
 		return moved;
+	}
+
+	bool CameraModeOrthographic::HandleInput(const std::shared_ptr<InputEvent>& event,
+	                                         glm::vec3& position)
+	{
+		auto mouseMovementEvent = dynamic_pointer_cast<InputEventMouseMovement>(event);
+		if (!mouseMovementEvent) return false;
+
+		float xDelta = mouseMovementEvent->MovementDelta.x * MovementSpeed;
+		float yDelta = mouseMovementEvent->MovementDelta.y * MovementSpeed;
+
+		position.x += xDelta;
+		position.y += -yDelta;
+
+		return true;
 	}
 
 	glm::mat4 CameraModeOrthographic::CalculateProjection(float aspectRatio) const
@@ -126,28 +115,37 @@ namespace Flibbert
 	Camera::Camera(const std::shared_ptr<CameraMode>& mode, const glm::vec3& position)
 	    : m_CameraMode(mode), m_Position(position)
 	{
-		m_ViewMatrix = m_CameraMode->CalculateView(m_Position);
-
 		Window& window = Application::Get().GetWindow();
-		window.GetWindowResizedDelegate().Add(
-		    [this](Window& window, glm::u32vec2 size) { OnResize(window, size); });
-		OnResize(window, window.GetSize());
+		window.OnWindowResized.Add(FBT_BIND_EVENT(Camera::OnResize));
 
-		Application::Get().OnMouseMove.Add([this](glm::i32vec2 pos) {
-			if (!Flibbert::Input::IsMouseButtonDown(Flibbert::MouseButton::Right))
-				return;
-			g_MouseDelta = glm::vec2(pos.x, pos.y);
-			g_MouseMoved = true;
-		});
+		m_AspectRatio = window.GetAspectRatio();
+		m_ProjectionMatrix = m_CameraMode->CalculateProjection(m_AspectRatio);
+		m_ViewMatrix = m_CameraMode->CalculateView(m_Position);
 	}
 
-	bool Camera::OnUpdate(const float ts)
+	void Camera::OnUpdate(const float ts)
 	{
-		const bool moved = m_CameraMode->HandleMovement(ts, m_Position);
-		if (moved) {
+		if (!Input::Get().IsMouseButtonPressed(MouseButton::Right)) {
+			Input::Get().SetCursorMode(CursorMode::Normal);
+			m_ShouldHandleInput = false;
+			return;
+		}
+
+		Input::Get().SetCursorMode(CursorMode::Locked);
+		m_ShouldHandleInput = true;
+
+		if (m_CameraMode->HandleMovement(ts, m_Position)) {
 			m_ViewMatrix = m_CameraMode->CalculateView(m_Position);
 		}
-		return moved;
+	}
+
+	void Camera::OnInput(const std::shared_ptr<InputEvent>& event)
+	{
+		if (!m_ShouldHandleInput) return;
+
+		if (m_CameraMode->HandleInput(event, m_Position)) {
+			m_ViewMatrix = m_CameraMode->CalculateView(m_Position);
+		}
 	}
 
 	void Camera::OnResize(Window& window, glm::u32vec2 size)

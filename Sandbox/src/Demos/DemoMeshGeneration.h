@@ -35,9 +35,10 @@ namespace Demo
 	public:
 		DemoMeshGeneration();
 
-		void OnUpdate(float deltaTime) override;
+		void OnUpdate(float ts) override;
 		void OnRender() override;
 		void OnImGuiRender() override;
+		void OnInput(const std::shared_ptr<Flibbert::InputEvent>& event) override;
 
 	private:
 		void GenerateMesh();

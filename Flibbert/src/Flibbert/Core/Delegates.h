@@ -1,12 +1,21 @@
 #pragma once
 
-#include "Flibbert/Core/Base.h"
-
 #include <map>
 
 // Would love to implement something more similar to actual delegates, like
 // https://github.com/simco50/CppDelegates/blob/master/Delegates.h
 // but I want to understand it first
+
+// Thanks Hazel <3
+#define FBT_BIND_EVENT(function)                                                                   \
+	[this](auto&&... args) -> decltype(auto) {                                                 \
+		return this->function(std::forward<decltype(args)>(args)...);                      \
+	}
+
+#define FBT_BIND_EVENT_OBJ(objectPtr, function)                                                    \
+	[objectPtr](auto&&... args) -> decltype(auto) {                                            \
+		return (objectPtr)->function(std::forward<decltype(args)>(args)...);                 \
+	}
 
 namespace Flibbert
 {
@@ -76,13 +85,13 @@ namespace Flibbert
 
 		bool IsBound() const { return !!m_BoundFunction; }
 
-		ReturnValue Execute(Args&&... args) const
+		ReturnValue Execute(Args&... args) const
 		{
 			FBT_CORE_ENSURE_MSG(m_BoundFunction, "Delegate is not bound!");
 			return m_BoundFunction(std::forward<Args>(args)...);
 		}
 
-		ReturnValue ExecuteIfBound(Args&&... args) const
+		ReturnValue ExecuteIfBound(Args&... args) const
 		{
 			if (IsBound()) {
 				return m_BoundFunction(std::forward<Args>(args)...);
@@ -127,7 +136,7 @@ namespace Flibbert
 			}
 		}
 
-		void Broadcast(Args&&... args) const
+		void Broadcast(Args&... args) const
 		{
 			for (const auto& event : m_Events) {
 				event.second(std::forward<Args>(args)...);

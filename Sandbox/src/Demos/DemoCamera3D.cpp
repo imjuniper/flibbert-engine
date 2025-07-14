@@ -58,9 +58,9 @@ namespace Demo
 		m_CameraBuffer = Flibbert::UniformBuffer::Create(sizeof(Flibbert::CameraBuffer), 0);
 	}
 
-	void DemoCamera3D::OnUpdate(float deltaTime)
+	void DemoCamera3D::OnUpdate(float ts)
 	{
-		m_Camera->OnUpdate(deltaTime);
+		m_Camera->OnUpdate(ts);
 	}
 
 	void DemoCamera3D::OnRender()
@@ -93,5 +93,10 @@ namespace Demo
 		}
 		ImGui::SliderFloat3("Translation A", glm::value_ptr(m_TranslationA), -10.0f, 10.0f);
 		ImGui::SliderFloat3("Translation B", glm::value_ptr(m_TranslationB), -10.0f, 10.0f);
+	}
+
+	void DemoCamera3D::OnInput(const std::shared_ptr<Flibbert::InputEvent>& event)
+	{
+		m_Camera->OnInput(event);
 	}
 } // namespace Demo

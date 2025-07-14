@@ -36,9 +36,9 @@ namespace Demo
 		glEnable(GL_CULL_FACE);
 	}
 
-	void DemoMeshGeneration::OnUpdate(float deltaTime)
+	void DemoMeshGeneration::OnUpdate(float ts)
 	{
-		m_Camera->OnUpdate(deltaTime);
+		m_Camera->OnUpdate(ts);
 	}
 
 	void DemoMeshGeneration::OnRender()
@@ -132,6 +132,11 @@ namespace Demo
 			                  glm::value_ptr(m_UniformBuffer.AmbientLight));
 			ImGui::Unindent(16.0f);
 		}
+	}
+
+	void DemoMeshGeneration::OnInput(const std::shared_ptr<Flibbert::InputEvent>& event)
+	{
+		m_Camera->OnInput(event);
 	}
 
 	void DemoMeshGeneration::GenerateMesh()
