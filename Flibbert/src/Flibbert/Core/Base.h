@@ -32,3 +32,5 @@
 
 #include "Flibbert/Core/AssertionMacros.h"
 #include "Flibbert/Core/Log.h"
+
+#include "Flibbert/Core/Delegates.h"

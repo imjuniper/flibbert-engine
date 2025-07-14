@@ -37,10 +37,15 @@ namespace Flibbert
 {
 	OpenGLRendererBackend::OpenGLRendererBackend()
 	{
-		RGFW_window* window = Application::Get().GetWindow().GetNativeWindow();
-		RGFW_window_makeCurrent(window);
+		Window& window = Application::Get().GetWindow();
+		RGFW_window_makeCurrent(window.GetNativeWindow());
 		int status = gladLoadGL(RGFW_getProcAddress);
 		FBT_CORE_ENSURE(status);
+
+		window.GetWindowResizedDelegate().Add(
+		    [this](Window& window, const glm::u32vec2& size) {
+			    OnWindowResized(window, size);
+		    });
 
 		FBT_CORE_INFO("OpenGL Info:");
 		FBT_CORE_INFO("  Vendor: {0}",
@@ -91,5 +96,10 @@ namespace Flibbert
 		shader.SetUniformMat4f("u_Transform", transform);
 
 		glDrawElements(GL_TRIANGLES, indexBuffer.GetCount(), GL_UNSIGNED_INT, nullptr);
+	}
+
+	void OpenGLRendererBackend::OnWindowResized(Window& window, const glm::u32vec2& size)
+	{
+		glViewport(0, 0, size.x, size.y);
 	}
 } // namespace Flibbert

@@ -68,9 +68,45 @@ namespace Flibbert
 
 	void Application::Run()
 	{
+		// Should try to make the windowing loop thing more generic
+		// Maybe the window should run the loop somehow?
 		while (RGFW_window_shouldClose(m_Window->GetNativeWindow()) == RGFW_FALSE) {
-			while (RGFW_window_checkEvent(m_Window->GetNativeWindow()))
-				;
+			while (RGFW_window_checkEvent(m_Window->GetNativeWindow())) {
+				RGFW_event& event = m_Window->GetNativeWindow()->event;
+				switch (event.type) {
+					case RGFW_quit:
+						// Window closed
+						break;
+
+					case RGFW_windowMoved:
+						m_Window->OnWindowMoved();
+						break;
+
+					// @todo implement smooth resize
+					// https://github.com/ColleagueRiley/RGFW/blob/main/examples/smooth-resize/smooth-resize.c?rgh-link-date=2025-06-23T16%3A00%3A55.000Z
+					case RGFW_windowResized:
+						m_Window->OnWindowResized();
+						break;
+
+					case RGFW_keyPressed:
+						break;
+					case RGFW_keyReleased:
+						break;
+
+					case RGFW_mouseButtonPressed:
+						break;
+					case RGFW_mouseButtonReleased:
+						break;
+					case RGFW_mousePosChanged:
+						OnMouseMove.Broadcast(
+						    {event.vector.x, event.vector.y});
+						break;
+
+					default:
+						break;
+				}
+			}
+
 			m_Renderer->Clear();
 
 			ImGui_ImplOpenGL3_NewFrame();

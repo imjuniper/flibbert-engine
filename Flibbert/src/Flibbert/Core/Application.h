@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Flibbert/Core/AssertionMacros.h"
+#include "Flibbert/Core/Base.h"
 
 #include <memory>
 #include <string>
@@ -43,6 +43,8 @@ namespace Flibbert
 		[[nodiscard]] float GetTime() const;
 		[[nodiscard]] Window& GetWindow() const;
 		[[nodiscard]] Renderer& GetRenderer() const;
+
+		MulticastDelegate<glm::i32vec2> OnMouseMove;
 
 	private:
 		std::unique_ptr<Window> m_Window = nullptr;
