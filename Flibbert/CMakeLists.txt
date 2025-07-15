@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.21)
 include(FetchContent)
 project(
         Flibbert
@@ -6,6 +6,7 @@ project(
         LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_MACOSX_RPATH 1)
 
 find_package(Git)
@@ -79,6 +80,11 @@ add_library(Flibbert STATIC
         src/Platform/OpenGL/OpenGLTexture.h
         src/Platform/OpenGL/OpenGLVertexArray.cpp
         src/Platform/OpenGL/OpenGLVertexArray.h)
+
+if (MSVC)
+	# Needed to support __VA_OPTS__(x) among other things
+	target_compile_options(Flibbert PUBLIC /Zc:preprocessor)
+endif()
 
 target_include_directories(Flibbert
         PUBLIC

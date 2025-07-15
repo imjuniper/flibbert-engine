@@ -2,29 +2,42 @@
 	"version": 3,
 	"cmakeMinimumRequired": {
 		"major": 3,
-		"minor": 20,
+		"minor": 21,
 		"patch": 0
 	},
 	"configurePresets": [
 		{
 			"name": "base",
 			"hidden": true,
+			"binaryDir": "${sourceDir}/Build/${presetName}"
+		},
+		{
+			"name": "debug",
+			"inherits": "base",
+			"displayName": "Debug",
+			"description": "Sets debug build type",
 			"generator": "Ninja",
-			"architecture": {
-				"value": "x64",
-				"strategy": "external"
-			},
-			"binaryDir": "${sourceDir}/Build/${presetName}",
 			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Debug",
 				"CMAKE_C_COMPILER": "clang",
 				"CMAKE_CXX_COMPILER": "clang++"
 			}
 		},
 		{
-			"name": "x64-debug",
-			"displayName": "x64 Debug",
-			"description": "Sets debug build type and x64 arch",
-			"inherits": "base",
+			"name": "release",
+			"inherits": "debug",
+			"displayName": "Release",
+			"description": "Sets release build type",
+			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "Release"
+			}
+		},
+		{
+			"name": "debug-vs2022",
+			"inherits": "debug",
+			"displayName": "Debug (VS 2022)",
+			"description": "Sets debug build type and uses MSVC",
+			"generator": "Visual Studio 17 2022",
 			"cacheVariables": {
 				"CMAKE_BUILD_TYPE": "Debug"
 			},
@@ -32,50 +45,13 @@
 				"type": "equals",
 				"lhs": "${hostSystemName}",
 				"rhs": "Windows"
-			},
-			"vendor": {
-				"microsoft.com/VisualStudioSettings/CMake/1.0": {
-					"hostOS": ["Windows"]
-				}
 			}
 		},
 		{
-			"name": "x64-release",
-			"displayName": "x64 Release",
-			"description": "Sets release build type",
-			"inherits": "x64-debug",
-			"cacheVariables": {
-				"CMAKE_BUILD_TYPE": "Release"
-			}
-		},
-		{
-			"name": "macos-debug",
-			"displayName": "macOS Debug",
-			"description": "Sets debug build type",
-			"inherits": "base",
-			"architecture": {
-				"value": "arm64",
-				"strategy": "external"
-			},
-			"cacheVariables": {
-				"CMAKE_BUILD_TYPE": "Debug"
-			},
-			"condition": {
-				"type": "equals",
-				"lhs": "${hostSystemName}",
-				"rhs": "Darwin"
-			},
-			"vendor": {
-				"microsoft.com/VisualStudioSettings/CMake/1.0": {
-					"hostOS": ["macOS"]
-				}
-			}
-		},
-		{
-			"name": "macos-release",
-			"displayName": "macOS Release",
-			"description": "Sets release build type",
-			"inherits": "macos-debug",
+			"name": "release-vs2022",
+			"inherits": "debug-vs2022",
+			"displayName": "Release (VS 2022)",
+			"description": "Sets release build type and uses MSVC",
 			"cacheVariables": {
 				"CMAKE_BUILD_TYPE": "Release"
 			}
@@ -83,29 +59,22 @@
 	],
 	"buildPresets": [
 		{
-			"name": "default-build-windows",
-			"displayName": "Default",
-			"description": "Vanilla build",
-			"configurePreset": "x64-debug"
-		},
-		{
-			"name": "default-build-macos",
-			"displayName": "Default",
-			"description": "Vanilla build",
-			"configurePreset": "macos-debug"
-		},
-		{
-			"name": "verbose-build-windows",
+			"name": "verbose",
 			"displayName": "Verbose Build",
 			"description": "Passes -v to Ninja",
-			"configurePreset": "x64-debug",
-			"nativeToolOptions": ["-v"]
+			"configurePreset": "debug",
+			"nativeToolOptions": [
+				"-v"
+			]
 		},
 		{
-			"name": "verbose-build-macos",
+			"name": "verbose-vs2022",
 			"displayName": "Verbose Build",
-			"configurePreset": "macos-debug",
-			"inherits": "verbose-build-windows"
+			"description": "Passes /v:detailed to MSBuild. This is *very* verbose.",
+			"configurePreset": "debug-vs2022",
+			"nativeToolOptions": [
+				"/v:detailed"
+			]
 		}
 	]
 }
