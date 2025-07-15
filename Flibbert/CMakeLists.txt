@@ -42,12 +42,13 @@ add_library(Flibbert STATIC
         src/Flibbert/Core/EntryPoint.h
         src/Flibbert/Core/Log.cpp
         src/Flibbert/Core/Log.h
+        src/Flibbert/Core/Platform.h
         src/Flibbert/Core/PlatformDetection.h
         src/Flibbert/Core/StringName.cpp
         src/Flibbert/Core/StringName.h
         src/Flibbert/Core/StringUtils.cpp
         src/Flibbert/Core/StringUtils.h
-        src/Flibbert/Core/Platform.h
+        src/Flibbert/Core/ScopeGuard.h
         src/Flibbert/Core/Types.h
         src/Flibbert/Input/Input.cpp
         src/Flibbert/Input/Input.h
