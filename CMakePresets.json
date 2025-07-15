@@ -1,8 +1,8 @@
 {
-	"version": 3,
+	"version": 10,
 	"cmakeMinimumRequired": {
 		"major": 3,
-		"minor": 21,
+		"minor": 31,
 		"patch": 0
 	},
 	"configurePresets": [
@@ -14,7 +14,7 @@
 		{
 			"name": "debug",
 			"inherits": "base",
-			"displayName": "Debug",
+			"displayName": "Debug (Clang)",
 			"description": "Sets debug build type",
 			"generator": "Ninja",
 			"cacheVariables": {
@@ -26,16 +26,16 @@
 		{
 			"name": "release",
 			"inherits": "debug",
-			"displayName": "Release",
+			"displayName": "Release (Clang)",
 			"description": "Sets release build type",
 			"cacheVariables": {
 				"CMAKE_BUILD_TYPE": "Release"
 			}
 		},
 		{
-			"name": "debug-vs2022",
+			"name": "debug-msvc",
 			"inherits": "debug",
-			"displayName": "Debug (VS 2022)",
+			"displayName": "Debug (MSVC)",
 			"description": "Sets debug build type and uses MSVC",
 			"generator": "Visual Studio 17 2022",
 			"cacheVariables": {
@@ -48,9 +48,9 @@
 			}
 		},
 		{
-			"name": "release-vs2022",
-			"inherits": "debug-vs2022",
-			"displayName": "Release (VS 2022)",
+			"name": "release-msvc",
+			"inherits": "debug-msvc",
+			"displayName": "Release (MSVC)",
 			"description": "Sets release build type and uses MSVC",
 			"cacheVariables": {
 				"CMAKE_BUILD_TYPE": "Release"
@@ -59,8 +59,13 @@
 	],
 	"buildPresets": [
 		{
-			"name": "verbose",
-			"displayName": "Verbose Build",
+			"name": "debug",
+			"displayName": "Debug Build (Clang)",
+			"configurePreset": "debug"
+		},
+		{
+			"name": "debug-verbose",
+			"displayName": "Verbose Build (Clang)",
 			"description": "Passes -v to Ninja",
 			"configurePreset": "debug",
 			"nativeToolOptions": [
@@ -68,12 +73,61 @@
 			]
 		},
 		{
-			"name": "verbose-vs2022",
-			"displayName": "Verbose Build",
+			"name": "release",
+			"displayName": "Release Build (Clang)",
+			"configurePreset": "release"
+		},
+		{
+			"name": "debug-msvc",
+			"displayName": "Debug Build (MSVC)",
+			"configurePreset": "debug-msvc"
+		},
+		{
+			"name": "debug-msvc-verbose",
+			"displayName": "Verbose Build (MSVC)",
 			"description": "Passes /v:detailed to MSBuild. This is *very* verbose.",
-			"configurePreset": "debug-vs2022",
+			"configurePreset": "debug-msvc",
 			"nativeToolOptions": [
 				"/v:detailed"
+			]
+		},
+		{
+			"name": "release-msvc",
+			"displayName": "Release Build (MSVC)",
+			"configurePreset": "release-msvc"
+		}
+	],
+	"packagePresets": [
+		{
+			"name": "debug",
+			"displayName": "Debug Package (Clang)",
+			"configurePreset": "debug",
+			"generators": [
+				"ZIP"
+			]
+		},
+		{
+			"name": "release",
+			"displayName": "Release Package (Clang)",
+			"configurePreset": "release",
+			"generators": [
+				"ZIP"
+			]
+		},
+		{
+			"name": "debug-msvc",
+			"displayName": "Debug Package (MSVC)",
+			"configurePreset": "debug-msvc",
+			"generators": [
+				"ZIP"
+			]
+		},
+		{
+			"name": "release-msvc",
+			"displayName": "Release Package (MSVC)",
+			"configurePreset": "release-msvc",
+			"generators": [
+				"ZIP"
 			]
 		}
 	]

@@ -1,8 +1,6 @@
 #include "Demos/DemoMeshGeneration.h"
 
-#include "AssetPathsMacros.h"
-#include "glad.h"
-
+#include <glad.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 
@@ -21,8 +19,8 @@ namespace Demo
 
 		GenerateMesh();
 
-		m_Shader = Flibbert::Shader::Create(SHADER_DIR "/MeshGen.vert",
-		                                    SHADER_DIR "/MeshGen.frag");
+		m_Shader = Flibbert::Shader::Create("assets/shaders/MeshGen.vert",
+		                                    "assets/shaders/MeshGen.frag");
 		m_Shader->Bind();
 
 		m_Shader->BindUniformBlock("Matrices", 0);
@@ -43,7 +41,8 @@ namespace Demo
 
 	void DemoMeshGeneration::OnRender()
 	{
-		Flibbert::CameraBuffer buffer{m_Camera->GetProjectionMatrix(), m_Camera->GetViewMatrix()};
+		Flibbert::CameraBuffer buffer{m_Camera->GetProjectionMatrix(),
+		                              m_Camera->GetViewMatrix()};
 		m_CameraBuffer->SetData(&buffer, sizeof(Flibbert::CameraBuffer));
 
 		m_MeshGenUniformBuffer->SetData(&m_UniformBuffer, sizeof(UniformBufferObject));

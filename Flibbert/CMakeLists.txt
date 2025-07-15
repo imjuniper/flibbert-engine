@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.31)
 include(FetchContent)
 project(
         Flibbert
@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_MACOSX_RPATH 1)
 
 find_package(Git)
-if (Git_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/../.git")
+if (Git_FOUND AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
     # Update submodules as needed
     option(GIT_SUBMODULE "Check submodules during build" ON)
     if (GIT_SUBMODULE)
@@ -82,8 +82,8 @@ add_library(Flibbert STATIC
         src/Platform/OpenGL/OpenGLVertexArray.h)
 
 if (MSVC)
-	# Needed to support __VA_OPTS__(x) among other things
-	target_compile_options(Flibbert PUBLIC /Zc:preprocessor)
+    # Needed to support __VA_OPTS__(x) among other things
+    target_compile_options(Flibbert PUBLIC /Zc:preprocessor)
 endif()
 
 target_include_directories(Flibbert
@@ -96,6 +96,12 @@ target_precompile_headers(Flibbert PRIVATE src/fbtpch.h)
 target_compile_definitions(Flibbert PRIVATE RGFW_EXPORT FBT_PROFILE=0)
 
 target_link_libraries(Flibbert PUBLIC glm imgui spdlog)
+
+set_target_properties(Flibbert
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
+)
 
 if (APPLE)
     target_link_libraries(Flibbert

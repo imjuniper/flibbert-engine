@@ -1,7 +1,5 @@
 #include "Demos/DemoTexture2D.h"
 
-#include "AssetPathsMacros.h"
-
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 
@@ -42,10 +40,10 @@ namespace Demo
 		m_IndexBuffer =
 		    Flibbert::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 
-		m_Shader =
-		    Flibbert::Shader::Create(SHADER_DIR "/Basic.vert", SHADER_DIR "/Basic.frag");
+		m_Shader = Flibbert::Shader::Create("assets/shaders/Basic.vert",
+		                                    "assets/shaders/Basic.frag");
 		m_Shader->Bind();
-		m_Texture = Flibbert::Texture::Create(TEXTURE_DIR "/neko.png");
+		m_Texture = Flibbert::Texture::Create("assets/textures/neko.png");
 		m_Shader->SetUniform1i("u_Texture", 0);
 		m_Shader->BindUniformBlock("Matrices", 0);
 
@@ -61,7 +59,8 @@ namespace Demo
 	{
 		m_Texture->Bind(0);
 
-		const Flibbert::CameraBuffer buffer{m_Camera->GetProjectionMatrix(), m_Camera->GetViewMatrix()};
+		const Flibbert::CameraBuffer buffer{m_Camera->GetProjectionMatrix(),
+		                                    m_Camera->GetViewMatrix()};
 		m_CameraBuffer->SetData(&buffer, sizeof(Flibbert::CameraBuffer));
 
 		{

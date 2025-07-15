@@ -1,7 +1,5 @@
 #include "Demos/DemoFloppyBirb.h"
 
-#include "AssetPathsMacros.h"
-
 #include <Flibbert.h>
 
 #include <glm/gtc/type_ptr.hpp>
@@ -39,8 +37,8 @@ namespace Demo
 		m_IndexBuffer =
 		    Flibbert::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 
-		m_Shader = Flibbert::Shader::Create(SHADER_DIR "/DemoBirb/Birb.vert",
-		                                    SHADER_DIR "/DemoBirb/Birb.frag");
+		m_Shader = Flibbert::Shader::Create("assets/shaders/DemoBirb/Birb.vert",
+		                                    "assets/shaders/DemoBirb/Birb.frag");
 		m_Shader->Bind();
 		m_Shader->SetUniform4f("u_Color", {1, 1, 0, 1});
 		m_Shader->BindUniformBlock("Matrices", 0);
@@ -94,8 +92,8 @@ namespace Demo
 		m_IndexBuffer =
 		    Flibbert::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 
-		m_Shader = Flibbert::Shader::Create(SHADER_DIR "/DemoBirb/Pipe.vert",
-		                                    SHADER_DIR "/DemoBirb/Pipe.frag");
+		m_Shader = Flibbert::Shader::Create("assets/shaders/DemoBirb/Pipe.vert",
+		                                    "assets/shaders/DemoBirb/Pipe.frag");
 		m_Shader->Bind();
 		m_Shader->SetUniform4f("u_Color", {0, 0.5f, 0.1f, 1});
 		m_Shader->BindUniformBlock("Matrices", 0);
