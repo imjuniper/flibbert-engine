@@ -34,7 +34,7 @@ namespace Flibbert
 
 	private:
 		std::set<Key> m_KeysPressed;
-		uint64_t m_MouseButtonMask = 0; // @todo have a bitmask class like Godot?
+		uint8_t m_MouseButtonMask = 0; // @todo have a bitmask class like Godot?
 		glm::vec2 m_MousePosition = {};
 		CursorMode m_CursorMode = CursorMode::Normal;
 
