@@ -90,11 +90,8 @@ namespace Flibbert
 		auto mouseMovementEvent = dynamic_pointer_cast<InputEventMouseMovement>(event);
 		if (!mouseMovementEvent) return false;
 
-		float xDelta = mouseMovementEvent->MovementDelta.x * MovementSpeed;
-		float yDelta = mouseMovementEvent->MovementDelta.y * MovementSpeed;
-
-		position.x += xDelta;
-		position.y += -yDelta;
+		position.x += -mouseMovementEvent->MovementDelta.x;
+		position.y += mouseMovementEvent->MovementDelta.y;
 
 		return true;
 	}

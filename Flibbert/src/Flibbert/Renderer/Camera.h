@@ -62,10 +62,6 @@ namespace Flibbert
 		bool HandleInput(const std::shared_ptr<InputEvent>& event, glm::vec3& position) override;
 		glm::mat4 CalculateProjection(float aspectRatio) const override;
 		glm::mat4 CalculateView(const glm::vec3& position) const override;
-
-	private:
-		// @todo make it relative to size?
-		float MovementSpeed = 3.0f;
 	};
 #pragma endregion CameraMode
 
