@@ -20,6 +20,12 @@ namespace Flibbert
 		}
 		s_Instance = this;
 
+		// @todo Set the working directory to be the folder containing the exe by default,
+		// using GetModuleFileName on Windows, and /proc/self/exe on Linux. Also figure out
+		// what it is on macOS.
+
+		// std::filesystem::current_path(Platform::GetExecutablePath());
+
 		Input::Get().InputEventDispatch.Bind(
 		    FBT_BIND_EVENT(Application::DispatchInputEvent));
 
