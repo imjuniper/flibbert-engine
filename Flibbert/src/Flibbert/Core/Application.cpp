@@ -47,6 +47,8 @@ namespace Flibbert
 			FBT_PROFILE_SCOPE("ImGui Initialization");
 			IMGUI_CHECKVERSION();
 			ImGui::CreateContext();
+			ImGuiIO& io = ImGui::GetIO();
+			io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
 			m_Window->InitImGui();
 			m_Renderer->InitImGui();
 			ImGui::StyleColorsDark();
@@ -84,8 +86,8 @@ namespace Flibbert
 			{
 				FBT_PROFILE_SCOPE("Application::Run OnUpdate Frame");
 				m_Renderer->Clear();
-				OnUpdate(static_cast<float>(
-				    m_FrameTime)); // @todo see if using double would be better
+				// @todo see if using double would be better
+				OnUpdate(static_cast<float>(m_FrameTime));
 			}
 
 			{

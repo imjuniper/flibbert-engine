@@ -158,6 +158,7 @@ namespace Flibbert
 		switch (mode) {
 			case CursorMode::Normal:
 				RGFW_window_mouseUnhold(m_WindowHandle);
+				RGFW_window_showMouse(m_WindowHandle, true);
 				break;
 			case CursorMode::Hidden:
 				RGFW_window_mouseUnhold(m_WindowHandle);
