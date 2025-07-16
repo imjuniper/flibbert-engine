@@ -39,7 +39,9 @@
 			"description": "Sets debug build type and uses MSVC",
 			"generator": "Visual Studio 17 2022",
 			"cacheVariables": {
-				"CMAKE_BUILD_TYPE": "Debug"
+				"CMAKE_BUILD_TYPE": "Debug",
+				"CMAKE_C_COMPILER": "cl",
+				"CMAKE_CXX_COMPILER": "cl"
 			},
 			"condition": {
 				"type": "equals",
