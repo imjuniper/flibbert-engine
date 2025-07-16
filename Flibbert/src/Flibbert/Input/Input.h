@@ -2,7 +2,6 @@
 
 #include "Flibbert/Input/InputEvent.h"
 
-#include <glm/glm.hpp>
 #include <set>
 
 namespace Flibbert

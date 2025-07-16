@@ -29,9 +29,6 @@ namespace Demo
 		m_CameraBuffer = Flibbert::UniformBuffer::Create(sizeof(Flibbert::CameraBuffer), 0);
 		m_MeshGenUniformBuffer =
 		    Flibbert::UniformBuffer::Create(sizeof(UniformBufferObject), 1);
-
-		// Enable face culling for this demo
-		glEnable(GL_CULL_FACE);
 	}
 
 	void DemoMeshGeneration::OnUpdate(float ts)

@@ -3,8 +3,6 @@
 #include "Flibbert/Core/Application.h"
 #include "Platform/Desktop/Window.h"
 
-#include <rgfw/RGFW.h>
-
 namespace Flibbert
 {
 	Input* Input::s_Instance = nullptr;
