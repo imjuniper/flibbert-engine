@@ -36,3 +36,7 @@
 	/* Unknown compiler/platform */
 	#error "Unknown platform!"
 #endif // End of platform detection
+
+#if defined(FBT_PLATFORM_WINDOWS) || defined(FBT_PLATFORM_MACOS) || defined(FBT_PLATFORM_LINUX)
+	#define FBT_PLATFORM_DESKTOP
+#endif

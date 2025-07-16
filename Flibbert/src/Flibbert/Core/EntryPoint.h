@@ -5,7 +5,7 @@
 #include "Flibbert/Core/Application.h"
 #include "Flibbert/Debug/Instrumentor.h"
 
-#if defined(FBT_PLATFORM_WINDOWS) || defined(FBT_PLATFORM_MACOS) || defined(FBT_PLATFORM_LINUX)
+#ifdef FBT_PLATFORM_DESKTOP
 
 extern Flibbert::Application* Flibbert::CreateApplication(LaunchArguments arguments);
 
@@ -14,7 +14,7 @@ int main(int argc, char** argv)
 	Flibbert::Log::Init();
 
 	FBT_PROFILE_BEGIN_SESSION("Startup", "FlibbertProfile-Startup.json");
-	auto app = Flibbert::CreateApplication({ argc, argv });
+	auto app = Flibbert::CreateApplication({argc, argv});
 	FBT_PROFILE_END_SESSION();
 
 	FBT_PROFILE_BEGIN_SESSION("Runtime", "FlibbertProfile-Runtime.json");
