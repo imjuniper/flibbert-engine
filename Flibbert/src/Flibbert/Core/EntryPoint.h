@@ -5,7 +5,7 @@
 #include "Flibbert/Core/Application.h"
 #include "Flibbert/Debug/Instrumentor.h"
 
-#if defined(FBT_PLATFORM_WINDOWS) || defined(FBT_PLATFORM_MACOS)
+#if defined(FBT_PLATFORM_WINDOWS) || defined(FBT_PLATFORM_MACOS) || defined(FBT_PLATFORM_LINUX)
 
 extern Flibbert::Application* Flibbert::CreateApplication(LaunchArguments arguments);
 
