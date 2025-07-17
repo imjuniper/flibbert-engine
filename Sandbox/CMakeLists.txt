@@ -27,6 +27,8 @@ set_target_properties(Sandbox
         PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Sandbox"
         VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Sandbox"
+        INSTALL_RPATH $ORIGIN
+        BUILD_WITH_INSTALL_RPATH true
 )
 
 add_custom_command(
