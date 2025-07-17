@@ -7,6 +7,8 @@
 
 #include <imgui.h>
 
+#include <filesystem>
+
 namespace Flibbert
 {
 	Application* Application::s_Instance = nullptr;

@@ -2,6 +2,9 @@
 
 #include <rgfw/RGFW.h>
 
+#include <climits>
+#include <filesystem>
+
 #if defined(FBT_PLATFORM_WINDOWS)
 	#include <libloaderapi.h>
 #elif defined(FBT_PLATFORM_MACOS)
@@ -19,8 +22,13 @@ namespace Flibbert
 
 	bool Platform::GetExecutablePath(std::filesystem::path& executablePath)
 	{
-		static uint32_t initialSize = 400;
-		static uint32_t loopIncrement = 100;
+#if defined(MAX_PATH)
+		static uint32_t initialSize = MAX_PATH;
+#elif defined(PATH_MAX) && PATH_MAX != 0
+		static uint32_t initialSize = PATH_MAX;
+#else
+		static uint32_t initialSize = 150;
+#endif
 
 #if defined(FBT_PLATFORM_WINDOWS)
 		std::vector<TCHAR> buffer(initialSize); // fuck you windows
@@ -29,14 +37,16 @@ namespace Flibbert
 #endif
 
 #if defined(FBT_PLATFORM_WINDOWS)
-		DWORD length = 0;
-		do {
-			buffer.resize(buffer.size() + buffer);
-			length = GetModuleFileName(nullptr, buffer.data(), buffer.size());
+		while (true) {
+			DWORD length = GetModuleFileName(nullptr, buffer.data(), buffer.size());
 			if (length == 0) {
 				return false;
 			}
-		} while (length >= buffer.size());
+			if (length < buffer.size()) {
+				break;
+			}
+			buffer.resize(buffer.size() * 2);
+		}
 
 #elif defined(FBT_PLATFORM_MACOS)
 		uint32_t requiredBufferSize = buffer.size();
@@ -46,20 +56,21 @@ namespace Flibbert
 		}
 
 #elif defined(FBT_PLATFORM_LINUX)
-		ssize_t length;
-		do {
-			buffer.resize(buffer.size() + loopIncrement);
-			length = readlink("/proc/self/exe", buffer.data(), buffer.size());
+		while (true) {
+			ssize_t length = readlink("/proc/self/exe", buffer.data(), buffer.size());
 			if (length == -1) {
 				return false;
 			}
-		} while (buffer.size() == length);
+			if (buffer.size() < length) {
+				break;
+			}
+			buffer.resize(buffer.size() * 2);
+		}
 
 		buffer[length] = '\0';
 
 #endif
 
-		buffer.shrink_to_fit();
 		executablePath = buffer.data();
 		return true;
 	}
