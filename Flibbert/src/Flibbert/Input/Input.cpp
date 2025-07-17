@@ -1,18 +1,14 @@
-#include "Input.h"
+#include "Flibbert/Input/Input.h"
 
 #include "Flibbert/Core/Application.h"
 #include "Platform/Desktop/Window.h"
 
 namespace Flibbert
 {
-	Input* Input::s_Instance = nullptr;
-
 	Input& Input::Get()
 	{
-		if (!s_Instance) {
-			s_Instance = new Input();
-		}
-		return *s_Instance;
+		static Input instance;
+		return instance;
 	}
 
 	void Input::ProcessInputEvent(const std::shared_ptr<InputEvent>& event)

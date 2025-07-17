@@ -13,6 +13,10 @@ namespace Flibbert
 		using InputEventDispatcherDelegate =
 		    Delegate<void, const std::shared_ptr<InputEvent>&>;
 
+		Input() = default;
+		Input(const Input&) = delete;
+		Input& operator=(const Input&) = delete;
+
 		static Input& Get();
 
 		void ProcessInputEvent(const std::shared_ptr<InputEvent>& event);
@@ -36,8 +40,5 @@ namespace Flibbert
 		uint8_t m_MouseButtonMask = 0; // @todo have a bitmask class like Godot?
 		glm::vec2 m_MousePosition = {};
 		CursorMode m_CursorMode = CursorMode::Normal;
-
-	private:
-		static Input* s_Instance;
 	};
 } // namespace Flibbert
