@@ -21,8 +21,9 @@ namespace Flibbert
 		void SetClearColor(const glm::vec4& color) override;
 		void Clear() override;
 
-		void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer,
-		          Shader& shader, const glm::mat4& transform) const override;
+		void Draw(const std::shared_ptr<VertexArray>& vertexArray,
+		          const std::shared_ptr<Shader>& shader,
+		          glm::mat4 transform) const override;
 
 	private:
 		void OnWindowResized(Window& window, const glm::u32vec2& size);

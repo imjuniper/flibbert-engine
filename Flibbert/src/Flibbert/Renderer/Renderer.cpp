@@ -43,7 +43,7 @@ namespace Flibbert
 		return m_Backend->GetClearColor();
 	}
 
-	void Renderer::SetClearColor(const glm::vec4& color) const
+	void Renderer::SetClearColor(glm::vec4 color) const
 	{
 		return m_Backend->SetClearColor(color);
 	}
@@ -53,10 +53,10 @@ namespace Flibbert
 		return m_Backend->Clear();
 	}
 
-	void Renderer::Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer,
-	                    Shader& shader, const glm::mat4& transform) const
+	void Renderer::Draw(const std::shared_ptr<VertexArray>& vertexArray,
+	                    const std::shared_ptr<Shader>& shader, glm::mat4 transform) const
 	{
-		return m_Backend->Draw(vertexArray, indexBuffer, shader, transform);
+		return m_Backend->Draw(vertexArray, shader, transform);
 	}
 
 	Renderer& Renderer::Get()

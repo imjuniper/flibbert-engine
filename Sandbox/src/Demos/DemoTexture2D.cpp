@@ -29,16 +29,19 @@ namespace Demo
 		};
 		// clang-format on
 
-		m_VAO = Flibbert::VertexArray::Create();
 		m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices, sizeof(vertices));
 		Flibbert::BufferLayout layout = {
 		    {Flibbert::ShaderDataType::Float3, "a_Position"},
 		    {Flibbert::ShaderDataType::Float2, "a_TexCoord"},
 		};
 		m_VertexBuffer->SetLayout(layout);
-		m_VAO->AddBuffer(*m_VertexBuffer);
+
 		m_IndexBuffer =
 		    Flibbert::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
+
+		m_VAO = Flibbert::VertexArray::Create();
+		m_VAO->AddVertexBuffer(m_VertexBuffer);
+		m_VAO->SetIndexBuffer(m_IndexBuffer);
 
 		m_Shader = Flibbert::Shader::Create("assets/shaders/Basic.vert",
 		                                    "assets/shaders/Basic.frag");
@@ -65,12 +68,12 @@ namespace Demo
 
 		{
 			glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_TranslationA);
-			m_Renderer.Draw(*m_VAO, *m_IndexBuffer, *m_Shader, transform);
+			m_Renderer.Draw(m_VAO, m_Shader, transform);
 		}
 
 		{
 			glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_TranslationB);
-			m_Renderer.Draw(*m_VAO, *m_IndexBuffer, *m_Shader, transform);
+			m_Renderer.Draw(m_VAO, m_Shader, transform);
 		}
 	}
 

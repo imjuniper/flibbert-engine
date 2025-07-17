@@ -26,15 +26,18 @@ namespace Demo
 		};
 		// clang-format on
 
-		m_VAO = Flibbert::VertexArray::Create();
 		m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices, sizeof(vertices));
 		Flibbert::BufferLayout layout = {
 		    {Flibbert::ShaderDataType::Float2, "a_Position"},
 		};
 		m_VertexBuffer->SetLayout(layout);
-		m_VAO->AddBuffer(*m_VertexBuffer);
+
 		m_IndexBuffer =
 		    Flibbert::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
+
+		m_VAO = Flibbert::VertexArray::Create();
+		m_VAO->AddVertexBuffer(m_VertexBuffer);
+		m_VAO->SetIndexBuffer(m_IndexBuffer);
 
 		m_Shader = Flibbert::Shader::Create("assets/shaders/DemoBirb/Birb.vert",
 		                                    "assets/shaders/DemoBirb/Birb.frag");
@@ -81,15 +84,18 @@ namespace Demo
 		};
 		// clang-format on
 
-		m_VAO = Flibbert::VertexArray::Create();
 		m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices, sizeof(vertices));
 		Flibbert::BufferLayout layout = {
 		    {Flibbert::ShaderDataType::Float2, "a_Position"},
 		};
 		m_VertexBuffer->SetLayout(layout);
-		m_VAO->AddBuffer(*m_VertexBuffer);
+
 		m_IndexBuffer =
 		    Flibbert::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
+
+		m_VAO = Flibbert::VertexArray::Create();
+		m_VAO->AddVertexBuffer(m_VertexBuffer);
+		m_VAO->SetIndexBuffer(m_IndexBuffer);
 
 		m_Shader = Flibbert::Shader::Create("assets/shaders/DemoBirb/Pipe.vert",
 		                                    "assets/shaders/DemoBirb/Pipe.frag");
@@ -125,24 +131,21 @@ namespace Demo
 		{
 			glm::mat4 transform =
 			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position, 0));
-			m_Renderer.Draw(*m_Pipe.m_VAO, *m_Pipe.m_IndexBuffer, *m_Pipe.m_Shader,
-			                transform);
+			m_Renderer.Draw(m_Pipe.m_VAO, m_Pipe.m_Shader, transform);
 		}
 
 		{
 			glm::mat4 transform =
 			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position.x + 250.0f,
 			                                              m_Pipe.m_Position.y, 0));
-			m_Renderer.Draw(*m_Pipe.m_VAO, *m_Pipe.m_IndexBuffer, *m_Pipe.m_Shader,
-			                transform);
+			m_Renderer.Draw(m_Pipe.m_VAO, m_Pipe.m_Shader, transform);
 		}
 
 		// Bird
 		{
 			glm::mat4 transform =
 			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Birb.m_Position, 0));
-			m_Renderer.Draw(*m_Birb.m_VAO, *m_Birb.m_IndexBuffer, *m_Birb.m_Shader,
-			                transform);
+			m_Renderer.Draw(m_Birb.m_VAO, m_Birb.m_Shader, transform);
 		}
 	}
 

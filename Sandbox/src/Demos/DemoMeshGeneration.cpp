@@ -44,7 +44,7 @@ namespace Demo
 
 		m_MeshGenUniformBuffer->SetData(&m_UniformBuffer, sizeof(UniformBufferObject));
 
-		m_Renderer.Draw(*m_VAO, *m_IndexBuffer, *m_Shader, glm::mat4(1.0f));
+		m_Renderer.Draw(m_VAO, m_Shader, glm::mat4(1.0f));
 	}
 
 	void DemoMeshGeneration::OnImGuiRender()
@@ -174,14 +174,17 @@ namespace Demo
 
 		FBT_INFO("Triangle count {:d}", indices.size() / 3);
 
-		m_VAO = Flibbert::VertexArray::Create();
 		m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices.data(),
 		                                                vertices.size() * sizeof(float));
 		Flibbert::BufferLayout layout = {
 		    {Flibbert::ShaderDataType::Float3, "a_Position"},
 		};
 		m_VertexBuffer->SetLayout(layout);
-		m_VAO->AddBuffer(*m_VertexBuffer);
+
 		m_IndexBuffer = Flibbert::IndexBuffer::Create(indices.data(), indices.size());
+
+		m_VAO = Flibbert::VertexArray::Create();
+		m_VAO->AddVertexBuffer(m_VertexBuffer);
+		m_VAO->SetIndexBuffer(m_IndexBuffer);
 	}
 } // namespace Demo

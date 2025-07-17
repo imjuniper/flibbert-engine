@@ -23,11 +23,11 @@ namespace Flibbert
 		void ShutdownImGui() const;
 
 		[[nodiscard]] glm::vec4 GetClearColor() const;
-		void SetClearColor(const glm::vec4& color) const;
+		void SetClearColor(glm::vec4 color) const;
 		void Clear() const;
 
-		void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer,
-		          Shader& shader, const glm::mat4& transform) const;
+		void Draw(const std::shared_ptr<VertexArray>& vertexArray,
+		          const std::shared_ptr<Shader>& shader, glm::mat4 transform) const;
 
 	private:
 		std::unique_ptr<RendererBackend> m_Backend;

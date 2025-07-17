@@ -110,17 +110,17 @@ namespace Flibbert
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	void OpenGLRendererBackend::Draw(const VertexArray& vertexArray,
-	                                 const IndexBuffer& indexBuffer, Shader& shader,
-	                                 const glm::mat4& transform) const
+	void OpenGLRendererBackend::Draw(const std::shared_ptr<VertexArray>& vertexArray,
+	                                 const std::shared_ptr<Shader>& shader,
+	                                 const glm::mat4 transform) const
 	{
-		vertexArray.Bind();
-		indexBuffer.Bind();
-		shader.Bind();
+		vertexArray->Bind();
+		shader->Bind();
 
-		shader.SetUniformMat4f("u_Transform", transform);
+		shader->SetUniformMat4f("u_Transform", transform);
 
-		glDrawElements(GL_TRIANGLES, indexBuffer.GetCount(), GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(),
+		               GL_UNSIGNED_INT, nullptr);
 	}
 
 	void OpenGLRendererBackend::OnWindowResized(Window& window, const glm::u32vec2& size)
