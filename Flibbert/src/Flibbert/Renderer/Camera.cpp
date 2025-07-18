@@ -24,21 +24,24 @@ namespace Flibbert
 		if (Input::Get().IsKeyPressed(Key::W)) {
 			position += ForwardDirection * MovementSpeed * ts;
 			moved = true;
-		} else if (Input::Get().IsKeyPressed(Key::S)) {
+		}
+		if (Input::Get().IsKeyPressed(Key::S)) {
 			position -= ForwardDirection * MovementSpeed * ts;
 			moved = true;
 		}
 		if (Input::Get().IsKeyPressed(Key::A)) {
 			position -= RightDirection * MovementSpeed * ts;
 			moved = true;
-		} else if (Input::Get().IsKeyPressed(Key::D)) {
+		}
+		if (Input::Get().IsKeyPressed(Key::D)) {
 			position += RightDirection * MovementSpeed * ts;
 			moved = true;
 		}
 		if (Input::Get().IsKeyPressed(Key::Q)) {
 			position -= UpDirection * MovementSpeed * ts;
 			moved = true;
-		} else if (Input::Get().IsKeyPressed(Key::E)) {
+		}
+		if (Input::Get().IsKeyPressed(Key::E)) {
 			position += UpDirection * MovementSpeed * ts;
 			moved = true;
 		}
