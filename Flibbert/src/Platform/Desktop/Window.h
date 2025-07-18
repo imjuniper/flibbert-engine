@@ -34,7 +34,6 @@ namespace Flibbert
 		void ShutdownImGui();
 
 		void ProcessEvents();
-		void SwapBuffers();
 
 		[[nodiscard]] glm::u32vec2 GetSize() const;
 		[[nodiscard]] glm::u32vec2 GetPosition() const;

@@ -14,6 +14,8 @@ add_library(imgui STATIC
         "${IMGUI_PATH}/imstb_rectpack.h"
         "${IMGUI_PATH}/imstb_textedit.h"
         "${IMGUI_PATH}/imstb_truetype.h"
+        "${IMGUI_PATH}/backends/imgui_impl_dx11.h"
+        "${IMGUI_PATH}/backends/imgui_impl_dx11.cpp"
         "${IMGUI_PATH}/backends/imgui_impl_opengl3.h"
         "${IMGUI_PATH}/backends/imgui_impl_opengl3.cpp"
         "${IMGUI_PATH}/backends/imgui_impl_opengl3_loader.h"

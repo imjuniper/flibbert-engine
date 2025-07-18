@@ -80,7 +80,9 @@ add_library(Flibbert STATIC
         src/Platform/OpenGL/OpenGLTexture.cpp
         src/Platform/OpenGL/OpenGLTexture.h
         src/Platform/OpenGL/OpenGLVertexArray.cpp
-        src/Platform/OpenGL/OpenGLVertexArray.h)
+        src/Platform/OpenGL/OpenGLVertexArray.h
+        src/Platform/D3D11/D3D11RendererBackend.cpp
+        src/Platform/D3D11/D3D11RendererBackend.h)
 
 if (MSVC)
     # Needed to support __VA_OPTS__(x) among other things
@@ -103,6 +105,10 @@ set_target_properties(Flibbert
         ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
 )
+
+if (WIN32)
+    target_link_libraries(Flibbert PRIVATE d3d11.lib dxgi.lib dxguid.lib uuid.lib)
+endif ()
 
 if (APPLE)
     target_link_libraries(Flibbert

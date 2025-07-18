@@ -105,7 +105,7 @@ namespace Flibbert
 				m_Renderer->EndImGuiFrame();
 			}
 
-			m_Window->SwapBuffers();
+			m_Renderer->Present();
 		}
 	}
 

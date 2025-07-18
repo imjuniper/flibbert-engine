@@ -1,5 +1,6 @@
 #include "Platform/Desktop/Window.h"
 
+#include "Flibbert/Core/Application.h"
 #include "Flibbert/Input/Input.h"
 #include "Flibbert/Renderer/Renderer.h"
 
@@ -8,6 +9,7 @@
 #define RGFW_IMGUI_IMPLEMENTATION
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wc++11-narrowing"
+
 #include <rgfw/imgui_impl_rgfw.h> // Also includes RGFW.h
 #pragma clang diagnostic pop
 
@@ -136,11 +138,6 @@ namespace Flibbert
 					break;
 			}
 		}
-	}
-
-	void Window::SwapBuffers()
-	{
-		RGFW_window_swapBuffers(m_WindowHandle);
 	}
 
 	glm::u32vec2 Window::GetSize() const

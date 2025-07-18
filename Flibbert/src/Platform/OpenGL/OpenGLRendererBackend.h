@@ -25,6 +25,8 @@ namespace Flibbert
 		          const std::shared_ptr<Shader>& shader,
 		          glm::mat4 transform) const override;
 
+		void Present() const override;
+
 	private:
 		void OnWindowResized(Window& window, const glm::u32vec2& size);
 	};

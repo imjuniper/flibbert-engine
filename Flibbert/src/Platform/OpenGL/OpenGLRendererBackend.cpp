@@ -123,6 +123,12 @@ namespace Flibbert
 		               GL_UNSIGNED_INT, nullptr);
 	}
 
+	void OpenGLRendererBackend::Present() const
+	{
+		// @todo figure out how to do that without rgfw?
+		RGFW_window_swapBuffers(Application::Get().GetWindow().GetNativeWindow());
+	}
+
 	void OpenGLRendererBackend::OnWindowResized(Window& window, const glm::u32vec2& size)
 	{
 		glViewport(0, 0, size.x, size.y);

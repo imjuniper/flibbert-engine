@@ -29,6 +29,8 @@ namespace Flibbert
 		void Draw(const std::shared_ptr<VertexArray>& vertexArray,
 		          const std::shared_ptr<Shader>& shader, glm::mat4 transform) const;
 
+		void Present() const;
+
 	private:
 		std::unique_ptr<RendererBackend> m_Backend;
 
