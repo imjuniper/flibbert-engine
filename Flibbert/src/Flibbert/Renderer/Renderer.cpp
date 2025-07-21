@@ -64,8 +64,9 @@ namespace Flibbert
 		return m_Backend->Draw(vertexArray, shader, transform);
 	}
 
-	void Renderer::Present() const
+	void Renderer::Present()
 	{
+		++m_FrameCount;
 		return m_Backend->Present();
 	}
 
