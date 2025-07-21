@@ -78,6 +78,7 @@ namespace Flibbert
 
 		void SetCameraMode(const std::shared_ptr<CameraMode>& mode);
 		void SetPosition(const glm::vec3& position);
+		glm::vec3 GetPosition() const;
 
 		const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
 		const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <filesystem>
+
 namespace Flibbert
 {
 	class Shader
@@ -13,6 +15,7 @@ namespace Flibbert
 		virtual void SetUniform1i(std::string_view name, int value) = 0;
 		virtual void SetUniform1f(std::string_view name, float value) = 0;
 		virtual void SetUniform2f(std::string_view name, const glm::vec2& value) = 0;
+		virtual void SetUniform3f(std::string_view name, const glm::vec3& value) = 0;
 		virtual void SetUniform4f(std::string_view name, const glm::vec4& value) = 0;
 		virtual void SetUniformMat4f(std::string_view name, const glm::mat4& value) = 0;
 
@@ -25,6 +28,8 @@ namespace Flibbert
 		static std::shared_ptr<Shader> Create(std::string_view name,
 		                                      std::string_view vertexSrc,
 		                                      std::string_view fragmentSrc);
+
+		static std::string LoadAndPreprocessShader(const std::filesystem::path& filepath);
 
 	protected:
 		std::string m_Name;

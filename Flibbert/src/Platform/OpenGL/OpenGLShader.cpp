@@ -2,8 +2,6 @@
 
 #include <glad.h>
 
-#include <fstream>
-
 namespace Flibbert
 {
 	OpenGLShader::OpenGLShader(std::string_view vertexShaderFilepath,
@@ -11,8 +9,8 @@ namespace Flibbert
 	    : m_VertexShaderFilePath(vertexShaderFilepath),
 	      m_FragmentShaderFilePath(fragmentShaderFilepath), m_RendererID(0)
 	{
-		std::string vertexShader = LoadShader(vertexShaderFilepath);
-		std::string fragmentShader = LoadShader(fragmentShaderFilepath);
+		const auto vertexShader = LoadAndPreprocessShader(m_VertexShaderFilePath);
+		const auto fragmentShader = LoadAndPreprocessShader(m_FragmentShaderFilePath);
 
 		m_RendererID = CreateShader(vertexShader, fragmentShader);
 	}
@@ -20,16 +18,6 @@ namespace Flibbert
 	OpenGLShader::~OpenGLShader()
 	{
 		glDeleteProgram(m_RendererID);
-	}
-
-	std::string OpenGLShader::LoadShader(std::string_view filepath)
-	{
-		std::ifstream stream(filepath.data());
-
-		std::stringstream ss;
-		ss << stream.rdbuf();
-
-		return ss.str();
 	}
 
 	uint32_t OpenGLShader::CompileShader(uint32_t type, const std::string& source)
@@ -100,6 +88,11 @@ namespace Flibbert
 		glUniform2f(GetUniformLocation(name), value.x, value.y);
 	}
 
+	void OpenGLShader::SetUniform3f(std::string_view name, const glm::vec3& value)
+	{
+		glUniform3f(GetUniformLocation(name), value.x, value.y, value.z);
+	}
+
 	void OpenGLShader::SetUniform4f(std::string_view name, const glm::vec4& value)
 	{
 		glUniform4f(GetUniformLocation(name), value.x, value.y, value.z, value.w);
@@ -118,7 +111,7 @@ namespace Flibbert
 
 	int OpenGLShader::GetUniformLocation(std::string_view name)
 	{
-		int location = glGetUniformLocation(m_RendererID, name.data());
+		const int location = glGetUniformLocation(m_RendererID, name.data());
 		if (location == -1) {
 			FBT_CORE_WARN("Uniform {} doesn't exist", name);
 		}

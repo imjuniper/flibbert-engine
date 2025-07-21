@@ -47,6 +47,9 @@ namespace Demo
 
 		m_MeshGenUniformBuffer->SetData(&m_UniformBuffer, sizeof(UniformBufferObject));
 
+		m_Shader->Bind();
+		m_Shader->SetUniform3f("u_CameraPosition", m_Camera->GetPosition());
+
 		m_Renderer.Draw(m_VAO, m_Shader, glm::mat4(1.0f));
 	}
 
@@ -62,6 +65,15 @@ namespace Demo
 
 		if (ImGui::Button("Regenerate")) {
 			GenerateMesh();
+		}
+
+		if (ImGui::Button("Reload shaders")) {
+			m_Shader = Flibbert::Shader::Create("assets/shaders/MeshGen.vert",
+							    "assets/shaders/MeshGen.frag");
+			m_Shader->Bind();
+
+			m_Shader->BindUniformBlock("Matrices", 0);
+			m_Shader->BindUniformBlock("UniformBufferObject", 1);
 		}
 
 		constexpr uint16_t sideLengthStep = 1;

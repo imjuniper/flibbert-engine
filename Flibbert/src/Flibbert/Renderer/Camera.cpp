@@ -166,4 +166,9 @@ namespace Flibbert
 		m_Position = position;
 		m_ViewMatrix = m_CameraMode->CalculateView(m_Position);
 	}
+
+	glm::vec3 Camera::GetPosition() const
+	{
+		return m_Position;
+	}
 } // namespace Flibbert

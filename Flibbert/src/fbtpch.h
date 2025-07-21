@@ -13,6 +13,7 @@
 
 #include "Flibbert/Core/AssertionMacros.h"
 #include "Flibbert/Core/Log.h"
+#include "Flibbert/Core/ScopeGuard.h"
 #include "Flibbert/Debug/Instrumentor.h"
 
 #include <algorithm>
