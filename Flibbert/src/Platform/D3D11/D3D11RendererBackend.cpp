@@ -30,12 +30,26 @@ namespace Flibbert
 			return;
 		}
 
-		constexpr uint32_t featureLevelCount = 1;
-		D3D_FEATURE_LEVEL featureLevels[featureLevelCount] = {D3D_FEATURE_LEVEL_11_1};
+		uint32_t deviceFlags = 0;
+#if !defined(NDEBUG)
+		deviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
 
-		if (FAILED(D3D11CreateDevice(m_Adapter, D3D_DRIVER_TYPE_UNKNOWN, nullptr, 0,
-		                             featureLevels, featureLevelCount, D3D11_SDK_VERSION,
-		                             &m_Device, nullptr, &m_DeviceContext))) {
+		D3D_FEATURE_LEVEL featureLevels[] = {D3D_FEATURE_LEVEL_11_1};
+
+		const auto hresult = D3D11CreateDevice(
+		    m_Adapter,
+		    D3D_DRIVER_TYPE_UNKNOWN,
+		    nullptr,
+		    deviceFlags,
+		    featureLevels,
+		    ARRAYSIZE(featureLevels),
+		    D3D11_SDK_VERSION,
+		    &m_Device,
+		    &m_FeatureLevel,
+		    &m_DeviceContext);
+
+		if (FAILED(hresult)) {
 			m_Adapter->Release();
 			m_Factory->Release();
 			FBT_CORE_ENSURE_MSG(false,
@@ -44,14 +58,14 @@ namespace Flibbert
 		}
 
 		static DXGI_SWAP_CHAIN_DESC swapChainDesc{};
+		ZeroMemory(&swapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC));
 		swapChainDesc.BufferCount = 2;
-		swapChainDesc.BufferDesc.Width = nativeWindow->r.w;
-		swapChainDesc.BufferDesc.Height = nativeWindow->r.h;
 		swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 		swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 		swapChainDesc.OutputWindow = nativeWindow->src.window;
 		swapChainDesc.SampleDesc.Count = 1;
-		swapChainDesc.SampleDesc.Quality = 0;
+		swapChainDesc.SampleDesc.Quality = 0; // vendor-specific flag
+		swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_SEQUENTIAL;
 		swapChainDesc.Windowed = TRUE;
 		swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
@@ -65,6 +79,18 @@ namespace Flibbert
 		const glm::u32vec2 windowSize = {nativeWindow->r.w, nativeWindow->r.h};
 		SetupRenderTargets(windowSize);
 		SetupViewport(windowSize);
+	}
+
+	D3D11RendererBackend::~D3D11RendererBackend()
+	{
+		m_SwapChain->Release();
+		m_RenderTargetView->Release();
+		m_DepthStencilView->Release();
+
+		m_DeviceContext->Release();
+		m_Device->Release();
+		m_Adapter->Release();
+		m_Factory->Release();
 	}
 
 	void D3D11RendererBackend::InitImGui()
@@ -142,22 +168,16 @@ namespace Flibbert
 
 		// Depth Stencil View
 		ID3D11Texture2D* depthStencilTexture = nullptr;
-		D3D11_TEXTURE2D_DESC depthStencilTextureDesc{};
-		depthStencilTextureDesc.Width = size.x;
-		depthStencilTextureDesc.Height = size.y;
-		depthStencilTextureDesc.MipLevels = 1;
-		depthStencilTextureDesc.ArraySize = 1;
-		depthStencilTextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-		depthStencilTextureDesc.SampleDesc.Count = 1;
-		depthStencilTextureDesc.SampleDesc.Quality = 0;
-		depthStencilTextureDesc.Usage = D3D11_USAGE_DEFAULT;
-		depthStencilTextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+		CD3D11_TEXTURE2D_DESC depthStencilTextureDesc(
+		    DXGI_FORMAT_D24_UNORM_S8_UINT,
+		    size.x,
+		    size.y,
+		    1, // This depth stencil view has only one texture.
+		    1, // Use a single mipmap level.
+		    D3D11_BIND_DEPTH_STENCIL);
 		m_Device->CreateTexture2D(&depthStencilTextureDesc, nullptr, &depthStencilTexture);
 
-		D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc{};
-		depthStencilViewDesc.Format = depthStencilTextureDesc.Format;
-		depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-		depthStencilViewDesc.Texture2D.MipSlice = 0;
+		CD3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc(D3D11_DSV_DIMENSION_TEXTURE2D);
 		m_Device->CreateDepthStencilView(depthStencilTexture, &depthStencilViewDesc,
 		                                 &m_DepthStencilView);
 
@@ -170,12 +190,11 @@ namespace Flibbert
 	void D3D11RendererBackend::SetupViewport(const glm::u32vec2 size)
 	{
 		D3D11_VIEWPORT viewport;
+		ZeroMemory(&viewport, sizeof(D3D11_VIEWPORT));
 		viewport.Width = static_cast<float>(size.x);
 		viewport.Height = static_cast<float>(size.y);
 		viewport.MinDepth = 0.0f;
 		viewport.MaxDepth = 1.0f;
-		viewport.TopLeftX = 0;
-		viewport.TopLeftY = 0;
 		m_DeviceContext->RSSetViewports(1, &viewport);
 	}
 } // namespace Flibbert

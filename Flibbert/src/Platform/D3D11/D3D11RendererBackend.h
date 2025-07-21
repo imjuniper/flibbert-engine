@@ -9,6 +9,7 @@ struct ID3D11DeviceContext;
 struct IDXGISwapChain;
 struct ID3D11RenderTargetView;
 struct ID3D11DepthStencilView;
+enum D3D_FEATURE_LEVEL;
 
 namespace Flibbert
 {
@@ -18,6 +19,7 @@ namespace Flibbert
 	{
 	public:
 		D3D11RendererBackend();
+		~D3D11RendererBackend() override;
 
 		void InitImGui() override;
 		void BeginImGuiFrame() override;
@@ -40,9 +42,11 @@ namespace Flibbert
 		void SetupViewport(glm::u32vec2 size);
 
 	private:
+		// @todo look into Microsoft::WRL::ComPtr?
 		IDXGIFactory* m_Factory = nullptr;
 		IDXGIAdapter* m_Adapter = nullptr;
 		ID3D11Device* m_Device = nullptr;
+		D3D_FEATURE_LEVEL m_FeatureLevel;
 		ID3D11DeviceContext* m_DeviceContext = nullptr;
 		IDXGISwapChain* m_SwapChain = nullptr;
 
