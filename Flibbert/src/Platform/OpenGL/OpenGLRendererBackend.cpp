@@ -67,6 +67,9 @@ namespace Flibbert
 		}
 #endif
 
+		// Disable VSync
+		RGFW_window_swapInterval(window.GetNativeWindow(), 0);
+
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_LINE_SMOOTH);
