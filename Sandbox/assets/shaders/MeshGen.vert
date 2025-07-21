@@ -20,7 +20,9 @@ layout (std140) uniform UniformBufferObject {
     float _FrequencyVarianceLowerBound;
     float _FrequencyVarianceUpperBound;
     float _SlopeDamping;
-    vec4 _AmbientLight;
+    vec3 _AmbientLight;
+    float _FogDensity;
+    vec3 _FogColor;
 };
 
 layout (std140) uniform Matrices
@@ -34,7 +36,7 @@ uniform mat4 u_Transform;
 layout(location = 0) in vec3 a_Position;
 
 // This is what the vertex shader will output and send to the fragment shader.
-layout(location = 2) out vec3 pos;
+layout(location = 1) out vec3 pos;
 
 #define PI 3.141592653589793238462
 

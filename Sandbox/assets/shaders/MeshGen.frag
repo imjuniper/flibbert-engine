@@ -20,11 +20,13 @@ layout (std140) uniform UniformBufferObject {
     float _FrequencyVarianceLowerBound;
     float _FrequencyVarianceUpperBound;
     float _SlopeDamping;
-    vec4 _AmbientLight;
+    vec3 _AmbientLight;
+    float _FogDensity;
+    vec3 _FogColor;
 };
 
 // These are the variables that we expect to receive from the vertex shader
-layout(location = 2) in vec3 pos;
+layout(location = 1) in vec3 pos;
 
 // This is what the fragment shader will output, usually just a pixel color
 layout(location = 0) out vec4 frag_color;
@@ -186,11 +188,19 @@ void main() {
 
     // Direct light cares about the diffuse result, ambient light does not
     vec4 direct_light = albedo * ndotl;
-    vec4 ambient_light = albedo * _AmbientLight;
+    vec4 ambient_light = albedo * vec4(_AmbientLight, 1);
 
     // Combine lighting values, clip to prevent pixel values greater than 1 which would really really mess up the gamma correction below
     vec4 lit = clamp(direct_light + ambient_light, vec4(0), vec4(1));
 
     // Convert from linear rgb to srgb for proper color output, ideally you'd do this as some final post processing effect because otherwise you will need to revert this gamma correction elsewhere
-    frag_color = pow(lit, vec4(2.2));
+    vec4 lit_srgb = pow(lit, vec4(2.2));
+
+    // most basic-ass fog, with some nice magic numbers instead of uniforms because i'm too lazy
+    float zFar = 1000.0f;
+    float zNear = 0.1f;
+    float depth = zNear * zFar / (zFar + gl_FragCoord.z * (zNear - zFar));
+    float fogFactor = exp2(-pow(depth * _FogDensity, 2));
+
+    frag_color = mix(vec4(_FogColor, 1.0f), lit_srgb, fogFactor);
 }

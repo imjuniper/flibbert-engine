@@ -38,6 +38,9 @@ namespace Demo
 
 	void DemoMeshGeneration::OnRender()
 	{
+		const auto clearColor = glm::vec4(m_UniformBuffer.FogColor, 1.0f);
+		Flibbert::Renderer::Get().SetClearColor(clearColor);
+
 		Flibbert::CameraBuffer buffer{m_Camera->GetProjectionMatrix(),
 		                              m_Camera->GetViewMatrix()};
 		m_CameraBuffer->SetData(&buffer, sizeof(Flibbert::CameraBuffer));
@@ -67,7 +70,7 @@ namespace Demo
 			ImGui::Indent(16.0f);
 			ImGui::InputScalar("Side Length", ImGuiDataType_U16, &m_SideLength,
 			                   &sideLengthStep, &sideLengthStepFast);
-			ImGui::SliderFloat("Mesh Scale", &m_MeshScale, 0.0f, 1.0f);
+			ImGui::SliderFloat("Mesh Scale", &m_MeshScale, 0.0f, 10.0f);
 			ImGui::Unindent(16.0f);
 		}
 
@@ -119,12 +122,19 @@ namespace Demo
 			ImGui::Unindent(16.0f);
 		}
 
+		if (ImGui::CollapsingHeader("Fog Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
+			ImGui::Indent(16.0f);
+			ImGui::ColorEdit3("Fog Color", glm::value_ptr(m_UniformBuffer.FogColor));
+			ImGui::SliderFloat("Fog Density", &m_UniformBuffer.FogDensity, 0.0f, 1.0f);
+			ImGui::Unindent(16.0f);
+		}
+
 		if (ImGui::CollapsingHeader("Light Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
 			ImGui::Indent(16.0f);
 			ImGui::SliderFloat3("Light Direction",
 			                    glm::value_ptr(m_UniformBuffer.LightDirection), -1.0f,
 			                    1.0f);
-			ImGui::ColorEdit4("Ambient Light",
+			ImGui::ColorEdit3("Ambient Light",
 			                  glm::value_ptr(m_UniformBuffer.AmbientLight));
 			ImGui::Unindent(16.0f);
 		}

@@ -26,8 +26,10 @@ namespace Demo
 		float FrequencyVarianceLowerBound;
 		float FrequencyVarianceUpperBound;
 		float SlopeDamping;
-		float wtf;
-		glm::vec4 AmbientLight;
+		float _padding;
+		glm::vec3 AmbientLight;
+		float FogDensity;
+		glm::vec3 FogColor;
 	};
 
 	class DemoMeshGeneration : public Demo
@@ -55,35 +57,36 @@ namespace Demo
 
 		std::unique_ptr<Flibbert::Camera> m_Camera;
 
-		// Yeah this is ugly
-		UniformBufferObject m_UniformBuffer{
-			    {0.8f, 0.04f, -0.6f},
-			    0.f,
-			    30.f,
-			    50.f,
-			    {0.f, 0.f},
-			    100.f,
-			    10,
-			    0.45f,
-			    1.0f,
-			    {0.0f, 50.0f, 0.0f},
-			    0,
-			    1.0f,
-			    2.0f,
-			    {0.9f, 0.98f},
-			    {0.366f, 0.373f, 0.078f, 1.0f},
-			    {0.216f, 0.144f, 0.144f, 1.0f},
-			    0.0f,
-			    0.0f,
-			    0.2f,
-			    1.0f,
-			    glm::vec4(1.0f)
-			    //{0.411765f, 0.411765f, 0.411765f, 1.f} // Godot DIM_GRAY
-			};
-
 		bool m_EnableWireframe = false;
 
-		uint16_t m_SideLength = 400;
-		float m_MeshScale = 0.5f;
+		uint16_t m_SideLength = 800;
+		float m_MeshScale = 1.0f;
+
+		// Yeah this is ugly
+		UniformBufferObject m_UniformBuffer{
+		    .LightDirection = {0.8f, 0.04f, -0.6f},
+		    .GradientRotation = 0.f,
+		    .NoiseRotation = 30.f,
+		    .TerrainHeight = 50.f,
+		    .AngularVariance = {0.f, 0.f},
+		    .Scale = 100.f,
+		    .Octaves = 10,
+		    .AmplitudeDecay = 0.45f,
+		    .NormalStrength = 1.0f,
+		    .Offset = {0.0f, 50.0f, 0.0f},
+		    .Seed = 0,
+		    .InitialAmplitude = 1.0f,
+		    .Lacunarity = 2.0f,
+		    .SlopeRange = {0.9f, 0.98f},
+		    .LowSlopeColor = {0.366f, 0.373f, 0.078f, 1.0f},
+		    .HighSlopeColor = {0.216f, 0.144f, 0.144f, 1.0f},
+		    .FrequencyVarianceLowerBound = 0.0f,
+		    .FrequencyVarianceUpperBound = 0.0f,
+		    .SlopeDamping = 0.2f,
+		    .AmbientLight = glm::vec3(1.0f),
+		    .FogDensity = 0.015f,
+		    .FogColor = glm::vec3(0.67f, 0.79f, 0.8f),
+		    //{0.411765f, 0.411765f, 0.411765f, 1.f} // Godot DIM_GRAY
+		};
 	};
 } // namespace Demo
