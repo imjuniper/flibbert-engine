@@ -7,14 +7,11 @@
 // but I want to understand it first
 
 // Thanks Hazel <3
-#define FBT_BIND_EVENT(function)                                                                   \
-	[this](auto&&... args) -> decltype(auto) {                                                 \
-		return this->function(std::forward<decltype(args)>(args)...);                      \
-	}
+#define FBT_BIND_EVENT(function) FBT_BIND_EVENT_OBJ(this, function)
 
 #define FBT_BIND_EVENT_OBJ(objectPtr, function)                                                    \
 	[objectPtr](auto&&... args) -> decltype(auto) {                                            \
-		return (objectPtr)->function(std::forward<decltype(args)>(args)...);                 \
+		return (objectPtr)->function(std::forward<decltype(args)>(args)...);               \
 	}
 
 namespace Flibbert

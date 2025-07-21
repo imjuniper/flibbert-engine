@@ -33,19 +33,21 @@ namespace Flibbert
 
 		void Present() const override;
 
-		// temp public
-		IDXGISwapChain* m_SwapChain;
-
 	private:
 		void OnWindowResized(Window& window, const glm::u32vec2& size);
 
-		IDXGIFactory* m_Factory;
-		IDXGIAdapter* m_Adapter;
-		ID3D11Device* m_Device;
-		ID3D11DeviceContext* m_DeviceContext;
+		void SetupRenderTargets(glm::u32vec2 size);
+		void SetupViewport(glm::u32vec2 size);
 
-		ID3D11RenderTargetView* m_RenderTargetView;
-		ID3D11DepthStencilView* m_DepthStencilView;
+	private:
+		IDXGIFactory* m_Factory = nullptr;
+		IDXGIAdapter* m_Adapter = nullptr;
+		ID3D11Device* m_Device = nullptr;
+		ID3D11DeviceContext* m_DeviceContext = nullptr;
+		IDXGISwapChain* m_SwapChain = nullptr;
+
+		ID3D11RenderTargetView* m_RenderTargetView = nullptr;
+		ID3D11DepthStencilView* m_DepthStencilView = nullptr;
 	};
 
 } // namespace Flibbert

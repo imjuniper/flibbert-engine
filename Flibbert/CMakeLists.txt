@@ -81,8 +81,16 @@ add_library(Flibbert STATIC
         src/Platform/OpenGL/OpenGLTexture.h
         src/Platform/OpenGL/OpenGLVertexArray.cpp
         src/Platform/OpenGL/OpenGLVertexArray.h
+        src/Platform/D3D11/D3D11Buffer.cpp
+        src/Platform/D3D11/D3D11Buffer.h
         src/Platform/D3D11/D3D11RendererBackend.cpp
-        src/Platform/D3D11/D3D11RendererBackend.h)
+        src/Platform/D3D11/D3D11RendererBackend.h
+        src/Platform/D3D11/D3D11Shader.cpp
+        src/Platform/D3D11/D3D11Shader.h
+        src/Platform/D3D11/D3D11Texture.cpp
+        src/Platform/D3D11/D3D11Texture.h
+        src/Platform/D3D11/D3D11VertexArray.cpp
+        src/Platform/D3D11/D3D11VertexArray.h)
 
 if (MSVC)
     # Needed to support __VA_OPTS__(x) among other things
