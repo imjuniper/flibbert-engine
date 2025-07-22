@@ -96,9 +96,10 @@ void main() {
 
     // Specular
     float specularStrength = 0.5;
+    float shininess = 64;
     vec3 viewDirection = normalize(u_ViewPosition - vertexData.Position);
-    vec3 reflectDirection = reflect(-_LightDirection, normal);
-    float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), 32);
+    vec3 halfway = normalize(_LightDirection + viewDirection);
+    float spec = pow(max(dot(normal, halfway), 0.0), shininess);
     vec4 specular_light = albedo * specularStrength * spec * lightColor;
 
     // Add lighting passes
