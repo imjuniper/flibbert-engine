@@ -68,6 +68,7 @@ namespace Flibbert
 #endif
 
 		glEnable(GL_CULL_FACE);
+		glFrontFace(GL_CW);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_LINE_SMOOTH);
 		glEnable(GL_BLEND);
