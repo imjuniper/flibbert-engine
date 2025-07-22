@@ -143,6 +143,17 @@ namespace Flibbert
 		RGFW_window_swapBuffers(m_WindowHandle);
 	}
 
+	void Window::SetVSync(const bool enabled)
+	{
+		m_VSync = enabled;
+		RGFW_window_swapInterval(m_WindowHandle, m_VSync);
+	}
+
+	bool Window::IsVSyncEnabled() const
+	{
+		return m_VSync;
+	}
+
 	glm::u32vec2 Window::GetSize() const
 	{
 		return m_Size;

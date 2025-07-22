@@ -36,6 +36,9 @@ namespace Flibbert
 		void ProcessEvents();
 		void SwapBuffers();
 
+		void SetVSync(bool enabled);
+		bool IsVSyncEnabled() const;
+
 		[[nodiscard]] glm::u32vec2 GetSize() const;
 		[[nodiscard]] glm::u32vec2 GetPosition() const;
 		[[nodiscard]] float GetAspectRatio() const { return m_AspectRatio; }
@@ -51,6 +54,7 @@ namespace Flibbert
 		void OnSetCursorMode(CursorMode mode);
 
 	private:
+		bool m_VSync = true;
 		RGFW_window* m_WindowHandle = nullptr;
 
 		glm::u32vec2 m_Position{0};

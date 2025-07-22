@@ -46,6 +46,7 @@ namespace Demo
 		void GenerateMesh();
 
 	private:
+		Flibbert::Window& m_Window;
 		Flibbert::Renderer& m_Renderer;
 
 		std::shared_ptr<Flibbert::VertexArray> m_VAO;
@@ -58,6 +59,7 @@ namespace Demo
 		std::unique_ptr<Flibbert::Camera> m_Camera;
 
 		bool m_EnableWireframe = false;
+		bool m_EnableVSync = true;
 
 		uint16_t m_SideLength = 800;
 		float m_MeshScale = 1.0f;
