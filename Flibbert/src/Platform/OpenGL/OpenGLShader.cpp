@@ -78,32 +78,7 @@ namespace Flibbert
 		glUniform1i(GetUniformLocation(name), value);
 	}
 
-	void OpenGLShader::SetUniform1f(std::string_view name, const float value)
-	{
-		glUniform1f(GetUniformLocation(name), value);
-	}
-
-	void OpenGLShader::SetUniform2f(std::string_view name, const glm::vec2& value)
-	{
-		glUniform2f(GetUniformLocation(name), value.x, value.y);
-	}
-
-	void OpenGLShader::SetUniform3f(std::string_view name, const glm::vec3& value)
-	{
-		glUniform3f(GetUniformLocation(name), value.x, value.y, value.z);
-	}
-
-	void OpenGLShader::SetUniform4f(std::string_view name, const glm::vec4& value)
-	{
-		glUniform4f(GetUniformLocation(name), value.x, value.y, value.z, value.w);
-	}
-
-	void OpenGLShader::SetUniformMat4f(std::string_view name, const glm::mat4& value)
-	{
-		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &value[0][0]);
-	}
-
-	void OpenGLShader::BindUniformBlock(std::string_view name, uint32_t binding)
+	void OpenGLShader::BindUniformBuffer(std::string_view name, uint32_t binding)
 	{
 		uint32_t blockIndex = glGetUniformBlockIndex(m_RendererID, name.data());
 		glUniformBlockBinding(m_RendererID, blockIndex, binding);

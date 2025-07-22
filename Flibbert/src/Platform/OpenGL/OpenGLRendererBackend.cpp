@@ -114,13 +114,10 @@ namespace Flibbert
 	}
 
 	void OpenGLRendererBackend::Draw(const std::shared_ptr<VertexArray>& vertexArray,
-	                                 const std::shared_ptr<Shader>& shader,
-	                                 const glm::mat4 transform) const
+	                                 const std::shared_ptr<Shader>& shader) const
 	{
 		vertexArray->Bind();
 		shader->Bind();
-
-		shader->SetUniformMat4f("u_Transform", transform);
 
 		glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(),
 		               GL_UNSIGNED_INT, nullptr);

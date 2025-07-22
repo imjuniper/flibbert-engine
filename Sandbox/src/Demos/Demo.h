@@ -9,6 +9,20 @@
 
 namespace Demo
 {
+	struct PerFrameUniformData
+	{
+		glm::mat4 View;
+		glm::mat4 Projection;
+		glm::vec3 CameraPosition;
+		// Lights?
+	};
+
+	struct PerObjectUniformData
+	{
+		glm::mat4 Transform;
+		// Probably also material properties?
+	};
+
 	class Demo
 	{
 	public:

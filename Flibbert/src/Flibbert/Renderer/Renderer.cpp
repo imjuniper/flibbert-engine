@@ -54,9 +54,9 @@ namespace Flibbert
 	}
 
 	void Renderer::Draw(const std::shared_ptr<VertexArray>& vertexArray,
-	                    const std::shared_ptr<Shader>& shader, glm::mat4 transform) const
+	                    const std::shared_ptr<Shader>& shader) const
 	{
-		return m_Backend->Draw(vertexArray, shader, transform);
+		return m_Backend->Draw(vertexArray, shader);
 	}
 
 	Renderer& Renderer::Get()

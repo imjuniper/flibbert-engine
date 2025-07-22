@@ -15,42 +15,38 @@ namespace Demo
 		m_Camera = std::make_unique<Flibbert::Camera>(cameraMode);
 
 		// Set better default generation params
-		m_UniformBuffer.Seed = 135;
+		m_MeshGenUniformData.Seed = 135;
 
 		GenerateMesh();
 
 		m_Shader = Flibbert::Shader::Create("assets/shaders/MeshGen.vert",
 		                                    "assets/shaders/MeshGen.frag");
 		m_Shader->Bind();
+		m_Shader->BindUniformBuffer("PerFrameData", 0);
+		m_Shader->BindUniformBuffer("MeshGenData", 1);
 
-		m_Shader->BindUniformBlock("Matrices", 0);
-		m_Shader->BindUniformBlock("UniformBufferObject", 1);
-
-		m_CameraBuffer = Flibbert::UniformBuffer::Create(sizeof(Flibbert::CameraBuffer), 0);
+		m_PerFrameBuffer =
+		    Flibbert::UniformBuffer::Create(sizeof(PerFrameUniformData), 0);
 		m_MeshGenUniformBuffer =
-		    Flibbert::UniformBuffer::Create(sizeof(UniformBufferObject), 1);
+		    Flibbert::UniformBuffer::Create(sizeof(MeshGenUniformBuffer), 1);
 	}
 
 	void DemoMeshGeneration::OnUpdate(float ts)
 	{
 		m_Camera->OnUpdate(ts);
+
+		Flibbert::Renderer::Get().SetClearColor(glm::vec4(m_MeshGenUniformData.FogColor, 1.0f));
+
+		const PerFrameUniformData buffer{m_Camera->GetViewMatrix(),
+		                                   m_Camera->GetProjectionMatrix(),
+		                                   m_Camera->GetPosition()};
+		m_PerFrameBuffer->SetData(&buffer, sizeof(PerFrameUniformData));
+		m_MeshGenUniformBuffer->SetData(&m_MeshGenUniformData, sizeof(MeshGenUniformBuffer));
 	}
 
 	void DemoMeshGeneration::OnRender()
 	{
-		const auto clearColor = glm::vec4(m_UniformBuffer.FogColor, 1.0f);
-		Flibbert::Renderer::Get().SetClearColor(clearColor);
-
-		Flibbert::CameraBuffer buffer{m_Camera->GetProjectionMatrix(),
-		                              m_Camera->GetViewMatrix()};
-		m_CameraBuffer->SetData(&buffer, sizeof(Flibbert::CameraBuffer));
-
-		m_MeshGenUniformBuffer->SetData(&m_UniformBuffer, sizeof(UniformBufferObject));
-
-		m_Shader->Bind();
-		m_Shader->SetUniform3f("u_CameraPosition", m_Camera->GetPosition());
-
-		m_Renderer.Draw(m_VAO, m_Shader, glm::mat4(1.0f));
+		m_Renderer.Draw(m_VAO, m_Shader);
 	}
 
 	void DemoMeshGeneration::OnImGuiRender()
@@ -69,11 +65,11 @@ namespace Demo
 
 		if (ImGui::Button("Reload shaders")) {
 			m_Shader = Flibbert::Shader::Create("assets/shaders/MeshGen.vert",
-							    "assets/shaders/MeshGen.frag");
+			                                    "assets/shaders/MeshGen.frag");
 			m_Shader->Bind();
 
-			m_Shader->BindUniformBlock("Matrices", 0);
-			m_Shader->BindUniformBlock("UniformBufferObject", 1);
+			m_Shader->BindUniformBuffer("Matrices", 0);
+			m_Shader->BindUniformBuffer("UniformBufferObject", 1);
 		}
 
 		constexpr uint16_t sideLengthStep = 1;
@@ -88,31 +84,31 @@ namespace Demo
 
 		if (ImGui::CollapsingHeader("Noise Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
 			ImGui::Indent(16.0f);
-			ImGui::InputFloat("Seed", &m_UniformBuffer.Seed, 1.0f, 100.0f, "%.0f");
-			ImGui::SliderFloat("Scale", &m_UniformBuffer.Scale, -0.1f, 400.0f);
-			ImGui::InputFloat3("Offset", glm::value_ptr(m_UniformBuffer.Offset));
-			ImGui::SliderFloat("Gradient Rotation", &m_UniformBuffer.GradientRotation,
+			ImGui::InputFloat("Seed", &m_MeshGenUniformData.Seed, 1.0f, 100.0f, "%.0f");
+			ImGui::SliderFloat("Scale", &m_MeshGenUniformData.Scale, -0.1f, 400.0f);
+			ImGui::InputFloat3("Offset", glm::value_ptr(m_MeshGenUniformData.Offset));
+			ImGui::SliderFloat("Gradient Rotation", &m_MeshGenUniformData.GradientRotation,
 			                   -180.0f, 180.0f);
-			ImGui::SliderInt("Octaves", &m_UniformBuffer.Octaves, 1, 32);
+			ImGui::SliderInt("Octaves", &m_MeshGenUniformData.Octaves, 1, 32);
 			if (ImGui::CollapsingHeader("Octave Settings")) {
 				ImGui::Indent(16.0f);
-				ImGui::SliderFloat("Rotation", &m_UniformBuffer.NoiseRotation,
+				ImGui::SliderFloat("Rotation", &m_MeshGenUniformData.NoiseRotation,
 				                   -180.0f, 180.0f);
 				ImGui::InputFloat2("Angular Variance",
-				                   glm::value_ptr(m_UniformBuffer.AngularVariance));
+				                   glm::value_ptr(m_MeshGenUniformData.AngularVariance));
 				ImGui::SliderFloat("Initial Amplitude",
-				                   &m_UniformBuffer.InitialAmplitude, -0.01f, 2.0f);
+				                   &m_MeshGenUniformData.InitialAmplitude, -0.01f, 2.0f);
 				ImGui::SliderFloat("Amplitude Decay",
-				                   &m_UniformBuffer.AmplitudeDecay, -0.01f, 1.0f);
-				ImGui::SliderFloat("Lacunarity", &m_UniformBuffer.Lacunarity,
+				                   &m_MeshGenUniformData.AmplitudeDecay, -0.01f, 1.0f);
+				ImGui::SliderFloat("Lacunarity", &m_MeshGenUniformData.Lacunarity,
 				                   -0.01f, 3.0f);
 				ImGui::SliderFloat("Frequency Variance Lower Bound",
-				                   &m_UniformBuffer.FrequencyVarianceLowerBound,
+				                   &m_MeshGenUniformData.FrequencyVarianceLowerBound,
 				                   -1.0f, 1.0f);
 				ImGui::SliderFloat("Frequency Variance Upper Bound",
-				                   &m_UniformBuffer.FrequencyVarianceUpperBound,
+				                   &m_MeshGenUniformData.FrequencyVarianceUpperBound,
 				                   -1.0f, 1.0f);
-				ImGui::SliderFloat("Height Scale", &m_UniformBuffer.TerrainHeight,
+				ImGui::SliderFloat("Height Scale", &m_MeshGenUniformData.TerrainHeight,
 				                   0.f, 500.0f);
 				ImGui::Unindent(16.0f);
 			}
@@ -121,33 +117,33 @@ namespace Demo
 
 		if (ImGui::CollapsingHeader("Material Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
 			ImGui::Indent(16.0f);
-			ImGui::SliderFloat("Slope Damping", &m_UniformBuffer.SlopeDamping, 0.0f,
+			ImGui::SliderFloat("Slope Damping", &m_MeshGenUniformData.SlopeDamping, 0.0f,
 			                   1.0f);
 			ImGui::SliderFloat2("Slope Threshold",
-			                    glm::value_ptr(m_UniformBuffer.SlopeRange), 0.0f, 1.0f);
+			                    glm::value_ptr(m_MeshGenUniformData.SlopeRange), 0.0f, 1.0f);
 			ImGui::ColorEdit4("Low Slope Color",
-			                  glm::value_ptr(m_UniformBuffer.LowSlopeColor));
+			                  glm::value_ptr(m_MeshGenUniformData.LowSlopeColor));
 			ImGui::ColorEdit4("High Slope Color",
-			                  glm::value_ptr(m_UniformBuffer.HighSlopeColor));
-			ImGui::SliderFloat("Normal Strength", &m_UniformBuffer.NormalStrength, 0.0f,
+			                  glm::value_ptr(m_MeshGenUniformData.HighSlopeColor));
+			ImGui::SliderFloat("Normal Strength", &m_MeshGenUniformData.NormalStrength, 0.0f,
 			                   1.0f);
 			ImGui::Unindent(16.0f);
 		}
 
 		if (ImGui::CollapsingHeader("Fog Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
 			ImGui::Indent(16.0f);
-			ImGui::ColorEdit3("Fog Color", glm::value_ptr(m_UniformBuffer.FogColor));
-			ImGui::SliderFloat("Fog Density", &m_UniformBuffer.FogDensity, 0.0f, 1.0f);
+			ImGui::ColorEdit3("Fog Color", glm::value_ptr(m_MeshGenUniformData.FogColor));
+			ImGui::SliderFloat("Fog Density", &m_MeshGenUniformData.FogDensity, 0.0f, 1.0f);
 			ImGui::Unindent(16.0f);
 		}
 
 		if (ImGui::CollapsingHeader("Light Settings", ImGuiTreeNodeFlags_DefaultOpen)) {
 			ImGui::Indent(16.0f);
 			ImGui::SliderFloat3("Light Direction",
-			                    glm::value_ptr(m_UniformBuffer.LightDirection), -1.0f,
+			                    glm::value_ptr(m_MeshGenUniformData.LightDirection), -1.0f,
 			                    1.0f);
 			ImGui::ColorEdit3("Ambient Light",
-			                  glm::value_ptr(m_UniformBuffer.AmbientLight));
+			                  glm::value_ptr(m_MeshGenUniformData.AmbientLight));
 			ImGui::Unindent(16.0f);
 		}
 	}

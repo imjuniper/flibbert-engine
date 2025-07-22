@@ -14,10 +14,11 @@ namespace Demo
 
 		// clang-format off
 		float vertices[] = {
-			m_Size.x / -2.0f, m_Size.y / -2.0f,
-			m_Size.x / 2.0f,  m_Size.y / -2.0f,
-			m_Size.x / 2.0f,  m_Size.y / 2.0f,
-			m_Size.x / -2.0f, m_Size.y / 2.0f,
+			// Positions                        // Colors
+			m_Size.x / -2.0f, m_Size.y / -2.0f, 1.0f, 1.0f, 0.f,
+			m_Size.x /  2.0f, m_Size.y / -2.0f, 1.0f, 1.0f, 0.f,
+			m_Size.x /  2.0f, m_Size.y /  2.0f, 1.0f, 1.0f, 0.f,
+			m_Size.x / -2.0f, m_Size.y /  2.0f, 1.0f, 1.0f, 0.f,
 		};
 
 		uint32_t indices[] = {
@@ -29,6 +30,7 @@ namespace Demo
 		m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices, sizeof(vertices));
 		Flibbert::BufferLayout layout = {
 		    {Flibbert::ShaderDataType::Float2, "a_Position"},
+		    {Flibbert::ShaderDataType::Float3, "a_Color"},
 		};
 		m_VertexBuffer->SetLayout(layout);
 
@@ -42,8 +44,8 @@ namespace Demo
 		m_Shader = Flibbert::Shader::Create("assets/shaders/DemoBirb/Birb.vert",
 		                                    "assets/shaders/DemoBirb/Birb.frag");
 		m_Shader->Bind();
-		m_Shader->SetUniform4f("u_Color", {1, 1, 0, 1});
-		m_Shader->BindUniformBlock("Matrices", 0);
+		m_Shader->BindUniformBuffer("PerFrameData", 0);
+		m_Shader->BindUniformBuffer("PerObjectData", 1);
 	}
 
 	void Birb::OnUpdate(float ts)
@@ -72,10 +74,11 @@ namespace Demo
 
 		// clang-format off
 		float vertices[] = {
-			m_Size.x / -2.0f, m_Size.y / -2.0f,
-			m_Size.x / 2.0f,  m_Size.y / -2.0f,
-			m_Size.x / 2.0f,  m_Size.y / 2.0f,
-			m_Size.x / -2.0f, m_Size.y / 2.0f,
+			// Positions                        // Colors
+			m_Size.x / -2.0f, m_Size.y / -2.0f, 0.f, 0.5f, 0.1f,
+			m_Size.x /  2.0f, m_Size.y / -2.0f, 0.f, 0.5f, 0.1f,
+			m_Size.x /  2.0f, m_Size.y /  2.0f, 0.f, 0.5f, 0.1f,
+			m_Size.x / -2.0f, m_Size.y /  2.0f, 0.f, 0.5f, 0.1f,
 		};
 
 		uint32_t indices[] = {
@@ -87,6 +90,7 @@ namespace Demo
 		m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices, sizeof(vertices));
 		Flibbert::BufferLayout layout = {
 		    {Flibbert::ShaderDataType::Float2, "a_Position"},
+		    {Flibbert::ShaderDataType::Float3, "a_Color"},
 		};
 		m_VertexBuffer->SetLayout(layout);
 
@@ -100,8 +104,8 @@ namespace Demo
 		m_Shader = Flibbert::Shader::Create("assets/shaders/DemoBirb/Pipe.vert",
 		                                    "assets/shaders/DemoBirb/Pipe.frag");
 		m_Shader->Bind();
-		m_Shader->SetUniform4f("u_Color", {0, 0.5f, 0.1f, 1});
-		m_Shader->BindUniformBlock("Matrices", 0);
+		m_Shader->BindUniformBuffer("PerFrameData", 0);
+		m_Shader->BindUniformBuffer("PerObjectData", 1);
 	}
 #pragma endregion Pipe
 
@@ -114,7 +118,10 @@ namespace Demo
 		cameraMode->FarClip = 1.0f;
 		m_Camera = std::make_unique<Flibbert::Camera>(cameraMode);
 
-		m_CameraBuffer = Flibbert::UniformBuffer::Create(sizeof(Flibbert::CameraBuffer), 0);
+		m_PerFrameBuffer =
+		    Flibbert::UniformBuffer::Create(sizeof(PerFrameUniformData), 0);
+		m_PerObjectBuffer =
+		    Flibbert::UniformBuffer::Create(sizeof(PerObjectUniformData), 1);
 	}
 
 	void DemoFloppyBirb::OnUpdate(float ts)
@@ -124,28 +131,32 @@ namespace Demo
 
 	void DemoFloppyBirb::OnRender()
 	{
-		Flibbert::CameraBuffer buffer{m_Camera->GetProjectionMatrix(),
-		                              m_Camera->GetViewMatrix()};
-		m_CameraBuffer->SetData(&buffer, sizeof(Flibbert::CameraBuffer));
+		const PerFrameUniformData perFrameBuffer{m_Camera->GetViewMatrix(),
+		                                           m_Camera->GetProjectionMatrix(),
+		                                           m_Camera->GetPosition()};
+		m_PerFrameBuffer->SetData(&perFrameBuffer, sizeof(PerFrameUniformData));
 
 		{
-			glm::mat4 transform =
-			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position, 0));
-			m_Renderer.Draw(m_Pipe.m_VAO, m_Pipe.m_Shader, transform);
+			const PerObjectUniformData buffer{
+			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position, 0))};
+			m_PerObjectBuffer->SetData(&buffer, sizeof(PerObjectUniformData));
+			m_Renderer.Draw(m_Pipe.m_VAO, m_Pipe.m_Shader);
 		}
 
 		{
-			glm::mat4 transform =
+			const PerObjectUniformData buffer{
 			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position.x + 250.0f,
-			                                              m_Pipe.m_Position.y, 0));
-			m_Renderer.Draw(m_Pipe.m_VAO, m_Pipe.m_Shader, transform);
+			                                              m_Pipe.m_Position.y, 0))};
+			m_PerObjectBuffer->SetData(&buffer, sizeof(PerObjectUniformData));
+			m_Renderer.Draw(m_Pipe.m_VAO, m_Pipe.m_Shader);
 		}
 
 		// Bird
 		{
-			glm::mat4 transform =
-			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Birb.m_Position, 0));
-			m_Renderer.Draw(m_Birb.m_VAO, m_Birb.m_Shader, transform);
+			const PerObjectUniformData buffer{
+			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Birb.m_Position, 0))};
+			m_PerObjectBuffer->SetData(&buffer, sizeof(PerObjectUniformData));
+			m_Renderer.Draw(m_Birb.m_VAO, m_Birb.m_Shader);
 		}
 	}
 

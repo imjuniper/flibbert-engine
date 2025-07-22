@@ -17,10 +17,11 @@ namespace Demo
 
 		// clang-format off
 		float vertices[] = {
+		     // Positions          // UVs
 		    -100.0f, -75.0f, 0.0f, 0.0f, 0.0f,
-		    100.0f,  -75.0f, 0.0f, 1.0f, 0.0f,
-		    100.0f,  75.0f,  0.0f, 1.0f, 1.0f,
-		    -100.0f, 75.0f,  0.0f, 0.0f, 1.0f,
+		     100.0f, -75.0f, 0.0f, 1.0f, 0.0f,
+		     100.0f,  75.0f, 0.0f, 1.0f, 1.0f,
+		    -100.0f,  75.0f, 0.0f, 0.0f, 1.0f,
 		};
 
 		uint32_t indices[] = {
@@ -48,9 +49,13 @@ namespace Demo
 		m_Shader->Bind();
 		m_Texture = Flibbert::Texture::Create("assets/textures/neko.png");
 		m_Shader->SetUniform1i("u_Texture", 0);
-		m_Shader->BindUniformBlock("Matrices", 0);
+		m_Shader->BindUniformBuffer("PerFrameData", 0);
+		m_Shader->BindUniformBuffer("PerObjectData", 1);
 
-		m_CameraBuffer = Flibbert::UniformBuffer::Create(sizeof(Flibbert::CameraBuffer), 0);
+		m_PerFrameBuffer =
+		    Flibbert::UniformBuffer::Create(sizeof(PerFrameUniformData), 0);
+		m_PerObjectBuffer =
+		    Flibbert::UniformBuffer::Create(sizeof(PerObjectUniformData), 1);
 	}
 
 	void DemoTexture2D::OnUpdate(float ts)
@@ -62,18 +67,23 @@ namespace Demo
 	{
 		m_Texture->Bind(0);
 
-		const Flibbert::CameraBuffer buffer{m_Camera->GetProjectionMatrix(),
-		                                    m_Camera->GetViewMatrix()};
-		m_CameraBuffer->SetData(&buffer, sizeof(Flibbert::CameraBuffer));
+		const PerFrameUniformData perFrameBuffer{m_Camera->GetViewMatrix(),
+		                                           m_Camera->GetProjectionMatrix(),
+		                                           m_Camera->GetPosition()};
+		m_PerFrameBuffer->SetData(&perFrameBuffer, sizeof(PerFrameUniformData));
 
 		{
-			glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_TranslationA);
-			m_Renderer.Draw(m_VAO, m_Shader, transform);
+			const PerObjectUniformData buffer{
+			    glm::translate(glm::mat4(1.0f), m_TranslationA)};
+			m_PerObjectBuffer->SetData(&buffer, sizeof(PerObjectUniformData));
+			m_Renderer.Draw(m_VAO, m_Shader);
 		}
 
 		{
-			glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_TranslationB);
-			m_Renderer.Draw(m_VAO, m_Shader, transform);
+			const PerObjectUniformData buffer{
+			    glm::translate(glm::mat4(1.0f), m_TranslationB)};
+			m_PerObjectBuffer->SetData(&buffer, sizeof(PerObjectUniformData));
+			m_Renderer.Draw(m_VAO, m_Shader);
 		}
 	}
 

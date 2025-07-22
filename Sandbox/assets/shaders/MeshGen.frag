@@ -5,7 +5,7 @@
 #include "Include/Random.shader"
 #include "Include/Noise.shader"
 
-layout (std140) uniform UniformBufferObject {
+layout (std140) uniform MeshGenData {
     vec3 _LightDirection;
     float _GradientRotation;
     float _NoiseRotation;
@@ -30,19 +30,28 @@ layout (std140) uniform UniformBufferObject {
     vec3 _FogColor;
 };
 
+layout (std140) uniform PerFrameData
+{
+    mat4 u_View;
+    mat4 u_Projection;
+    vec3 u_CameraPosition;
+};
+
 // These are the variables that we expect to receive from the vertex shader
-layout(location = 1) in vec3 pos;
-layout(location = 2) in vec3 cameraPos;
+in VertexData
+{
+    vec3 Position;
+} vertexData;
 
 // This is what the fragment shader will output, usually just a pixel color
 layout(location = 0) out vec4 frag_color;
 
 void main() {
     // Recalculate initial noise sampling position same as vertex shader
-    vec3 noise_pos = (pos + vec3(_Offset.x, 0, _Offset.z)) / _Scale;
+    vec3 noise_pos = (vertexData.Position + vec3(_Offset.x, 0, _Offset.z)) / _Scale;
 
     // Calculate LODs for noise. should probably be done more dynamically and uh more maintainable
-    float distanceFromCamera = distance(cameraPos, pos);
+    float distanceFromCamera = distance(u_CameraPosition, vertexData.Position);
     int octaves0 = _Octaves;
     int octaves1 = max(int(octaves0 * 0.75), 1);
     int octaves2 = max(int(octaves1 * 0.75), 1);
@@ -90,7 +99,7 @@ void main() {
     vec4 lit_srgb = pow(lit, vec4(2.2));
 
     // most basic-ass fog
-    float fogFactor = exp2(-pow(distance(cameraPos, pos) * _FogDensity, 2));
+    float fogFactor = exp2(-pow(distance(u_CameraPosition, vertexData.Position) * _FogDensity, 2));
 
     frag_color = mix(vec4(_FogColor, 1.0f), lit_srgb, fogFactor);
 }

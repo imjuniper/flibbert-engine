@@ -1,18 +1,21 @@
 #version 410 core
 
-out vec4 color;
+// Uniform buffers
+uniform sampler2D u_Texture; // @todo get rid of this
 
-in FRAGMENT_INPUTS
+// Inputs
+in VertexData
 {
     vec2 TexCoord;
-} fragment_inputs;
+} vertexData;
 
-uniform sampler2D u_Texture;
+// Outputs
+layout(location = 0) out vec4 frag_color;
 
 void main(){
-    vec4 texColor = texture(u_Texture, fragment_inputs.TexCoord);
+    vec4 texColor = texture(u_Texture, vertexData.TexCoord);
     if (gl_FrontFacing)
-        color = texColor;
+        frag_color = texColor;
     else
-        color = vec4(1.0, 0.0, 0.0, 1.0);
+        frag_color = vec4(1.0, 0.0, 0.0, 1.0);
 }

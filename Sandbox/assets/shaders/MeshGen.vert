@@ -5,7 +5,7 @@
 #include "Include/Random.shader"
 #include "Include/Noise.shader"
 
-layout (std140) uniform UniformBufferObject {
+layout (std140) uniform MeshGenData {
     vec3 _LightDirection;
     float _GradientRotation;
     float _NoiseRotation;
@@ -30,31 +30,30 @@ layout (std140) uniform UniformBufferObject {
     vec3 _FogColor;
 };
 
-layout (std140) uniform Matrices
+layout (std140) uniform PerFrameData
 {
-    mat4 u_Projection;
     mat4 u_View;
+    mat4 u_Projection;
+    vec3 u_CameraPosition;
 };
-
-uniform mat4 u_Transform;
-uniform vec3 u_CameraPosition;
 
 layout(location = 0) in vec3 a_Position;
 
 // This is what the vertex shader will output and send to the fragment shader.
-layout(location = 1) out vec3 pos;
-layout(location = 2) out vec3 cameraPos;
+out VertexData
+{
+    vec3 Position;
+} vertexData;
 
 void main() {
     // The fragment shader also calculates the fractional brownian motion for pixel perfect normal vectors and lighting, so we pass the vertex position to the fragment shader
-    pos = a_Position;
-    cameraPos = u_CameraPosition;
+    vertexData.Position = a_Position;
 
     // Initial noise sample position offset and scaled by uniform variables
-    vec3 noise_pos = (pos + vec3(_Offset.x, 0, _Offset.z)) / _Scale;
+    vec3 noise_pos = (vertexData.Position + vec3(_Offset.x, 0, _Offset.z)) / _Scale;
 
     // Calculate LODs for noise. should probably be done more dynamically and uh more maintainable
-    float distanceFromCamera = distance(cameraPos, pos);
+    float distanceFromCamera = distance(u_CameraPosition, vertexData.Position);
     int octaves0 = _Octaves;
     int octaves1 = max(int(octaves0 * 0.75), 1);
     int octaves2 = max(int(octaves1 * 0.75), 1);
@@ -77,8 +76,8 @@ void main() {
     vec3 n = fbm(noise_pos.xz, params);
 
     // Adjust height of the vertex by fbm result scaled by final desired amplitude
-    pos.y += _TerrainHeight * n.x + _TerrainHeight - _Offset.y;
+    vertexData.Position.y += _TerrainHeight * n.x + _TerrainHeight - _Offset.y;
 
     // Multiply final vertex position with model/view/projection matrices to convert to clip space
-    gl_Position = u_Projection * u_View * u_Transform * vec4(pos, 1.0);
+    gl_Position = u_Projection * u_View * vec4(vertexData.Position, 1.0);
 }

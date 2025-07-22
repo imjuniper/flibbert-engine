@@ -6,7 +6,7 @@
 
 namespace Demo
 {
-	struct UniformBufferObject {
+	struct MeshGenUniformBuffer {
 		glm::vec3 LightDirection;
 		float GradientRotation;
 		float NoiseRotation;
@@ -52,7 +52,7 @@ namespace Demo
 		std::shared_ptr<Flibbert::VertexBuffer> m_VertexBuffer;
 		std::shared_ptr<Flibbert::IndexBuffer> m_IndexBuffer;
 		std::shared_ptr<Flibbert::Shader> m_Shader;
-		std::shared_ptr<Flibbert::UniformBuffer> m_CameraBuffer;
+		std::shared_ptr<Flibbert::UniformBuffer> m_PerFrameBuffer;
 		std::shared_ptr<Flibbert::UniformBuffer> m_MeshGenUniformBuffer;
 
 		std::unique_ptr<Flibbert::Camera> m_Camera;
@@ -63,7 +63,7 @@ namespace Demo
 		float m_MeshScale = 1.0f;
 
 		// Yeah this is ugly
-		UniformBufferObject m_UniformBuffer{
+		MeshGenUniformBuffer m_MeshGenUniformData{
 		    .LightDirection = {0.8f, 0.04f, -0.6f},
 		    .GradientRotation = 0.f,
 		    .NoiseRotation = 30.f,
