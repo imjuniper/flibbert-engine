@@ -116,11 +116,17 @@ namespace Flibbert
 	    : m_CameraMode(mode), m_Position(position)
 	{
 		Window& window = Application::Get().GetWindow();
-		window.OnWindowResized.Add(FBT_BIND_EVENT(Camera::OnResize));
+		m_WindowResizedDelegate = window.OnWindowResized.Add(FBT_BIND_EVENT(Camera::OnResize));
 
 		m_AspectRatio = window.GetAspectRatio();
 		m_ProjectionMatrix = m_CameraMode->CalculateProjection(m_AspectRatio);
 		m_ViewMatrix = m_CameraMode->CalculateView(m_Position);
+	}
+
+	Camera::~Camera()
+	{
+		Window& window = Application::Get().GetWindow();
+		window.OnWindowResized.Remove(m_WindowResizedDelegate);
 	}
 
 	void Camera::OnUpdate(const float ts)

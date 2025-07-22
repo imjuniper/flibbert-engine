@@ -37,7 +37,7 @@ namespace Flibbert
 			WindowProps props;
 			props.Title = info.Name;
 			m_Window = std::make_unique<Window>(props);
-			m_Window->OnWindowClosed.Add(
+			(void)m_Window->OnWindowClosed.Add(
 			    FBT_BIND_EVENT(Application::HandleWindowClosed));
 		}
 

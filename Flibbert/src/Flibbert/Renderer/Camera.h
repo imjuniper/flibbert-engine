@@ -65,6 +65,7 @@ namespace Flibbert
 	public:
 		explicit Camera(const std::shared_ptr<CameraMode>& mode,
 		                const glm::vec3& position = glm::vec3(0.0f, 0.0f, 0.0f));
+		~Camera();
 
 		void OnUpdate(float ts);
 		void OnInput(const std::shared_ptr<InputEvent>& event);
@@ -79,6 +80,7 @@ namespace Flibbert
 		const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
 
 	private:
+		DelegateHandle m_WindowResizedDelegate;
 		std::shared_ptr<CameraMode> m_CameraMode;
 
 		bool m_ShouldHandleInput = false;

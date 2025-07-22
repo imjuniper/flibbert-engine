@@ -44,7 +44,8 @@ namespace Flibbert
 		int status = gladLoadGL(RGFW_getProcAddress);
 		FBT_CORE_ENSURE(status);
 
-		window.OnWindowResized.Add(FBT_BIND_EVENT(OpenGLRendererBackend::OnWindowResized));
+		m_WindowResizedDelegate = window.OnWindowResized.Add(
+		    FBT_BIND_EVENT(OpenGLRendererBackend::OnWindowResized));
 
 		FBT_CORE_INFO("OpenGL Info:");
 		FBT_CORE_INFO("  Vendor: {0}",

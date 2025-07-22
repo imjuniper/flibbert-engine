@@ -26,5 +26,8 @@ namespace Flibbert
 
 	private:
 		void OnWindowResized(Window& window, const glm::u32vec2& size);
+
+	private:
+		DelegateHandle m_WindowResizedDelegate;
 	};
 } // namespace Flibbert

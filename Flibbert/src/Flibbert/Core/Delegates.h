@@ -114,7 +114,7 @@ namespace Flibbert
 		// Default constructor
 		MulticastDelegate() noexcept : m_Events() {}
 
-		DelegateHandle Add(DelegateFunction function)
+		[[nodiscard]] DelegateHandle Add(DelegateFunction function)
 		{
 			DelegateHandle newHandle(true);
 			m_Events.insert({newHandle, function});
