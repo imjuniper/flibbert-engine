@@ -24,7 +24,7 @@ namespace Demo
 		std::shared_ptr<Flibbert::IndexBuffer> m_IndexBuffer;
 		std::shared_ptr<Flibbert::Shader> m_Shader;
 		std::shared_ptr<Flibbert::Texture> m_Texture;
-		std::shared_ptr<Flibbert::UniformBuffer> m_CameraBuffer;
+		std::shared_ptr<Flibbert::UniformBuffer> m_MatricesBuffer;
 
 		std::unique_ptr<Flibbert::Camera> m_Camera;
 

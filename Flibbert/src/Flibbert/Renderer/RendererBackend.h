@@ -27,10 +27,12 @@ namespace Flibbert
 		virtual void Clear() = 0;
 
 		virtual void Draw(const std::shared_ptr<VertexArray>& vertexArray,
-		                  const std::shared_ptr<Shader>& shader,
-		                  glm::mat4 transform) const = 0;
+		                  const std::shared_ptr<Shader>& shader) const = 0;
 
 		virtual void Present() const = 0;
+
+		virtual void* GetDevice() const { return nullptr; }
+		virtual void* GetDeviceContext() const { return nullptr; }
 
 	protected:
 		glm::vec4 m_ClearColor = glm::vec4(0.f);

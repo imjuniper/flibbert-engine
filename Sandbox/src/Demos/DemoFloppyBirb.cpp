@@ -14,10 +14,10 @@ namespace Demo
 
 		// clang-format off
 		float vertices[] = {
-			m_Size.x / -2.0f, m_Size.y / -2.0f,
-			m_Size.x / 2.0f,  m_Size.y / -2.0f,
-			m_Size.x / 2.0f,  m_Size.y / 2.0f,
-			m_Size.x / -2.0f, m_Size.y / 2.0f,
+			m_Size.x / -2.0f, m_Size.y / -2.0f, 1.0f, 1.0f, 0.f, 1.0f,
+			m_Size.x /  2.0f, m_Size.y / -2.0f, 1.0f, 1.0f, 0.f, 1.0f,
+			m_Size.x /  2.0f, m_Size.y /  2.0f, 1.0f, 1.0f, 0.f, 1.0f,
+			m_Size.x / -2.0f, m_Size.y /  2.0f, 1.0f, 1.0f, 0.f, 1.0f
 		};
 
 		uint32_t indices[] = {
@@ -29,6 +29,7 @@ namespace Demo
 		m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices, sizeof(vertices));
 		Flibbert::BufferLayout layout = {
 		    {Flibbert::ShaderDataType::Float2, "a_Position"},
+		    {Flibbert::ShaderDataType::Float4, "a_Color"},
 		};
 		m_VertexBuffer->SetLayout(layout);
 
@@ -41,9 +42,7 @@ namespace Demo
 
 		m_Shader = Flibbert::Shader::Create("assets/shaders/DemoBirb/Birb.vert",
 		                                    "assets/shaders/DemoBirb/Birb.frag");
-		m_Shader->Bind();
-		m_Shader->SetUniform4f("u_Color", {1, 1, 0, 1});
-		m_Shader->BindUniformBlock("Matrices", 0);
+		m_Shader->BindUniformBuffer("Matrices", 0);
 	}
 
 	void Birb::OnUpdate(float ts)
@@ -72,10 +71,10 @@ namespace Demo
 
 		// clang-format off
 		float vertices[] = {
-			m_Size.x / -2.0f, m_Size.y / -2.0f,
-			m_Size.x / 2.0f,  m_Size.y / -2.0f,
-			m_Size.x / 2.0f,  m_Size.y / 2.0f,
-			m_Size.x / -2.0f, m_Size.y / 2.0f,
+			m_Size.x / -2.0f, m_Size.y / -2.0f, 0.f, 0.5f, 0.1f, 1.0f,
+			m_Size.x /  2.0f, m_Size.y / -2.0f, 0.f, 0.5f, 0.1f, 1.0f,
+			m_Size.x /  2.0f, m_Size.y /  2.0f, 0.f, 0.5f, 0.1f, 1.0f,
+			m_Size.x / -2.0f, m_Size.y /  2.0f, 0.f, 0.5f, 0.1f, 1.0f
 		};
 
 		uint32_t indices[] = {
@@ -87,6 +86,7 @@ namespace Demo
 		m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices, sizeof(vertices));
 		Flibbert::BufferLayout layout = {
 		    {Flibbert::ShaderDataType::Float2, "a_Position"},
+		    {Flibbert::ShaderDataType::Float3, "a_Color"},
 		};
 		m_VertexBuffer->SetLayout(layout);
 
@@ -99,9 +99,7 @@ namespace Demo
 
 		m_Shader = Flibbert::Shader::Create("assets/shaders/DemoBirb/Pipe.vert",
 		                                    "assets/shaders/DemoBirb/Pipe.frag");
-		m_Shader->Bind();
-		m_Shader->SetUniform4f("u_Color", {0, 0.5f, 0.1f, 1});
-		m_Shader->BindUniformBlock("Matrices", 0);
+		m_Shader->BindUniformBuffer("Matrices", 0);
 	}
 #pragma endregion Pipe
 
@@ -114,7 +112,7 @@ namespace Demo
 		cameraMode->FarClip = 1.0f;
 		m_Camera = std::make_unique<Flibbert::Camera>(cameraMode);
 
-		m_CameraBuffer = Flibbert::UniformBuffer::Create(sizeof(Flibbert::CameraBuffer), 0);
+		m_MatricesBuffer = Flibbert::UniformBuffer::Create(sizeof(MatricesBuffer), 0);
 	}
 
 	void DemoFloppyBirb::OnUpdate(float ts)
@@ -124,28 +122,29 @@ namespace Demo
 
 	void DemoFloppyBirb::OnRender()
 	{
-		Flibbert::CameraBuffer buffer{m_Camera->GetProjectionMatrix(),
-		                              m_Camera->GetViewMatrix()};
-		m_CameraBuffer->SetData(&buffer, sizeof(Flibbert::CameraBuffer));
+		MatricesBuffer buffer{m_Camera->GetProjectionMatrix(), m_Camera->GetViewMatrix()};
 
 		{
-			glm::mat4 transform =
+			buffer.Model =
 			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position, 0));
-			m_Renderer.Draw(m_Pipe.m_VAO, m_Pipe.m_Shader, transform);
+			m_MatricesBuffer->SetData(&buffer, sizeof(MatricesBuffer));
+			m_Renderer.Draw(m_Pipe.m_VAO, m_Pipe.m_Shader);
 		}
 
 		{
-			glm::mat4 transform =
+			buffer.Model =
 			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position.x + 250.0f,
 			                                              m_Pipe.m_Position.y, 0));
-			m_Renderer.Draw(m_Pipe.m_VAO, m_Pipe.m_Shader, transform);
+			m_MatricesBuffer->SetData(&buffer, sizeof(MatricesBuffer));
+			m_Renderer.Draw(m_Pipe.m_VAO, m_Pipe.m_Shader);
 		}
 
 		// Bird
 		{
-			glm::mat4 transform =
+			buffer.Model =
 			    glm::translate(glm::mat4(1.0f), glm::vec3(m_Birb.m_Position, 0));
-			m_Renderer.Draw(m_Birb.m_VAO, m_Birb.m_Shader, transform);
+			m_MatricesBuffer->SetData(&buffer, sizeof(MatricesBuffer));
+			m_Renderer.Draw(m_Birb.m_VAO, m_Birb.m_Shader);
 		}
 	}
 

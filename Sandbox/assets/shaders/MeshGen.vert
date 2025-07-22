@@ -27,9 +27,8 @@ layout (std140) uniform Matrices
 {
     mat4 u_Projection;
     mat4 u_View;
+    mat4 u_Model;
 };
-
-uniform mat4 u_Transform;
 
 layout(location = 0) in vec3 a_Position;
 
@@ -183,5 +182,5 @@ void main() {
     pos.y += _TerrainHeight * n.x + _TerrainHeight - _Offset.y;
 
     // Multiply final vertex position with model/view/projection matrices to convert to clip space
-    gl_Position = u_Projection * u_View * u_Transform * vec4(pos, 1.0);
+    gl_Position = u_Projection * u_View * u_Model * vec4(pos, 1.0);
 }

@@ -22,8 +22,7 @@ namespace Flibbert
 		void Clear() override;
 
 		void Draw(const std::shared_ptr<VertexArray>& vertexArray,
-		          const std::shared_ptr<Shader>& shader,
-		          glm::mat4 transform) const override;
+		          const std::shared_ptr<Shader>& shader) const override;
 
 		void Present() const override;
 

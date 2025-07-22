@@ -55,9 +55,9 @@ namespace Demo
 
 		m_Texture = Flibbert::Texture::Create("assets/textures/neko.png");
 		m_Shader->SetUniform1i("u_Texture", 0);
-		m_Shader->BindUniformBlock("Matrices", 0);
+		m_Shader->BindUniformBuffer("Matrices", 0);
 
-		m_CameraBuffer = Flibbert::UniformBuffer::Create(sizeof(Flibbert::CameraBuffer), 0);
+		m_MatricesBuffer = Flibbert::UniformBuffer::Create(sizeof(MatricesBuffer), 0);
 	}
 
 	void DemoCamera3D::OnUpdate(float ts)
@@ -69,18 +69,18 @@ namespace Demo
 	{
 		m_Texture->Bind(0);
 
-		Flibbert::CameraBuffer buffer{m_Camera->GetProjectionMatrix(),
-		                              m_Camera->GetViewMatrix()};
-		m_CameraBuffer->SetData(&buffer, sizeof(Flibbert::CameraBuffer));
+		MatricesBuffer buffer{m_Camera->GetProjectionMatrix(), m_Camera->GetViewMatrix()};
 
 		{
-			glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_TranslationA);
-			m_Renderer.Draw(m_VAO, m_Shader, transform);
+			buffer.Model = glm::translate(glm::mat4(1.0f), m_TranslationA);
+			m_MatricesBuffer->SetData(&buffer, sizeof(MatricesBuffer));
+			m_Renderer.Draw(m_VAO, m_Shader);
 		}
 
 		{
-			glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_TranslationB);
-			m_Renderer.Draw(m_VAO, m_Shader, transform);
+			buffer.Model = glm::translate(glm::mat4(1.0f), m_TranslationB);
+			m_MatricesBuffer->SetData(&buffer, sizeof(MatricesBuffer));
+			m_Renderer.Draw(m_VAO, m_Shader);
 		}
 	}
 

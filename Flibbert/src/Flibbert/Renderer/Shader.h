@@ -16,7 +16,7 @@ namespace Flibbert
 		virtual void SetUniform4f(std::string_view name, const glm::vec4& value) = 0;
 		virtual void SetUniformMat4f(std::string_view name, const glm::mat4& value) = 0;
 
-		virtual void BindUniformBlock(std::string_view name, uint32_t binding) = 0;
+		virtual void BindUniformBuffer(std::string_view name, uint32_t binding) = 0;
 
 		[[nodiscard]] virtual const std::string& GetName() const { return m_Name; }
 

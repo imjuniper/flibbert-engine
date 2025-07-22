@@ -9,6 +9,7 @@ struct ID3D11DeviceContext;
 struct IDXGISwapChain;
 struct ID3D11RenderTargetView;
 struct ID3D11DepthStencilView;
+struct ID3D11RasterizerState;
 enum D3D_FEATURE_LEVEL;
 
 namespace Flibbert
@@ -30,10 +31,12 @@ namespace Flibbert
 		void Clear() override;
 
 		void Draw(const std::shared_ptr<VertexArray>& vertexArray,
-			  const std::shared_ptr<Shader>& shader,
-			  glm::mat4 transform) const override;
+		          const std::shared_ptr<Shader>& shader) const override;
 
 		void Present() const override;
+
+		void* GetDevice() const override;
+		void* GetDeviceContext() const override;
 
 	private:
 		void OnWindowResized(Window& window, const glm::u32vec2& size);
@@ -52,6 +55,7 @@ namespace Flibbert
 
 		ID3D11RenderTargetView* m_RenderTargetView = nullptr;
 		ID3D11DepthStencilView* m_DepthStencilView = nullptr;
+		ID3D11RasterizerState* m_rasterState = nullptr;
 	};
 
 } // namespace Flibbert

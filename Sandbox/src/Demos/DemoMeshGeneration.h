@@ -50,7 +50,7 @@ namespace Demo
 		std::shared_ptr<Flibbert::VertexBuffer> m_VertexBuffer;
 		std::shared_ptr<Flibbert::IndexBuffer> m_IndexBuffer;
 		std::shared_ptr<Flibbert::Shader> m_Shader;
-		std::shared_ptr<Flibbert::UniformBuffer> m_CameraBuffer;
+		std::shared_ptr<Flibbert::UniformBuffer> m_MatricesBuffer;
 		std::shared_ptr<Flibbert::UniformBuffer> m_MeshGenUniformBuffer;
 
 		std::unique_ptr<Flibbert::Camera> m_Camera;

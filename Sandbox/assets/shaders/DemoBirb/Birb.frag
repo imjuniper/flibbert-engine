@@ -1,9 +1,12 @@
 #version 410 core
 
-out vec4 color;
+in FRAGMENT_INPUTS
+{
+    vec2 Color;
+} fragment_inputs;
 
-uniform vec4 u_Color;
+out vec4 frag_color;
 
 void main() {
-    color = u_Color;
+    frag_color = fragment_inputs.Color;
 }

@@ -60,7 +60,7 @@ namespace Demo
 
 	private:
 		Flibbert::Renderer& m_Renderer;
-		std::shared_ptr<Flibbert::UniformBuffer> m_CameraBuffer;
+		std::shared_ptr<Flibbert::UniformBuffer> m_MatricesBuffer;
 
 		std::unique_ptr<Flibbert::Camera> m_Camera;
 

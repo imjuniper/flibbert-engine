@@ -1,5 +1,9 @@
 #include "Demos/DemoTexture2D.h"
 
+#include "Platform/D3D11/D3D11Buffer.h"
+#include "Platform/D3D11/D3D11Shader.h"
+
+#include <d3d11.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 
@@ -18,14 +22,14 @@ namespace Demo
 		// clang-format off
 		float vertices[] = {
 		    -100.0f, -75.0f, 0.0f, 0.0f, 0.0f,
-		    100.0f,  -75.0f, 0.0f, 1.0f, 0.0f,
-		    100.0f,  75.0f,  0.0f, 1.0f, 1.0f,
-		    -100.0f, 75.0f,  0.0f, 0.0f, 1.0f,
+		     100.0f, -75.0f, 0.0f, 1.0f, 0.0f,
+		     100.0f,  75.0f, 0.0f, 1.0f, 1.0f,
+		    -100.0f,  75.0f, 0.0f, 0.0f, 1.0f,
 		};
 
 		uint32_t indices[] = {
-		    0, 1, 2,
-		    2, 3, 0
+		    0, 2, 1,
+		    2, 0, 3
 		};
 		// clang-format on
 
@@ -48,9 +52,22 @@ namespace Demo
 		m_Shader->Bind();
 		m_Texture = Flibbert::Texture::Create("assets/textures/neko.png");
 		m_Shader->SetUniform1i("u_Texture", 0);
-		m_Shader->BindUniformBlock("Matrices", 0);
+		m_Shader->BindUniformBuffer("Matrices", 0);
 
-		m_CameraBuffer = Flibbert::UniformBuffer::Create(sizeof(Flibbert::CameraBuffer), 0);
+		constexpr D3D11_INPUT_ELEMENT_DESC vertexInputLayoutInfo[] = {
+		    {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA,
+		     0}};
+
+		auto d3dshader = std::dynamic_pointer_cast<Flibbert::D3D11Shader>(m_Shader);
+
+		const auto device =
+		    static_cast<ID3D11Device*>(Flibbert::Renderer::Get().GetDevice());
+		device->CreateInputLayout(vertexInputLayoutInfo, _countof(vertexInputLayoutInfo),
+		                          d3dshader->m_VertexShaderBlob->GetBufferPointer(),
+		                          d3dshader->m_VertexShaderBlob->GetBufferSize(),
+		                          &m_VertexLayout);
+
+		m_MatricesBuffer = Flibbert::UniformBuffer::Create(sizeof(MatricesBuffer), 0);
 	}
 
 	void DemoTexture2D::OnUpdate(float ts)
@@ -62,18 +79,28 @@ namespace Demo
 	{
 		m_Texture->Bind(0);
 
-		const Flibbert::CameraBuffer buffer{m_Camera->GetProjectionMatrix(),
-		                                    m_Camera->GetViewMatrix()};
-		m_CameraBuffer->SetData(&buffer, sizeof(Flibbert::CameraBuffer));
+		const auto context =
+		    static_cast<ID3D11DeviceContext*>(Flibbert::Renderer::Get().GetDeviceContext());
+		auto constbuff =
+		    std::dynamic_pointer_cast<Flibbert::D3D11UniformBuffer>(m_MatricesBuffer)
+			->m_ConstantBuffer;
+
+		MatricesBuffer buffer{m_Camera->GetProjectionMatrix(), m_Camera->GetViewMatrix()};
 
 		{
-			glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_TranslationA);
-			m_Renderer.Draw(m_VAO, m_Shader, transform);
+			context->IASetInputLayout(m_VertexLayout);
+			context->VSSetConstantBuffers(0, 1, &constbuff);
+			buffer.Model = glm::translate(glm::mat4(1.0f), m_TranslationA);
+			m_MatricesBuffer->SetData(&buffer, sizeof(MatricesBuffer));
+			m_Renderer.Draw(m_VAO, m_Shader);
 		}
 
 		{
-			glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_TranslationB);
-			m_Renderer.Draw(m_VAO, m_Shader, transform);
+			context->IASetInputLayout(m_VertexLayout);
+			context->VSSetConstantBuffers(0, 1, &constbuff);
+			buffer.Model = glm::translate(glm::mat4(1.0f), m_TranslationB);
+			m_MatricesBuffer->SetData(&buffer, sizeof(MatricesBuffer));
+			m_Renderer.Draw(m_VAO, m_Shader);
 		}
 	}
 

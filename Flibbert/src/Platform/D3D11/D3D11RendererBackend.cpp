@@ -1,6 +1,7 @@
 #include "Platform/D3D11/D3D11RendererBackend.h"
 
 #include "Flibbert/Core/Application.h"
+#include "Flibbert/Renderer/Buffer.h"
 #include "Flibbert/Renderer/Shader.h"
 #include "Flibbert/Renderer/VertexArray.h"
 #include "Platform/Desktop/Window.h"
@@ -37,17 +38,10 @@ namespace Flibbert
 
 		D3D_FEATURE_LEVEL featureLevels[] = {D3D_FEATURE_LEVEL_11_1};
 
-		const auto hresult = D3D11CreateDevice(
-		    m_Adapter,
-		    D3D_DRIVER_TYPE_UNKNOWN,
-		    nullptr,
-		    deviceFlags,
-		    featureLevels,
-		    ARRAYSIZE(featureLevels),
-		    D3D11_SDK_VERSION,
-		    &m_Device,
-		    &m_FeatureLevel,
-		    &m_DeviceContext);
+		const auto hresult =
+		    D3D11CreateDevice(m_Adapter, D3D_DRIVER_TYPE_UNKNOWN, nullptr, deviceFlags,
+		                      featureLevels, ARRAYSIZE(featureLevels), D3D11_SDK_VERSION,
+		                      &m_Device, &m_FeatureLevel, &m_DeviceContext);
 
 		if (FAILED(hresult)) {
 			m_Adapter->Release();
@@ -122,21 +116,33 @@ namespace Flibbert
 	{
 		m_DeviceContext->ClearRenderTargetView(m_RenderTargetView,
 		                                       glm::value_ptr(m_ClearColor));
+		m_DeviceContext->ClearDepthStencilView(
+		    m_DepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	}
 
 	void D3D11RendererBackend::Draw(const std::shared_ptr<VertexArray>& vertexArray,
-	                                const std::shared_ptr<Shader>& shader,
-	                                const glm::mat4 transform) const
+	                                const std::shared_ptr<Shader>& shader) const
 	{
 		vertexArray->Bind();
 		shader->Bind();
 
-		shader->SetUniformMat4f("u_Transform", transform);
+		m_DeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		m_DeviceContext->DrawIndexed(vertexArray->GetIndexBuffer()->GetCount(), 0, 0);
 	}
 
 	void D3D11RendererBackend::Present() const
 	{
 		m_SwapChain->Present(0, 0);
+	}
+
+	void* D3D11RendererBackend::GetDevice() const
+	{
+		return m_Device;
+	}
+
+	void* D3D11RendererBackend::GetDeviceContext() const
+	{
+		return m_DeviceContext;
 	}
 
 	void D3D11RendererBackend::OnWindowResized(Window& window, const glm::u32vec2& size)
@@ -149,6 +155,8 @@ namespace Flibbert
 		m_DeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 		m_RenderTargetView->Release();
 		m_DepthStencilView->Release();
+
+		m_DeviceContext->Flush();
 
 		m_SwapChain->ResizeBuffers(0, size.x, size.y, DXGI_FORMAT_UNKNOWN, 0);
 		// @todo error handling
@@ -169,9 +177,7 @@ namespace Flibbert
 		// Depth Stencil View
 		ID3D11Texture2D* depthStencilTexture = nullptr;
 		CD3D11_TEXTURE2D_DESC depthStencilTextureDesc(
-		    DXGI_FORMAT_D24_UNORM_S8_UINT,
-		    size.x,
-		    size.y,
+		    DXGI_FORMAT_D24_UNORM_S8_UINT, size.x, size.y,
 		    1, // This depth stencil view has only one texture.
 		    1, // Use a single mipmap level.
 		    D3D11_BIND_DEPTH_STENCIL);

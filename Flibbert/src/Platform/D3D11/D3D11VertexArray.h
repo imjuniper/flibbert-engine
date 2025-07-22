@@ -7,8 +7,8 @@ namespace Flibbert
 	class D3D11VertexArray : public VertexArray
 	{
 	public:
-		D3D11VertexArray();
-		~D3D11VertexArray() override;
+		D3D11VertexArray() = default;
+		~D3D11VertexArray() override = default;
 
 		void Bind() const override;
 		void Unbind() const override;

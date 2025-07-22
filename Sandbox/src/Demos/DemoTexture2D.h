@@ -4,6 +4,8 @@
 
 #include <Flibbert.h>
 
+struct  ID3D11InputLayout;
+
 namespace Demo
 {
 	class DemoTexture2D : public Demo
@@ -24,9 +26,11 @@ namespace Demo
 		std::shared_ptr<Flibbert::IndexBuffer> m_IndexBuffer;
 		std::shared_ptr<Flibbert::Shader> m_Shader;
 		std::shared_ptr<Flibbert::Texture> m_Texture;
-		std::shared_ptr<Flibbert::UniformBuffer> m_CameraBuffer;
+		std::shared_ptr<Flibbert::UniformBuffer> m_MatricesBuffer;
 
 		std::unique_ptr<Flibbert::Camera> m_Camera;
+
+		ID3D11InputLayout* m_VertexLayout = nullptr;
 
 		glm::vec3 m_TranslationA, m_TranslationB;
 	};

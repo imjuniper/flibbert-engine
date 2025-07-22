@@ -23,10 +23,10 @@ namespace Demo
 		                                    "assets/shaders/MeshGen.frag");
 		m_Shader->Bind();
 
-		m_Shader->BindUniformBlock("Matrices", 0);
-		m_Shader->BindUniformBlock("UniformBufferObject", 1);
+		m_Shader->BindUniformBuffer("Matrices", 0);
+		m_Shader->BindUniformBuffer("UniformBufferObject", 1);
 
-		m_CameraBuffer = Flibbert::UniformBuffer::Create(sizeof(Flibbert::CameraBuffer), 0);
+		m_MatricesBuffer = Flibbert::UniformBuffer::Create(sizeof(MatricesBuffer), 0);
 		m_MeshGenUniformBuffer =
 		    Flibbert::UniformBuffer::Create(sizeof(UniformBufferObject), 1);
 	}
@@ -38,13 +38,13 @@ namespace Demo
 
 	void DemoMeshGeneration::OnRender()
 	{
-		Flibbert::CameraBuffer buffer{m_Camera->GetProjectionMatrix(),
-		                              m_Camera->GetViewMatrix()};
-		m_CameraBuffer->SetData(&buffer, sizeof(Flibbert::CameraBuffer));
+		const MatricesBuffer buffer{m_Camera->GetProjectionMatrix(),
+		                            m_Camera->GetViewMatrix(), glm::mat4(1.0f)};
+		m_MatricesBuffer->SetData(&buffer, sizeof(MatricesBuffer));
 
 		m_MeshGenUniformBuffer->SetData(&m_UniformBuffer, sizeof(UniformBufferObject));
 
-		m_Renderer.Draw(m_VAO, m_Shader, glm::mat4(1.0f));
+		m_Renderer.Draw(m_VAO, m_Shader);
 	}
 
 	void DemoMeshGeneration::OnImGuiRender()

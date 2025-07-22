@@ -24,7 +24,7 @@ namespace Flibbert
 		void SetUniform4f(std::string_view name, const glm::vec4& value) override;
 		void SetUniformMat4f(std::string_view name, const glm::mat4& value) override;
 
-		void BindUniformBlock(std::string_view name, uint32_t binding) override;
+		void BindUniformBuffer(std::string_view name, uint32_t binding) override;
 
 	private:
 		std::string LoadShader(std::string_view filepath);

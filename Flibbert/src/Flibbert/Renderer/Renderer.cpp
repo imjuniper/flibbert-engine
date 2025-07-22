@@ -59,15 +59,25 @@ namespace Flibbert
 	}
 
 	void Renderer::Draw(const std::shared_ptr<VertexArray>& vertexArray,
-	                    const std::shared_ptr<Shader>& shader, glm::mat4 transform) const
+	                    const std::shared_ptr<Shader>& shader) const
 	{
-		return m_Backend->Draw(vertexArray, shader, transform);
+		return m_Backend->Draw(vertexArray, shader);
 	}
 
 	void Renderer::Present()
 	{
 		++m_FrameCount;
 		return m_Backend->Present();
+	}
+
+	void* Renderer::GetDevice() const
+	{
+		return m_Backend->GetDevice();
+	}
+
+	void* Renderer::GetDeviceContext() const
+	{
+		return m_Backend->GetDeviceContext();
 	}
 
 	Renderer& Renderer::Get()

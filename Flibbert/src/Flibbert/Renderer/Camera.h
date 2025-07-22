@@ -8,11 +8,6 @@ namespace Flibbert
 	class Window;
 	struct InputEvent;
 
-	struct CameraBuffer {
-		glm::mat4 Projection;
-		glm::mat4 View;
-	};
-
 	enum class CameraProjectionType { Perspective, Orthographic };
 
 #pragma region CameraMode

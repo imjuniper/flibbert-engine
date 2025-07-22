@@ -4,18 +4,26 @@
 
 namespace Flibbert
 {
-	D3D11VertexArray::D3D11VertexArray()
+	void D3D11VertexArray::Bind() const
 	{
-		FBT_CORE_WARN("D3D11VertexArray not implemented");
+		for (const auto& vertexBuffer : m_VertexBuffers) {
+			vertexBuffer->Bind();
+		}
+		m_IndexBuffer->Bind();
 	}
 
-	D3D11VertexArray::~D3D11VertexArray() {}
+	void D3D11VertexArray::Unbind() const
+	{
+		for (const auto& vertexBuffer : m_VertexBuffers) {
+			vertexBuffer->Unbind();
+		}
+		m_IndexBuffer->Unbind();
+	}
 
-	void D3D11VertexArray::Bind() const {}
-
-	void D3D11VertexArray::Unbind() const {}
-
-	void D3D11VertexArray::AddVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer) {}
+	void D3D11VertexArray::AddVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer)
+	{
+		m_VertexBuffers.push_back(vertexBuffer);
+	}
 
 	const std::vector<std::shared_ptr<VertexBuffer>>& D3D11VertexArray::GetVertexBuffers() const
 	{

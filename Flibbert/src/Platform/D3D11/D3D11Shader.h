@@ -3,7 +3,11 @@
 #include "Flibbert/Renderer/Shader.h"
 
 #include <string>
-#include <unordered_map>
+
+#include <d3dcommon.h>
+
+struct ID3D11VertexShader;
+struct ID3D11PixelShader;
 
 namespace Flibbert
 {
@@ -24,10 +28,13 @@ namespace Flibbert
 		void SetUniform4f(std::string_view name, const glm::vec4& value) override;
 		void SetUniformMat4f(std::string_view name, const glm::mat4& value) override;
 
-		void BindUniformBlock(std::string_view name, uint32_t binding) override;
+		void BindUniformBuffer(std::string_view name, uint32_t binding) override;
 
-	private:
+	//private:
 		std::string m_VertexShaderFilePath;
 		std::string m_FragmentShaderFilePath;
+		ID3DBlob* m_VertexShaderBlob = nullptr;
+		ID3D11VertexShader* m_VertexShader = nullptr;
+		ID3D11PixelShader* m_PixelShader = nullptr;
 	};
 } // namespace Flibbert
