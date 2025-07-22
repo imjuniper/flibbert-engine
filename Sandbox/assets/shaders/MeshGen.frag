@@ -85,15 +85,24 @@ void main() {
     // This is the actual surface normal vector
     vec3 normal = normalize(vec3(-n.y, 1, -n.z));
 
-    // Lambertian diffuse, negative dot product values clamped off because negative light doesn't exist
-    float ndotl = clamp(dot(_LightDirection, normal), 0, 1);
+    // Lighting
+    vec4 lightColor = vec4(1.0); // could add light color parameter
 
-    // Direct light cares about the diffuse result, ambient light does not
-    vec4 direct_light = albedo * ndotl;
+    // Ambient
     vec4 ambient_light = albedo * vec4(_AmbientLight, 1);
 
-    // Combine lighting values, clip to prevent pixel values greater than 1 which would really really mess up the gamma correction below
-    vec4 lit = clamp(direct_light + ambient_light, vec4(0), vec4(1));
+    // Lambertian diffuse, negative dot product values clamped off because negative light doesn't exist
+    vec4 diffuse_light = albedo * max(dot(_LightDirection, normal), 0) * lightColor;
+
+    // Specular
+    float specularStrength = 0.5;
+    vec3 viewDirection = normalize(u_ViewPosition - vertexData.Position);
+    vec3 reflectDirection = reflect(-_LightDirection, normal);
+    float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), 32);
+    vec4 specular_light = albedo * specularStrength * spec * lightColor;
+
+    // Add lighting passes
+    vec4 lit = clamp(diffuse_light + ambient_light + specular_light, vec4(0), vec4(1));
 
     // Convert from linear rgb to srgb for proper color output, ideally you'd do this as some final post processing effect because otherwise you will need to revert this gamma correction elsewhere
     vec4 lit_srgb = pow(lit, vec4(2.2));
