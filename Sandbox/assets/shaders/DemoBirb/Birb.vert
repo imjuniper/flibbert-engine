@@ -5,7 +5,7 @@ layout (std140) uniform PerFrameData
 {
     mat4 u_View;
     mat4 u_Projection;
-    vec3 u_CameraPosition;
+    vec3 u_ViewPosition;
 };
 
 layout (std140) uniform PerObjectData

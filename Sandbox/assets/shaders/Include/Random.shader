@@ -1,4 +1,4 @@
-// @todo improve this function
+// @todo replace this function. PCG Hash?
 // UE's PseudoRandom function
 // https://github.com/EpicGames/UnrealEngine/blob/release/Engine/Shaders/Private/Random.ush
 float pseudo(vec2 v) {

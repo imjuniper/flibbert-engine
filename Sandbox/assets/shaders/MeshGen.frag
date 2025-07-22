@@ -34,7 +34,7 @@ layout (std140) uniform PerFrameData
 {
     mat4 u_View;
     mat4 u_Projection;
-    vec3 u_CameraPosition;
+    vec3 u_ViewPosition;
 };
 
 // These are the variables that we expect to receive from the vertex shader
@@ -51,7 +51,7 @@ void main() {
     vec3 noise_pos = (vertexData.Position + vec3(_Offset.x, 0, _Offset.z)) / _Scale;
 
     // Calculate LODs for noise. should probably be done more dynamically and uh more maintainable
-    float distanceFromCamera = distance(u_CameraPosition, vertexData.Position);
+    float distanceFromCamera = distance(u_ViewPosition, vertexData.Position);
     int octaves0 = _Octaves;
     int octaves1 = max(int(octaves0 * 0.75), 1);
     int octaves2 = max(int(octaves1 * 0.75), 1);
@@ -99,7 +99,7 @@ void main() {
     vec4 lit_srgb = pow(lit, vec4(2.2));
 
     // most basic-ass fog
-    float fogFactor = exp2(-pow(distance(u_CameraPosition, vertexData.Position) * _FogDensity, 2));
+    float fogFactor = exp2(-pow(distance(u_ViewPosition, vertexData.Position) * _FogDensity, 2));
 
     frag_color = mix(vec4(_FogColor, 1.0f), lit_srgb, fogFactor);
 }
