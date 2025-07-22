@@ -96,9 +96,6 @@ namespace Flibbert
 					FBT_CORE_ENSURE_MSG(false, "Unknown ShaderDataType!");
 			}
 		}
-
-		Unbind();
-		vertexBuffer->Unbind();
 	}
 
 	const std::vector<std::shared_ptr<VertexBuffer>>&
@@ -118,8 +115,5 @@ namespace Flibbert
 		indexBuffer->Bind();
 
 		m_IndexBuffer = indexBuffer;
-
-		Unbind();
-		m_IndexBuffer->Unbind();
 	}
 } // namespace Flibbert
