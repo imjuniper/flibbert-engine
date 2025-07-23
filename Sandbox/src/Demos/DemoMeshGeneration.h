@@ -81,11 +81,11 @@ namespace Demo
 		    .Lacunarity = 2.0f,
 		    .SlopeRange = {0.9f, 0.98f},
 		    .LowSlopeColor = {0.366f, 0.373f, 0.078f, 1.0f},
-		    .HighSlopeColor = {0.216f, 0.144f, 0.144f, 1.0f},
+		    .HighSlopeColor = {0.102f, 0.059f, 0.047f, 1.0f},
 		    .FrequencyVarianceLowerBound = 0.0f,
 		    .FrequencyVarianceUpperBound = 0.0f,
 		    .SlopeDamping = 0.2f,
-		    .AmbientLight = glm::vec3(1.0f),
+		    .AmbientLight = glm::vec3(0.192f, 0.271f, 0.3f),
 		    .FogDensity = 0.015f,
 		    .FogColor = glm::vec3(0.67f, 0.79f, 0.8f),
 		    //{0.411765f, 0.411765f, 0.411765f, 1.f} // Godot DIM_GRAY

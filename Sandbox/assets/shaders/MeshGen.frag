@@ -83,33 +83,34 @@ void main() {
     vec4 albedo = mix(_LowSlopeColor, _HighSlopeColor, vec4(material_blend_factor));
 
     // This is the actual surface normal vector
-    vec3 normal = normalize(vec3(-n.y, 1, -n.z));
+    vec3 normal = normalize(vec3(-n.y, 1, -n.z)) * _NormalStrength;
 
     // Lighting
-    vec4 lightColor = vec4(1.0); // could add light color parameter
+    vec3 lightColor = vec3(1.0); // could add light color parameter
 
     // Ambient
-    vec4 ambient_light = albedo * vec4(_AmbientLight, 1);
+    vec3 ambient_light = albedo.rgb * _AmbientLight;
 
     // Lambertian diffuse, negative dot product values clamped off because negative light doesn't exist
-    vec4 diffuse_light = albedo * max(dot(_LightDirection, normal), 0) * lightColor;
+    vec3 diffuse_light = albedo.rgb * max(dot(_LightDirection, normal), 0) * lightColor;
 
     // Specular
-    float specularStrength = 0.5;
-    float shininess = 64;
+    const float specularStrength = 0.5;
+    const float shininess = 64;
     vec3 viewDirection = normalize(u_ViewPosition - vertexData.Position);
     vec3 halfway = normalize(_LightDirection + viewDirection);
     float spec = pow(max(dot(normal, halfway), 0.0), shininess);
-    vec4 specular_light = albedo * specularStrength * spec * lightColor;
+    vec3 specular_light = albedo.rgb * specularStrength * spec * lightColor;
 
     // Add lighting passes
-    vec4 lit = clamp(diffuse_light + ambient_light + specular_light, vec4(0), vec4(1));
+    vec3 lit = clamp(diffuse_light + ambient_light + specular_light, vec3(0), vec3(1));
 
     // Convert from linear rgb to srgb for proper color output, ideally you'd do this as some final post processing effect because otherwise you will need to revert this gamma correction elsewhere
-    vec4 lit_srgb = pow(lit, vec4(2.2));
+    const float gamma = 2.2;
+    vec3 lit_srgb = pow(lit, vec3(gamma)); // Do I need to do gamma correction??
 
     // most basic-ass fog
     float fogFactor = exp2(-pow(distance(u_ViewPosition, vertexData.Position) * _FogDensity, 2));
 
-    frag_color = mix(vec4(_FogColor, 1.0f), lit_srgb, fogFactor);
+    frag_color = vec4(mix(_FogColor, lit, fogFactor), 1);
 }

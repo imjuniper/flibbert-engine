@@ -24,16 +24,10 @@ namespace Demo
 		// Set better default generation params
 		m_MeshGenUniformData.Seed = 135;
 
-		// Generate the terrain's mesh (VB, IB, VAO)
+		// Generate the terrain's mesh (VB, IB, VAO, Shader)
 		GenerateMesh();
 
-		// Setup shader and uniform buffers
-		m_Shader = Flibbert::Shader::Create("assets/shaders/MeshGen.vert",
-		                                    "assets/shaders/MeshGen.frag");
-		m_Shader->Bind();
-		m_Shader->BindUniformBuffer("PerFrameData", 0);
-		m_Shader->BindUniformBuffer("MeshGenData", 1);
-
+		// Setup uniform buffers
 		m_PerFrameBuffer = Flibbert::UniformBuffer::Create(sizeof(PerFrameUniformData), 0);
 		m_MeshGenUniformBuffer =
 		    Flibbert::UniformBuffer::Create(sizeof(MeshGenUniformBuffer), 1);
@@ -61,6 +55,10 @@ namespace Demo
 
 	void DemoMeshGeneration::OnImGuiRender()
 	{
+		const auto position = m_Camera->GetPosition();
+		ImGui::Text("Camera Position: %.1f, %.1f, %.1f", position.x, position.y,
+		            position.z);
+
 		if (ImGui::Checkbox("Toggle VSync", &m_EnableVSync)) {
 			m_Window.SetVSync(m_EnableVSync);
 		}
@@ -225,5 +223,12 @@ namespace Demo
 		m_VAO = Flibbert::VertexArray::Create();
 		m_VAO->AddVertexBuffer(m_VertexBuffer);
 		m_VAO->SetIndexBuffer(m_IndexBuffer);
+
+		m_Shader = Flibbert::Shader::Create("assets/shaders/MeshGen.vert",
+		                                    "assets/shaders/MeshGen.frag");
+		m_Shader->BindUniformBuffer("PerFrameData", 0);
+		m_Shader->BindUniformBuffer("MeshGenData", 1);
+
+		m_VAO->Unbind();
 	}
 } // namespace Demo
