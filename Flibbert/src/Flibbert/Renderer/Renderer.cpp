@@ -20,42 +20,58 @@ namespace Flibbert
 
 	void Renderer::InitImGui() const
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Backend->InitImGui();
 	}
 
 	void Renderer::BeginImGuiFrame() const
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Backend->BeginImGuiFrame();
 	}
 
 	void Renderer::EndImGuiFrame() const
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Backend->EndImGuiFrame();
 	}
 
 	void Renderer::ShutdownImGui() const
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Backend->ShutdownImGui();
 	}
 
 	glm::vec4 Renderer::GetClearColor() const
 	{
+		FBT_PROFILE_FUNCTION();
+
 		return m_Backend->GetClearColor();
 	}
 
 	void Renderer::SetClearColor(glm::vec4 color) const
 	{
+		FBT_PROFILE_FUNCTION();
+
 		return m_Backend->SetClearColor(color);
 	}
 
 	void Renderer::Clear() const
 	{
+		FBT_PROFILE_FUNCTION();
+
 		return m_Backend->Clear();
 	}
 
 	void Renderer::Draw(const std::shared_ptr<VertexArray>& vertexArray,
 	                    const std::shared_ptr<Shader>& shader) const
 	{
+		FBT_PROFILE_FUNCTION();
+
 		return m_Backend->Draw(vertexArray, shader);
 	}
 

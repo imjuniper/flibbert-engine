@@ -19,6 +19,8 @@ private:
 public:
 	explicit Sandbox(const Flibbert::ApplicationInfo& info) : Application(info)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_currentDemo = nullptr;
 		m_demoMenu = new Demo::DemoMenu(m_currentDemo);
 		m_currentDemo = m_demoMenu;
@@ -32,6 +34,8 @@ public:
 
 	~Sandbox() override
 	{
+		FBT_PROFILE_FUNCTION();
+
 		if (m_currentDemo != m_demoMenu) {
 			delete m_demoMenu;
 		}
@@ -40,6 +44,8 @@ public:
 
 	void OnUpdate(const float ts) override
 	{
+		FBT_PROFILE_FUNCTION();
+
 		if (m_currentDemo) {
 			m_currentDemo->OnUpdate(ts);
 			m_currentDemo->OnRender();
@@ -48,6 +54,8 @@ public:
 
 	void OnImguiRender() override
 	{
+		FBT_PROFILE_FUNCTION();
+
 		if (m_currentDemo) {
 			ImGui::Begin("Sandbox");
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
@@ -63,6 +71,8 @@ public:
 
 	void OnInput(const std::shared_ptr<Flibbert::InputEvent>& event) override
 	{
+		FBT_PROFILE_FUNCTION();
+
 		if (m_currentDemo) {
 			m_currentDemo->OnInput(event);
 		}

@@ -39,6 +39,8 @@ namespace Flibbert
 {
 	OpenGLRendererBackend::OpenGLRendererBackend()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		Window& window = Application::Get().GetWindow();
 		RGFW_window_makeCurrent(window.GetNativeWindow());
 		int status = gladLoadGL(RGFW_getProcAddress);
@@ -77,6 +79,8 @@ namespace Flibbert
 
 	void OpenGLRendererBackend::InitImGui()
 	{
+		FBT_PROFILE_FUNCTION();
+
 #ifdef FBT_PLATFORM_MACOS
 		/* Set OpenGL version to 4.1 on macOS */
 		ImGui_ImplOpenGL3_Init("#version 410");
@@ -87,33 +91,45 @@ namespace Flibbert
 
 	void OpenGLRendererBackend::BeginImGuiFrame()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_NewFrame();
 	}
 
 	void OpenGLRendererBackend::EndImGuiFrame()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 
 	void OpenGLRendererBackend::ShutdownImGui()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_Shutdown();
 	}
 
 	void OpenGLRendererBackend::SetClearColor(const glm::vec4& color)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		RendererBackend::SetClearColor(color);
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
 	void OpenGLRendererBackend::Clear()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	void OpenGLRendererBackend::Draw(const std::shared_ptr<VertexArray>& vertexArray,
 	                                 const std::shared_ptr<Shader>& shader) const
 	{
+		FBT_PROFILE_FUNCTION();
+
 		vertexArray->Bind();
 		shader->Bind();
 
@@ -123,6 +139,8 @@ namespace Flibbert
 
 	void OpenGLRendererBackend::OnWindowResized(Window& window, const glm::u32vec2& size)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		glViewport(0, 0, size.x, size.y);
 	}
 } // namespace Flibbert

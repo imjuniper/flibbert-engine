@@ -29,6 +29,7 @@ namespace Flibbert
 			std::filesystem::current_path(executablePath.parent_path());
 		}
 
+		// @todo this feels wrong?
 		Input::Get().InputEventDispatch.Bind(
 		    FBT_BIND_EVENT(Application::DispatchInputEvent));
 
@@ -116,6 +117,8 @@ namespace Flibbert
 
 	void Application::DispatchInputEvent(const std::shared_ptr<InputEvent>& event)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		OnInput(event);
 	}
 

@@ -13,6 +13,8 @@ namespace Flibbert
 
 	void Input::ProcessInputEvent(const std::shared_ptr<InputEvent>& event)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		auto keyEvent = dynamic_pointer_cast<InputEventKey>(event);
 		if (keyEvent) {
 			if (keyEvent->IsPressed) {
@@ -63,6 +65,8 @@ namespace Flibbert
 
 	void Input::SetCursorMode(CursorMode mode)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		if (m_CursorMode == mode) return;
 		m_CursorMode = mode;
 		OnSetCursorMode.ExecuteIfBound(mode);

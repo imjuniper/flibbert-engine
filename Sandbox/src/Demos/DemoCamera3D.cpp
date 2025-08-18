@@ -1,5 +1,7 @@
 #include "Demos/DemoCamera3D.h"
 
+#include "Flibbert/Debug/Instrumentor.h"
+
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 
@@ -9,6 +11,8 @@ namespace Demo
 	    : m_Renderer(Flibbert::Renderer::Get()), m_TranslationA(-10, 5, 0),
 	      m_TranslationB(0, 0, 0)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_CameraModePerspective = std::make_shared<Flibbert::CameraModePerspective>();
 		m_CameraModePerspective->VerticalFOV = 45.0f;
 		m_CameraModePerspective->NearClip = 0.1f;
@@ -66,11 +70,15 @@ namespace Demo
 
 	void DemoCamera3D::OnUpdate(float ts)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Camera->OnUpdate(ts);
 	}
 
 	void DemoCamera3D::OnRender()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Texture->Bind(0);
 
 		const PerFrameUniformData perFrameBuffer{m_Camera->GetViewMatrix(),
@@ -95,6 +103,8 @@ namespace Demo
 
 	void DemoCamera3D::OnImGuiRender()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		if (ImGui::Checkbox("Orthographic Mode", &m_UsingOrthographicMode)) {
 			if (m_UsingOrthographicMode) {
 				m_Camera->SetCameraMode(m_CameraModeOrthographic);
@@ -108,6 +118,8 @@ namespace Demo
 
 	void DemoCamera3D::OnInput(const std::shared_ptr<Flibbert::InputEvent>& event)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Camera->OnInput(event);
 	}
 } // namespace Demo

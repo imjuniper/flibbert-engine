@@ -1,5 +1,7 @@
 #include "Demos/DemoFloppyBirb.h"
 
+#include "Flibbert/Debug/Instrumentor.h"
+
 #include <Flibbert.h>
 
 #include <imgui.h>
@@ -9,6 +11,8 @@ namespace Demo
 #pragma region Birb
 	Birb::Birb()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Position = glm::vec2(100, 500);
 		m_Size = glm::vec2(50, 50);
 
@@ -50,6 +54,8 @@ namespace Demo
 
 	void Birb::OnUpdate(float ts)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Position.y += m_CurrentYSpeed * ts;
 		m_CurrentYSpeed = m_CurrentYSpeed + m_FallAccel * ts;
 		m_CurrentYSpeed = glm::max(m_CurrentYSpeed, m_MaxFallSpeed);
@@ -57,6 +63,8 @@ namespace Demo
 
 	void Birb::OnInput(const std::shared_ptr<Flibbert::InputEvent>& event)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		auto keyEvent = dynamic_pointer_cast<Flibbert::InputEventKey>(event);
 		if (!keyEvent) return;
 		if (keyEvent->IsPressed && keyEvent->Key == Flibbert::Key::Space) {
@@ -69,6 +77,8 @@ namespace Demo
 #pragma region Pipe
 	Pipe::Pipe()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Position = glm::vec2(100, 500);
 		m_Size = glm::vec2(50, 150);
 
@@ -112,6 +122,8 @@ namespace Demo
 #pragma region Scene
 	DemoFloppyBirb::DemoFloppyBirb() : m_Renderer(Flibbert::Renderer::Get())
 	{
+		FBT_PROFILE_FUNCTION();
+
 		auto cameraMode = std::make_shared<Flibbert::CameraModeOrthographic>();
 		cameraMode->Size = 540.0f;
 		cameraMode->NearClip = -1.0f;
@@ -126,11 +138,15 @@ namespace Demo
 
 	void DemoFloppyBirb::OnUpdate(float ts)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Birb.OnUpdate(ts);
 	}
 
 	void DemoFloppyBirb::OnRender()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		const PerFrameUniformData perFrameBuffer{m_Camera->GetViewMatrix(),
 		                                           m_Camera->GetProjectionMatrix(),
 		                                           m_Camera->GetPosition()};
@@ -162,12 +178,16 @@ namespace Demo
 
 	void DemoFloppyBirb::OnImGuiRender()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		ImGui::Text("Floppy Birb!");
 		ImGui::Text("Position (%.2f, %.2f)", m_Birb.m_Position.x, m_Birb.m_Position.y);
 	}
 
 	void DemoFloppyBirb::OnInput(const std::shared_ptr<Flibbert::InputEvent>& event)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Birb.OnInput(event);
 	}
 #pragma endregion Scene

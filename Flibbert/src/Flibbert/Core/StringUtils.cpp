@@ -6,6 +6,8 @@ namespace Flibbert
 {
 	uint32_t StringUtils::Hash(std::string_view string)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		uint32_t hash = 5381;
 
 		for (const auto& c : string) {

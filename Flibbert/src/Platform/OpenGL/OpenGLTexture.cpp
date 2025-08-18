@@ -55,17 +55,23 @@ namespace Flibbert
 
 	OpenGLTexture::~OpenGLTexture()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		glDeleteTextures(1, &m_RendererID);
 	}
 
 	void OpenGLTexture::Bind(uint32_t slot) const
 	{
+		FBT_PROFILE_FUNCTION();
+
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
 	}
 
 	void OpenGLTexture::Unbind() const
 	{
+		FBT_PROFILE_FUNCTION();
+
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 } // namespace Flibbert

@@ -22,6 +22,8 @@ namespace Flibbert
 
 	bool Platform::GetExecutablePath(std::filesystem::path& executablePath)
 	{
+		FBT_PROFILE_FUNCTION();
+
 #if defined(MAX_PATH)
 		static uint32_t initialSize = MAX_PATH;
 #elif defined(PATH_MAX) && PATH_MAX != 0

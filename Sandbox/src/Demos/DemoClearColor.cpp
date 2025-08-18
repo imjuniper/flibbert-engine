@@ -1,5 +1,7 @@
 #include "Demos/DemoClearColor.h"
 
+#include "Flibbert/Debug/Instrumentor.h"
+
 #include <Flibbert.h>
 
 #include <glm/gtc/type_ptr.hpp>
@@ -15,16 +17,22 @@ namespace Demo
 
 	DemoClearColor::~DemoClearColor()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Renderer.SetClearColor(m_InitialColor);
 	}
 
 	void DemoClearColor::OnRender()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Renderer.SetClearColor(m_ClearColor);
 	}
 
 	void DemoClearColor::OnImGuiRender()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		ImGui::ColorEdit4("Clear Color", glm::value_ptr(m_ClearColor));
 	}
 } // namespace Demo

@@ -9,6 +9,8 @@ namespace Flibbert
 	    : m_VertexShaderFilePath(vertexShaderFilepath),
 	      m_FragmentShaderFilePath(fragmentShaderFilepath), m_RendererID(0)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		const auto vertexShader = LoadAndPreprocessShader(m_VertexShaderFilePath);
 		const auto fragmentShader = LoadAndPreprocessShader(m_FragmentShaderFilePath);
 
@@ -17,11 +19,15 @@ namespace Flibbert
 
 	OpenGLShader::~OpenGLShader()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		glDeleteProgram(m_RendererID);
 	}
 
 	uint32_t OpenGLShader::CompileShader(uint32_t type, const std::string& source)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		uint32_t id = glCreateShader(type);
 		// source is not a std::string_view to ensure it's null-terminated
 		const char* src = source.c_str();
@@ -48,6 +54,8 @@ namespace Flibbert
 	uint32_t OpenGLShader::CreateShader(const std::string& vertexShader,
 	                                    const std::string& fragmentShader)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		uint32_t program = glCreateProgram();
 		uint32_t vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
 		uint32_t fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
@@ -65,27 +73,37 @@ namespace Flibbert
 
 	void OpenGLShader::Bind() const
 	{
+		FBT_PROFILE_FUNCTION();
+
 		glUseProgram(m_RendererID);
 	}
 
 	void OpenGLShader::Unbind() const
 	{
+		FBT_PROFILE_FUNCTION();
+
 		glUseProgram(0);
 	}
 
 	void OpenGLShader::SetUniform1i(std::string_view name, const int value)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		glUniform1i(GetUniformLocation(name), value);
 	}
 
 	void OpenGLShader::BindUniformBuffer(std::string_view name, uint32_t binding)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		uint32_t blockIndex = glGetUniformBlockIndex(m_RendererID, name.data());
 		glUniformBlockBinding(m_RendererID, blockIndex, binding);
 	}
 
 	int OpenGLShader::GetUniformLocation(std::string_view name)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		const int location = glGetUniformLocation(m_RendererID, name.data());
 		if (location == -1) {
 			FBT_CORE_WARN("Uniform {} doesn't exist", name);

@@ -1,5 +1,6 @@
 #include "Demos/DemoMeshGeneration.h"
 
+#include "Flibbert/Debug/Instrumentor.h"
 #include "Platform/Desktop/Window.h"
 
 #include <glad.h>
@@ -12,6 +13,8 @@ namespace Demo
 	    : m_Window(Flibbert::Application::Get().GetWindow()),
 	      m_Renderer(Flibbert::Renderer::Get())
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_EnableVSync = m_Window.IsVSyncEnabled();
 
 		// Setup a basic camera
@@ -35,6 +38,8 @@ namespace Demo
 
 	void DemoMeshGeneration::OnUpdate(float ts)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Camera->OnUpdate(ts);
 
 		Flibbert::Renderer::Get().SetClearColor(
@@ -50,11 +55,15 @@ namespace Demo
 
 	void DemoMeshGeneration::OnRender()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Renderer.Draw(m_VAO, m_Shader);
 	}
 
 	void DemoMeshGeneration::OnImGuiRender()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		const auto position = m_Camera->GetPosition();
 		ImGui::Text("Camera Position: %.1f, %.1f, %.1f", position.x, position.y,
 		            position.z);
@@ -169,44 +178,54 @@ namespace Demo
 
 	void DemoMeshGeneration::OnInput(const std::shared_ptr<Flibbert::InputEvent>& event)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Camera->OnInput(event);
 	}
 
 	void DemoMeshGeneration::GenerateMesh()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		const float halfLength = (m_SideLength - 1) / 2.0f;
 
 		std::vector<float> vertices;
+		{
+			FBT_PROFILE_SCOPE("Generate vertices");
 
-		for (uint32_t x = 0; x < m_SideLength; ++x) {
-			for (uint32_t z = 0; z < m_SideLength; ++z) {
-				// Have to push them in reverse for some reason?
-				// Sinon je dois assigned les vertex CCW instead??
-				vertices.push_back((z - halfLength) * m_MeshScale);
-				vertices.push_back(0);
-				vertices.push_back((x - halfLength) * m_MeshScale);
+			for (uint32_t x = 0; x < m_SideLength; ++x) {
+				for (uint32_t z = 0; z < m_SideLength; ++z) {
+					// Have to push them in reverse for some reason?
+					// Sinon je dois assigned les vertex CCW instead??
+					vertices.push_back((z - halfLength) * m_MeshScale);
+					vertices.push_back(0);
+					vertices.push_back((x - halfLength) * m_MeshScale);
+				}
 			}
 		}
 
 		FBT_INFO("Vertex count {:d}", vertices.size() / 3);
 
 		std::vector<uint32_t> indices;
+		{
+			FBT_PROFILE_SCOPE("Generate triangles");
 
-		for (uint32_t row = 0; row < m_SideLength * m_SideLength - m_SideLength;
-		     row += m_SideLength) {
-			for (uint32_t i = 0; i < m_SideLength - 1; ++i) {
-				const auto v0 = i + row;
-				const auto v1 = v0 + m_SideLength;
-				const auto v2 = v0 + m_SideLength + 1;
-				const auto v3 = v0 + 1;
+			for (uint32_t row = 0; row < m_SideLength * m_SideLength - m_SideLength;
+			     row += m_SideLength) {
+				for (uint32_t i = 0; i < m_SideLength - 1; ++i) {
+					const auto v0 = i + row;
+					const auto v1 = v0 + m_SideLength;
+					const auto v2 = v0 + m_SideLength + 1;
+					const auto v3 = v0 + 1;
 
-				indices.push_back(v0);
-				indices.push_back(v1);
-				indices.push_back(v3);
-				indices.push_back(v1);
-				indices.push_back(v2);
-				indices.push_back(v3);
-			}
+					indices.push_back(v0);
+					indices.push_back(v1);
+					indices.push_back(v3);
+					indices.push_back(v1);
+					indices.push_back(v2);
+					indices.push_back(v3);
+				}
+			     }
 		}
 
 		FBT_INFO("Triangle count {:d}", indices.size() / 3);

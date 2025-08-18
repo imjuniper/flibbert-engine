@@ -15,6 +15,8 @@ namespace Flibbert
 {
 	Window::Window(const WindowProps& props)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		// @todo check if this is needed on other platforms than macOS
 		if (Renderer::GetAPI() == Renderer::API::OpenGL) {
 			RGFW_setGLHint(RGFW_glDebug, 1);
@@ -41,49 +43,59 @@ namespace Flibbert
 
 	Window::~Window()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		RGFW_window_close(m_WindowHandle);
 	}
 
 	void Window::InitImGui()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		ImGui_ImplRgfw_InitForOpenGL(GetNativeWindow(), true);
 	}
 
 	void Window::BeginImGuiFrame()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		ImGui_ImplRgfw_NewFrame();
 	}
 
 	void Window::ShutdownImGui()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		ImGui_ImplRgfw_Shutdown();
 	}
 
 	void Window::ProcessEvents()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		while (RGFW_window_checkEvent(m_WindowHandle)) {
 			RGFW_event& event = m_WindowHandle->event;
 
 			switch (event.type) {
-				case RGFW_quit:
+				case RGFW_quit: {
 					OnWindowClosed.Broadcast(*this);
 					break;
-
-				case RGFW_windowMoved:
+				}
+				case RGFW_windowMoved: {
 					m_Position = {std::max(m_WindowHandle->r.x, 0),
-					              std::max(m_WindowHandle->r.y, 0)};
+						      std::max(m_WindowHandle->r.y, 0)};
 					OnWindowMoved.Broadcast(*this, m_Position);
 					break;
-
-				case RGFW_windowResized:
+				}
+				case RGFW_windowResized: {
 					// @todo implement smooth resize
 					// https://github.com/ColleagueRiley/RGFW/blob/main/examples/smooth-resize/smooth-resize.c?rgh-link-date=2025-06-23T16%3A00%3A55.000Z
 					m_Size = {std::max(m_WindowHandle->r.w, 0),
-					          std::max(m_WindowHandle->r.h, 0)};
+						  std::max(m_WindowHandle->r.h, 0)};
 					m_AspectRatio = static_cast<float>(m_Size.x) / m_Size.y;
 					OnWindowResized.Broadcast(*this, m_Size);
 					break;
-
+				}
 				case RGFW_keyPressed: {
 					auto keyEvent = std::make_shared<InputEventKey>();
 					keyEvent->Key = static_cast<Key>(event.key);
@@ -98,7 +110,6 @@ namespace Flibbert
 					Input::Get().ProcessInputEvent(keyEvent);
 					break;
 				}
-
 				case RGFW_mouseButtonPressed: {
 					auto mouseButtonEvent =
 					    std::make_shared<InputEventMouseButton>();
@@ -131,8 +142,8 @@ namespace Flibbert
 					Input::Get().ProcessInputEvent(mouseMovementEvent);
 					break;
 				}
-
 				default:
+					// unhandled
 					break;
 			}
 		}
@@ -140,11 +151,15 @@ namespace Flibbert
 
 	void Window::SwapBuffers()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		RGFW_window_swapBuffers(m_WindowHandle);
 	}
 
 	void Window::SetVSync(const bool enabled)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_VSync = enabled;
 		RGFW_window_swapInterval(m_WindowHandle, m_VSync);
 	}
@@ -166,6 +181,8 @@ namespace Flibbert
 
 	void Window::OnSetCursorMode(CursorMode mode)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		switch (mode) {
 			case CursorMode::Normal:
 				RGFW_window_mouseUnhold(m_WindowHandle);

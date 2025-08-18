@@ -201,6 +201,10 @@ namespace Flibbert
 	} // namespace InstrumentorUtils
 } // namespace Flibbert
 
+// @todo: add region markers or something, so I can mark events such as "VSync disabled" or "changed scene"
+// Should I switch to Tracy?
+
+#define FBT_PROFILE 1
 #if FBT_PROFILE
   // Resolve which function signature macro will be used. Note that this only
 	// is resolved when the (pre)compiler starts, so the syntax highlighting

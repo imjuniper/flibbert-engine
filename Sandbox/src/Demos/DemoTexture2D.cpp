@@ -1,5 +1,7 @@
 #include "Demos/DemoTexture2D.h"
 
+#include "Flibbert/Debug/Instrumentor.h"
+
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 
@@ -9,6 +11,8 @@ namespace Demo
 	    : m_Renderer(Flibbert::Renderer::Get()), m_TranslationA(100, 100, 0),
 	      m_TranslationB(300, 100, 0)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		auto cameraMode = std::make_shared<Flibbert::CameraModeOrthographic>();
 		cameraMode->Size = 540.0f;
 		cameraMode->NearClip = -1.0f;
@@ -60,11 +64,15 @@ namespace Demo
 
 	void DemoTexture2D::OnUpdate(float ts)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Camera->OnUpdate(ts);
 	}
 
 	void DemoTexture2D::OnRender()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Texture->Bind(0);
 
 		const PerFrameUniformData perFrameBuffer{m_Camera->GetViewMatrix(),
@@ -89,12 +97,16 @@ namespace Demo
 
 	void DemoTexture2D::OnImGuiRender()
 	{
+		FBT_PROFILE_FUNCTION();
+
 		ImGui::SliderFloat3("Translation A", glm::value_ptr(m_TranslationA), 0.0f, 960.0f);
 		ImGui::SliderFloat3("Translation B", glm::value_ptr(m_TranslationB), 0.0f, 960.0f);
 	}
 
 	void DemoTexture2D::OnInput(const std::shared_ptr<Flibbert::InputEvent>& event)
 	{
+		FBT_PROFILE_FUNCTION();
+
 		m_Camera->OnInput(event);
 	}
 } // namespace Demo
