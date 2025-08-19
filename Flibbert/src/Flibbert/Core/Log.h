@@ -11,6 +11,9 @@
 
 namespace Flibbert
 {
+	// @todo remove macros and replace with functions. also restrict core logs to core only.
+	// also maybe find a shorter namespace name
+	// @todo send log messages to Tracy when profiling
 	class Log
 	{
 	public:

@@ -20,49 +20,49 @@ namespace Flibbert
 
 	void Renderer::InitImGui() const
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_Backend->InitImGui();
 	}
 
 	void Renderer::BeginImGuiFrame() const
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_Backend->BeginImGuiFrame();
 	}
 
 	void Renderer::EndImGuiFrame() const
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_Backend->EndImGuiFrame();
 	}
 
 	void Renderer::ShutdownImGui() const
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_Backend->ShutdownImGui();
 	}
 
 	glm::vec4 Renderer::GetClearColor() const
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		return m_Backend->GetClearColor();
 	}
 
 	void Renderer::SetClearColor(glm::vec4 color) const
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		return m_Backend->SetClearColor(color);
 	}
 
 	void Renderer::Clear() const
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		return m_Backend->Clear();
 	}
@@ -70,10 +70,22 @@ namespace Flibbert
 	void Renderer::Draw(const std::shared_ptr<VertexArray>& vertexArray,
 	                    const std::shared_ptr<Shader>& shader) const
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		return m_Backend->Draw(vertexArray, shader);
 	}
+
+#if FBT_PROFILING_ENABLED
+	void Renderer::CaptureTracyFrameImage()
+	{
+		return m_Backend->CaptureTracyFrameImage();
+	}
+
+	void Renderer::CollectTracyGPUTraces()
+	{
+		return m_Backend->CollectTracyGPUTraces();
+	}
+#endif
 
 	Renderer& Renderer::Get()
 	{

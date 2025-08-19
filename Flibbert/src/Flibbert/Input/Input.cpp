@@ -13,7 +13,7 @@ namespace Flibbert
 
 	void Input::ProcessInputEvent(const std::shared_ptr<InputEvent>& event)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		auto keyEvent = dynamic_pointer_cast<InputEventKey>(event);
 		if (keyEvent) {
@@ -65,7 +65,7 @@ namespace Flibbert
 
 	void Input::SetCursorMode(CursorMode mode)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		if (m_CursorMode == mode) return;
 		m_CursorMode = mode;

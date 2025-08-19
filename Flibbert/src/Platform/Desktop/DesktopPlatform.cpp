@@ -22,7 +22,7 @@ namespace Flibbert
 
 	bool Platform::GetExecutablePath(std::filesystem::path& executablePath)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 #if defined(MAX_PATH)
 		static uint32_t initialSize = MAX_PATH;

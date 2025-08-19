@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Flibbert/Debug/Instrumentor.h"
+#include "Flibbert/Debug/Profiling.h"
 
 #include <Flibbert.h>
 
@@ -49,7 +49,7 @@ namespace Demo
 		template <typename T>
 		void RegisterDemo(std::string_view name)
 		{
-			FBT_PROFILE_FUNCTION();
+			ZoneScoped;
 
 			FBT_INFO("Registering demo {}", name);
 			m_Demos.push_back(std::make_pair(name.data(), []() { return new T(); }));

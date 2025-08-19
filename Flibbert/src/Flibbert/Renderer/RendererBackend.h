@@ -29,6 +29,11 @@ namespace Flibbert
 		virtual void Draw(const std::shared_ptr<VertexArray>& vertexArray,
 		                  const std::shared_ptr<Shader>& shader) const = 0;
 
+#if FBT_PROFILING_ENABLED
+		virtual void CaptureTracyFrameImage() = 0;
+		virtual void CollectTracyGPUTraces() = 0;
+#endif
+
 	protected:
 		glm::vec4 m_clearColor = glm::vec4(0.f);
 	};

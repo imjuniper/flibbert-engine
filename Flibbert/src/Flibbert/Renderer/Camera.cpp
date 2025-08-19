@@ -15,7 +15,7 @@ namespace Flibbert
 #pragma region CameraModePerspective
 	bool CameraModePerspective::HandleMovement(float ts, glm::vec3& position)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		bool moved = false;
 
@@ -54,7 +54,7 @@ namespace Flibbert
 	bool CameraModePerspective::HandleInput(const std::shared_ptr<InputEvent>& event,
 	                                        glm::vec3& position)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		auto mouseMovementEvent = dynamic_pointer_cast<InputEventMouseMovement>(event);
 		if (!mouseMovementEvent) return false;
@@ -75,14 +75,14 @@ namespace Flibbert
 
 	glm::mat4 CameraModePerspective::CalculateProjection(const float aspectRatio) const
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		return glm::perspective(glm::radians(VerticalFOV), aspectRatio, NearClip, FarClip);
 	}
 
 	glm::mat4 CameraModePerspective::CalculateView(const glm::vec3& position) const
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		return glm::lookAt(position, position + ForwardDirection, UpDirection);
 	}
@@ -91,7 +91,7 @@ namespace Flibbert
 #pragma region CameraModeOrthographic
 	bool CameraModeOrthographic::HandleMovement(float ts, glm::vec3& position)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		static constexpr bool moved = false;
 		return moved;
@@ -100,7 +100,7 @@ namespace Flibbert
 	bool CameraModeOrthographic::HandleInput(const std::shared_ptr<InputEvent>& event,
 	                                         glm::vec3& position)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		auto mouseMovementEvent = dynamic_pointer_cast<InputEventMouseMovement>(event);
 		if (!mouseMovementEvent) return false;
@@ -113,7 +113,7 @@ namespace Flibbert
 
 	glm::mat4 CameraModeOrthographic::CalculateProjection(float aspectRatio) const
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		const float orthoRight = Size * aspectRatio;
 		const float orthoTop = Size;
@@ -122,7 +122,7 @@ namespace Flibbert
 
 	glm::mat4 CameraModeOrthographic::CalculateView(const glm::vec3& position) const
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		return glm::inverse(glm::translate(glm::mat4(1.0f), position));
 	}
@@ -131,7 +131,7 @@ namespace Flibbert
 	Camera::Camera(const std::shared_ptr<CameraMode>& mode, const glm::vec3& position)
 	    : m_CameraMode(mode), m_Position(position)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		Window& window = Application::Get().GetWindow();
 		m_WindowResizedDelegate = window.OnWindowResized.Add(FBT_BIND_EVENT(Camera::OnResize));
@@ -143,7 +143,7 @@ namespace Flibbert
 
 	Camera::~Camera()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		Window& window = Application::Get().GetWindow();
 		window.OnWindowResized.Remove(m_WindowResizedDelegate);
@@ -151,7 +151,7 @@ namespace Flibbert
 
 	void Camera::OnUpdate(const float ts)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		if (!Input::Get().IsMouseButtonPressed(MouseButton::Right)) {
 			Input::Get().SetCursorMode(CursorMode::Normal);
@@ -169,7 +169,7 @@ namespace Flibbert
 
 	void Camera::OnInput(const std::shared_ptr<InputEvent>& event)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		if (!m_ShouldHandleInput) return;
 
@@ -180,7 +180,7 @@ namespace Flibbert
 
 	void Camera::OnResize(Window& window, glm::u32vec2 size)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_AspectRatio = window.GetAspectRatio();
 		m_ProjectionMatrix = m_CameraMode->CalculateProjection(m_AspectRatio);
@@ -188,7 +188,7 @@ namespace Flibbert
 
 	void Camera::SetCameraMode(const std::shared_ptr<CameraMode>& mode)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_CameraMode = mode;
 		m_ProjectionMatrix = m_CameraMode->CalculateProjection(m_AspectRatio);
@@ -197,7 +197,7 @@ namespace Flibbert
 
 	void Camera::SetPosition(const glm::vec3& position)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_Position = position;
 		m_ViewMatrix = m_CameraMode->CalculateView(m_Position);

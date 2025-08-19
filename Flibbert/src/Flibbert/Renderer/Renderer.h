@@ -29,6 +29,11 @@ namespace Flibbert
 		void Draw(const std::shared_ptr<VertexArray>& vertexArray,
 		          const std::shared_ptr<Shader>& shader) const;
 
+#if FBT_PROFILING_ENABLED
+		void CaptureTracyFrameImage();
+		void CollectTracyGPUTraces();
+#endif
+
 	private:
 		std::unique_ptr<RendererBackend> m_Backend;
 

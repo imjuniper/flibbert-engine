@@ -1,7 +1,5 @@
 #include "Demos/DemoFloppyBirb.h"
 
-#include "Flibbert/Debug/Instrumentor.h"
-
 #include <Flibbert.h>
 
 #include <imgui.h>
@@ -11,7 +9,7 @@ namespace Demo
 #pragma region Birb
 	Birb::Birb()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_Position = glm::vec2(100, 500);
 		m_Size = glm::vec2(50, 50);
@@ -54,7 +52,7 @@ namespace Demo
 
 	void Birb::OnUpdate(float ts)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_Position.y += m_CurrentYSpeed * ts;
 		m_CurrentYSpeed = m_CurrentYSpeed + m_FallAccel * ts;
@@ -63,7 +61,7 @@ namespace Demo
 
 	void Birb::OnInput(const std::shared_ptr<Flibbert::InputEvent>& event)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		auto keyEvent = dynamic_pointer_cast<Flibbert::InputEventKey>(event);
 		if (!keyEvent) return;
@@ -77,7 +75,7 @@ namespace Demo
 #pragma region Pipe
 	Pipe::Pipe()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_Position = glm::vec2(100, 500);
 		m_Size = glm::vec2(50, 150);
@@ -122,7 +120,7 @@ namespace Demo
 #pragma region Scene
 	DemoFloppyBirb::DemoFloppyBirb() : m_Renderer(Flibbert::Renderer::Get())
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		auto cameraMode = std::make_shared<Flibbert::CameraModeOrthographic>();
 		cameraMode->Size = 540.0f;
@@ -138,14 +136,14 @@ namespace Demo
 
 	void DemoFloppyBirb::OnUpdate(float ts)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_Birb.OnUpdate(ts);
 	}
 
 	void DemoFloppyBirb::OnRender()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		const PerFrameUniformData perFrameBuffer{m_Camera->GetViewMatrix(),
 		                                           m_Camera->GetProjectionMatrix(),
@@ -178,7 +176,7 @@ namespace Demo
 
 	void DemoFloppyBirb::OnImGuiRender()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		ImGui::Text("Floppy Birb!");
 		ImGui::Text("Position (%.2f, %.2f)", m_Birb.m_Position.x, m_Birb.m_Position.y);
@@ -186,7 +184,7 @@ namespace Demo
 
 	void DemoFloppyBirb::OnInput(const std::shared_ptr<Flibbert::InputEvent>& event)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_Birb.OnInput(event);
 	}

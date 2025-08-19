@@ -19,7 +19,7 @@ private:
 public:
 	explicit Sandbox(const Flibbert::ApplicationInfo& info) : Application(info)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_currentDemo = nullptr;
 		m_demoMenu = new Demo::DemoMenu(m_currentDemo);
@@ -34,7 +34,7 @@ public:
 
 	~Sandbox() override
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		if (m_currentDemo != m_demoMenu) {
 			delete m_demoMenu;
@@ -44,7 +44,7 @@ public:
 
 	void OnUpdate(const float ts) override
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		if (m_currentDemo) {
 			m_currentDemo->OnUpdate(ts);
@@ -54,7 +54,7 @@ public:
 
 	void OnImguiRender() override
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		if (m_currentDemo) {
 			ImGui::Begin("Sandbox");
@@ -71,7 +71,7 @@ public:
 
 	void OnInput(const std::shared_ptr<Flibbert::InputEvent>& event) override
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		if (m_currentDemo) {
 			m_currentDemo->OnInput(event);

@@ -15,12 +15,14 @@ namespace Flibbert
 
 	Application::Application(const ApplicationInfo& info)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		if (!FBT_CORE_ENSURE_MSG(s_Instance == nullptr, "Application already exists!")) {
 			return;
 		}
 		s_Instance = this;
+
+		TracySetProgramName(info.Name.c_str())
 
 		// Set the working directory to be the folder containing the exe by default,
 		// eventually add an option to replace it
@@ -34,7 +36,7 @@ namespace Flibbert
 		    FBT_BIND_EVENT(Application::DispatchInputEvent));
 
 		{
-			FBT_PROFILE_SCOPE("Window Initialization");
+			ZoneNamedN(ZoneWindowInit, "Window Initialization", true);
 			WindowProps props;
 			props.Title = info.Name;
 			m_Window = std::make_unique<Window>(props);
@@ -43,12 +45,12 @@ namespace Flibbert
 		}
 
 		{
-			FBT_PROFILE_SCOPE("Renderer Initialization");
+			ZoneNamedN(ZoneRendererInit, "Renderer Initialization", true);
 			m_Renderer = std::make_unique<Renderer>();
 		}
 
 		{
-			FBT_PROFILE_SCOPE("ImGui Initialization");
+			ZoneNamedN(ZoneImguiInit, "ImGui Initialization", true);
 			IMGUI_CHECKVERSION();
 			ImGui::CreateContext();
 			ImGuiIO& io = ImGui::GetIO();
@@ -63,7 +65,7 @@ namespace Flibbert
 
 	Application::~Application()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_Renderer->ShutdownImGui();
 		m_Window->ShutdownImGui();
@@ -79,6 +81,8 @@ namespace Flibbert
 
 	void Application::Run()
 	{
+		ZoneScoped;
+
 		while (m_Running) {
 			m_Window->ProcessEvents();
 
@@ -88,25 +92,39 @@ namespace Flibbert
 			m_LastFrameTime = time;
 
 			{
-				FBT_PROFILE_SCOPE("Application::Run OnUpdate Frame");
+				ZoneNamedN(OnUpdateFrame, "OnUpdate", true);
 				m_Renderer->Clear();
 				// @todo see if using double would be better
 				OnUpdate(static_cast<float>(m_FrameTime));
 			}
 
 			{
-				FBT_PROFILE_SCOPE("Application::Run ImGui Frame");
+				ZoneNamedN(ImGuiFrame, "ImGuiFrame", true);
 				m_Window->BeginImGuiFrame();
 				m_Renderer->BeginImGuiFrame();
-				ImGui::NewFrame();
+				{
+					ZoneNamedN(ImGuiNewFrame, "ImGui::NewFrame()", true);
+					ImGui::NewFrame();
+				}
 
 				OnImguiRender();
 
-				ImGui::Render();
+				{
+					ZoneNamedN(ImGuiRender, "ImGui::Render()", true);
+					ImGui::Render();
+				}
 				m_Renderer->EndImGuiFrame();
 			}
 
+#if FBT_PROFILING_ENABLED
+			m_Renderer->CaptureTracyFrameImage();
+#endif
+
 			m_Window->SwapBuffers();
+			FrameMark;
+#if FBT_PROFILING_ENABLED
+			m_Renderer->CollectTracyGPUTraces();
+#endif
 		}
 	}
 
@@ -117,7 +135,7 @@ namespace Flibbert
 
 	void Application::DispatchInputEvent(const std::shared_ptr<InputEvent>& event)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		OnInput(event);
 	}

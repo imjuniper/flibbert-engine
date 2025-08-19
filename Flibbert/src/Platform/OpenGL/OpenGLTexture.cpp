@@ -1,5 +1,7 @@
 #include "Platform/OpenGL/OpenGLTexture.h"
 
+#include <tracy/TracyOpenGL.hpp>
+
 #include <glad.h>
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -9,14 +11,13 @@ namespace Flibbert
 {
 	OpenGLTexture::OpenGLTexture(std::string_view path) : m_RendererID(0)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		stbi_set_flip_vertically_on_load(1);
 		int width, height, channels;
 		void* data = nullptr;
 		{
-			FBT_PROFILE_SCOPE(
-			    "stbi_load - OpenGLTexture::OpenGLTexture(std::string_view)");
+			ZoneNamedN(ZoneStbImageLoad, "stbi_load(...)", true);
 			data = stbi_load(path.data(), &width, &height, &channels, 0);
 		}
 		if (data == nullptr) return;
@@ -35,6 +36,8 @@ namespace Flibbert
 		}
 		m_InternalFormat = internalFormat;
 		m_DataFormat = dataFormat;
+
+		TracyGpuZone("OpenGLTexture");
 
 		glGenTextures(1, &m_RendererID);
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
@@ -55,14 +58,14 @@ namespace Flibbert
 
 	OpenGLTexture::~OpenGLTexture()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		glDeleteTextures(1, &m_RendererID);
 	}
 
 	void OpenGLTexture::Bind(uint32_t slot) const
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTexture(GL_TEXTURE_2D, m_RendererID);
@@ -70,7 +73,7 @@ namespace Flibbert
 
 	void OpenGLTexture::Unbind() const
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}

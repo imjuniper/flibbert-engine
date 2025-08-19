@@ -6,7 +6,7 @@ namespace Flibbert
 {
 	uint32_t StringUtils::Hash(std::string_view string)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		uint32_t hash = 5381;
 

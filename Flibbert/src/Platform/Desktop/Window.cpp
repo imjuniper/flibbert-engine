@@ -15,7 +15,7 @@ namespace Flibbert
 {
 	Window::Window(const WindowProps& props)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		// @todo check if this is needed on other platforms than macOS
 		if (Renderer::GetAPI() == Renderer::API::OpenGL) {
@@ -43,35 +43,35 @@ namespace Flibbert
 
 	Window::~Window()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		RGFW_window_close(m_WindowHandle);
 	}
 
 	void Window::InitImGui()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		ImGui_ImplRgfw_InitForOpenGL(GetNativeWindow(), true);
 	}
 
 	void Window::BeginImGuiFrame()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		ImGui_ImplRgfw_NewFrame();
 	}
 
 	void Window::ShutdownImGui()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		ImGui_ImplRgfw_Shutdown();
 	}
 
 	void Window::ProcessEvents()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		while (RGFW_window_checkEvent(m_WindowHandle)) {
 			RGFW_event& event = m_WindowHandle->event;
@@ -151,14 +151,14 @@ namespace Flibbert
 
 	void Window::SwapBuffers()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		RGFW_window_swapBuffers(m_WindowHandle);
 	}
 
 	void Window::SetVSync(const bool enabled)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_VSync = enabled;
 		RGFW_window_swapInterval(m_WindowHandle, m_VSync);
@@ -181,7 +181,7 @@ namespace Flibbert
 
 	void Window::OnSetCursorMode(CursorMode mode)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		switch (mode) {
 			case CursorMode::Normal:

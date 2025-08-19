@@ -1,5 +1,7 @@
 #include "Platform/OpenGL/OpenGLBuffer.h"
 
+#include <tracy/TracyOpenGL.hpp>
+
 #include <glad.h>
 
 namespace Flibbert
@@ -10,7 +12,7 @@ namespace Flibbert
 
 	OpenGLVertexBuffer::OpenGLVertexBuffer(const void* data, uint32_t size) : m_RendererID(0)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
@@ -19,21 +21,21 @@ namespace Flibbert
 
 	OpenGLVertexBuffer::~OpenGLVertexBuffer()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		glDeleteBuffers(1, &m_RendererID);
 	}
 
 	void OpenGLVertexBuffer::Bind() const
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 	}
 
 	void OpenGLVertexBuffer::Unbind() const
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
@@ -45,7 +47,7 @@ namespace Flibbert
 	OpenGLIndexBuffer::OpenGLIndexBuffer(const uint32_t* data, const uint32_t count)
 	    : m_RendererID(0), m_Count(count)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
@@ -55,21 +57,21 @@ namespace Flibbert
 
 	OpenGLIndexBuffer::~OpenGLIndexBuffer()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		glDeleteBuffers(1, &m_RendererID);
 	}
 
 	void OpenGLIndexBuffer::Bind() const
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 	}
 
 	void OpenGLIndexBuffer::Unbind() const
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
@@ -81,7 +83,7 @@ namespace Flibbert
 	OpenGLUniformBuffer::OpenGLUniformBuffer(const uint32_t size, const uint32_t binding)
 	    : m_RendererID(0)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
@@ -93,7 +95,7 @@ namespace Flibbert
 
 	OpenGLUniformBuffer::~OpenGLUniformBuffer()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		glDeleteBuffers(1, &m_RendererID);
 	}
@@ -101,7 +103,8 @@ namespace Flibbert
 	void OpenGLUniformBuffer::SetData(const void* data, const uint32_t size,
 	                                  const uint32_t offset)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
+		TracyGpuZone("OpenGLUniformBuffer::SetData");
 
 		glBindBuffer(GL_UNIFORM_BUFFER, m_RendererID);
 		glBufferSubData(GL_UNIFORM_BUFFER, offset, size, data);

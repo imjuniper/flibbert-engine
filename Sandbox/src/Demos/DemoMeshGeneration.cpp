@@ -1,6 +1,5 @@
 #include "Demos/DemoMeshGeneration.h"
 
-#include "Flibbert/Debug/Instrumentor.h"
 #include "Platform/Desktop/Window.h"
 
 #include <glad.h>
@@ -13,7 +12,7 @@ namespace Demo
 	    : m_Window(Flibbert::Application::Get().GetWindow()),
 	      m_Renderer(Flibbert::Renderer::Get())
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_EnableVSync = m_Window.IsVSyncEnabled();
 
@@ -38,7 +37,7 @@ namespace Demo
 
 	void DemoMeshGeneration::OnUpdate(float ts)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_Camera->OnUpdate(ts);
 
@@ -55,14 +54,14 @@ namespace Demo
 
 	void DemoMeshGeneration::OnRender()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_Renderer.Draw(m_VAO, m_Shader);
 	}
 
 	void DemoMeshGeneration::OnImGuiRender()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		const auto position = m_Camera->GetPosition();
 		ImGui::Text("Camera Position: %.1f, %.1f, %.1f", position.x, position.y,
@@ -178,20 +177,20 @@ namespace Demo
 
 	void DemoMeshGeneration::OnInput(const std::shared_ptr<Flibbert::InputEvent>& event)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		m_Camera->OnInput(event);
 	}
 
 	void DemoMeshGeneration::GenerateMesh()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		const float halfLength = (m_SideLength - 1) / 2.0f;
 
 		std::vector<float> vertices;
 		{
-			FBT_PROFILE_SCOPE("Generate vertices");
+			ZoneNamedN(ZoneVertices, "Generate vertices", true);
 
 			for (uint32_t x = 0; x < m_SideLength; ++x) {
 				for (uint32_t z = 0; z < m_SideLength; ++z) {
@@ -204,11 +203,14 @@ namespace Demo
 			}
 		}
 
-		FBT_INFO("Vertex count {:d}", vertices.size() / 3);
+		auto message = std::format("Generated {:d} vertices", vertices.size() / 3);
+
+		FBT_INFO(message);
+		TracyMessage(message.data(), message.size());
 
 		std::vector<uint32_t> indices;
 		{
-			FBT_PROFILE_SCOPE("Generate triangles");
+			ZoneNamedN(ZoneTriangles, "Generate triangles", true);
 
 			for (uint32_t row = 0; row < m_SideLength * m_SideLength - m_SideLength;
 			     row += m_SideLength) {
@@ -228,7 +230,10 @@ namespace Demo
 			     }
 		}
 
-		FBT_INFO("Triangle count {:d}", indices.size() / 3);
+		message = std::format("Generated {:d} triangles", indices.size() / 3);
+
+		FBT_INFO(message);
+		TracyMessage(message.data(), message.size());
 
 		m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices.data(),
 		                                                vertices.size() * sizeof(float));

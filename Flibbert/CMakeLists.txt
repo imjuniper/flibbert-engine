@@ -9,42 +9,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_MACOSX_RPATH 1)
 
-FetchContent_Declare(
-        glm
-        GIT_REPOSITORY https://github.com/g-truc/glm.git
-        GIT_TAG        2d4c4b4dd31fde06cfffad7915c2b3006402322f # branch origin/master as of Feb 7 2025
-)
-FetchContent_Declare(
-        spdlog
-        GIT_REPOSITORY https://github.com/gabime/spdlog.git
-        GIT_TAG        v1.15.3
-)
-FetchContent_Declare(
-        imgui
-        GIT_REPOSITORY https://github.com/ocornut/imgui.git
-        GIT_TAG        v1.92.0-docking
-)
-FetchContent_MakeAvailable(glm spdlog imgui)
-
-add_library(imgui STATIC
-        "${imgui_SOURCE_DIR}/imconfig.h"
-        "${imgui_SOURCE_DIR}/imgui.cpp"
-        "${imgui_SOURCE_DIR}/imgui.h"
-        "${imgui_SOURCE_DIR}/imgui_draw.cpp"
-        "${imgui_SOURCE_DIR}/imgui_internal.h"
-        "${imgui_SOURCE_DIR}/imgui_tables.cpp"
-        "${imgui_SOURCE_DIR}/imgui_widgets.cpp"
-        "${imgui_SOURCE_DIR}/imstb_rectpack.h"
-        "${imgui_SOURCE_DIR}/imstb_textedit.h"
-        "${imgui_SOURCE_DIR}/imstb_truetype.h"
-        "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.h"
-        "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp"
-        "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3_loader.h"
-        "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp"
-        "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.h")
-
-target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
-
 # Project
 add_library(Flibbert STATIC
         src/fbtpch.h
@@ -71,7 +35,7 @@ add_library(Flibbert STATIC
         src/Flibbert/Input/Input.h
         src/Flibbert/Input/InputEvent.cpp
         src/Flibbert/Input/InputEvent.h
-        src/Flibbert/Debug/Instrumentor.h
+        src/Flibbert/Debug/Profiling.h
         src/Flibbert/Renderer/Buffer.cpp
         src/Flibbert/Renderer/Buffer.h
         src/Flibbert/Renderer/Camera.cpp
@@ -111,16 +75,84 @@ target_include_directories(Flibbert
 
 target_precompile_headers(Flibbert PRIVATE src/fbtpch.h)
 
-target_compile_definitions(Flibbert PRIVATE RGFW_EXPORT FBT_PROFILE=0)
+target_compile_definitions(Flibbert PRIVATE RGFW_EXPORT)
 
-target_link_libraries(Flibbert PUBLIC glm imgui spdlog)
+macro(set_option option help value)
+    option(${option} ${help} ${value})
+    if(${option})
+        message(STATUS "Flibbert: ${option} -> ON")
+        target_compile_definitions(Flibbert PUBLIC ${option})
+    else()
+        message(STATUS "Flibbert: ${option} -> OFF")
+    endif()
+endmacro()
 
-set_target_properties(Flibbert
-        PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
+# @todo figure out how to set this dynamically and not cache it?
+set_option(FBT_PROFILING_ENABLED "Enable profiling" OFF)
+
+# Libraries
+FetchContent_Declare(
+        glm
+        GIT_REPOSITORY https://github.com/g-truc/glm.git
+        GIT_TAG        2d4c4b4dd31fde06cfffad7915c2b3006402322f # branch origin/master as of Feb 7 2025
+        GIT_SHALLOW    true
+        GIT_PROGRESS   true
 )
+FetchContent_Declare(
+        spdlog
+        GIT_REPOSITORY https://github.com/gabime/spdlog.git
+        GIT_TAG        v1.15.3
+        GIT_SHALLOW    true
+        GIT_PROGRESS   true
+)
+FetchContent_Declare(
+        imgui
+        GIT_REPOSITORY https://github.com/ocornut/imgui.git
+        GIT_TAG        v1.92.0-docking
+        GIT_SHALLOW    true
+        GIT_PROGRESS   true
+)
+FetchContent_Declare(
+        tracy
+        GIT_REPOSITORY https://github.com/wolfpld/tracy.git
+        GIT_TAG        v0.12.2
+        GIT_SHALLOW    true
+        GIT_PROGRESS   true
+        SOURCE_SUBDIR  pls_dont_include_kthx
+)
+FetchContent_MakeAvailable(glm spdlog imgui tracy)
 
+add_library(imgui STATIC
+        "${imgui_SOURCE_DIR}/imconfig.h"
+        "${imgui_SOURCE_DIR}/imgui.cpp"
+        "${imgui_SOURCE_DIR}/imgui.h"
+        "${imgui_SOURCE_DIR}/imgui_draw.cpp"
+        "${imgui_SOURCE_DIR}/imgui_internal.h"
+        "${imgui_SOURCE_DIR}/imgui_tables.cpp"
+        "${imgui_SOURCE_DIR}/imgui_widgets.cpp"
+        "${imgui_SOURCE_DIR}/imstb_rectpack.h"
+        "${imgui_SOURCE_DIR}/imstb_textedit.h"
+        "${imgui_SOURCE_DIR}/imstb_truetype.h"
+        "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.h"
+        "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp"
+        "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3_loader.h"
+        "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp"
+        "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.h")
+
+target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
+
+add_library(tracy STATIC "${tracy_SOURCE_DIR}/public/TracyClient.cpp")
+
+if(FBT_PROFILING_ENABLED)
+    message(STATUS "Flibbert: Enabling tracy")
+    target_compile_definitions(tracy PUBLIC TRACY_ENABLE)
+endif()
+
+target_include_directories(tracy PUBLIC "${tracy_SOURCE_DIR}/public")
+
+target_link_libraries(Flibbert PUBLIC glm imgui spdlog tracy)
+
+# Platform-specific stuffs
 if (APPLE)
     target_link_libraries(Flibbert
             PRIVATE
@@ -128,3 +160,10 @@ if (APPLE)
             "-framework OpenGL"
             "-framework IOKit")
 endif ()
+
+# Binaries output folder
+set_target_properties(Flibbert
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
+)

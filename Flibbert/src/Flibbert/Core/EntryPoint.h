@@ -3,7 +3,7 @@
 #include "Flibbert/Core/PlatformDetection.h"
 
 #include "Flibbert/Core/Application.h"
-#include "Flibbert/Debug/Instrumentor.h"
+#include "Flibbert/Debug/Profiling.h"
 
 #ifdef FBT_PLATFORM_DESKTOP
 
@@ -13,17 +13,14 @@ int main(int argc, char** argv)
 {
 	Flibbert::Log::Init();
 
-	FBT_PROFILE_BEGIN_SESSION("Startup", "FlibbertProfile-Startup.json");
+	TracyMessageL("Application Initialization");
 	auto app = Flibbert::CreateApplication({argc, argv});
-	FBT_PROFILE_END_SESSION();
 
-	FBT_PROFILE_BEGIN_SESSION("Runtime", "FlibbertProfile-Runtime.json");
+	TracyMessageL("Application Runtime");
 	app->Run();
-	FBT_PROFILE_END_SESSION();
 
-	FBT_PROFILE_BEGIN_SESSION("Shutdown", "FlibbertProfile-Shutdown.json");
+	TracyMessageL("Application Shutdown");
 	delete app;
-	FBT_PROFILE_END_SESSION();
 }
 
 #endif
