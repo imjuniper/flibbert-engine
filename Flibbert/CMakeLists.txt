@@ -9,26 +9,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_MACOSX_RPATH 1)
 
-find_package(Git)
-if (Git_FOUND AND EXISTS "${CMAKE_SOURCE_DIR}/.git")
-    # Update submodules as needed
-    option(GIT_SUBMODULE "Check submodules during build" ON)
-    if (GIT_SUBMODULE)
-        message(STATUS "Submodule update")
-        execute_process(
-                COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive
-                WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-                RESULT_VARIABLE GIT_SUBMOD_RESULT
-        )
-        if (NOT GIT_SUBMOD_RESULT EQUAL "0")
-            message(FATAL_ERROR "git submodule update --init --recursive failed with ${GIT_SUBMOD_RESULT}, please checkout submodules")
-        endif ()
-    endif ()
-endif ()
-
-include(Dependencies.cmake)
-
-# Project
 add_library(Flibbert STATIC
         src/fbtpch.h
         src/Flibbert.h
@@ -106,14 +86,54 @@ target_precompile_headers(Flibbert PRIVATE src/fbtpch.h)
 
 target_compile_definitions(Flibbert PRIVATE RGFW_EXPORT FBT_PROFILE=0)
 
+# Libraries
+FetchContent_Declare(
+        glm
+        GIT_REPOSITORY https://github.com/g-truc/glm.git
+        GIT_TAG        2d4c4b4dd31fde06cfffad7915c2b3006402322f # branch origin/master as of Feb 7 2025
+        GIT_SHALLOW    true
+        GIT_PROGRESS   true
+)
+FetchContent_Declare(
+        spdlog
+        GIT_REPOSITORY https://github.com/gabime/spdlog.git
+        GIT_TAG        v1.15.3
+        GIT_SHALLOW    true
+        GIT_PROGRESS   true
+)
+FetchContent_Declare(
+        imgui
+        GIT_REPOSITORY https://github.com/ocornut/imgui.git
+        GIT_TAG        v1.92.0-docking
+        GIT_SHALLOW    true
+        GIT_PROGRESS   true
+)
+FetchContent_MakeAvailable(glm spdlog imgui)
+
+add_library(imgui STATIC
+        "${imgui_SOURCE_DIR}/imconfig.h"
+        "${imgui_SOURCE_DIR}/imgui.cpp"
+        "${imgui_SOURCE_DIR}/imgui.h"
+        "${imgui_SOURCE_DIR}/imgui_draw.cpp"
+        "${imgui_SOURCE_DIR}/imgui_internal.h"
+        "${imgui_SOURCE_DIR}/imgui_tables.cpp"
+        "${imgui_SOURCE_DIR}/imgui_widgets.cpp"
+        "${imgui_SOURCE_DIR}/imstb_rectpack.h"
+        "${imgui_SOURCE_DIR}/imstb_textedit.h"
+        "${imgui_SOURCE_DIR}/imstb_truetype.h"
+        "${imgui_SOURCE_DIR}/backends/imgui_impl_dx11.h"
+        "${imgui_SOURCE_DIR}/backends/imgui_impl_dx11.cpp"
+        "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.h"
+        "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp"
+        "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3_loader.h"
+        "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp"
+        "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.h")
+
+target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
+
 target_link_libraries(Flibbert PUBLIC glm imgui spdlog)
 
-set_target_properties(Flibbert
-        PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
-)
-
+# Platform-specific libraries
 if (WIN32)
     target_link_libraries(Flibbert PRIVATE d3d11.lib dxgi.lib dxguid.lib uuid.lib)
 endif ()
@@ -125,3 +145,10 @@ if (APPLE)
             "-framework OpenGL"
             "-framework IOKit")
 endif ()
+
+# Binaries output folder
+set_target_properties(Flibbert
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
+)
