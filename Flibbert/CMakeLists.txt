@@ -7,7 +7,6 @@ project(
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_MACOSX_RPATH 1)
 
 # Project
 add_library(Flibbert STATIC
@@ -63,17 +62,24 @@ add_library(Flibbert STATIC
         src/Platform/OpenGL/OpenGLVertexArray.cpp
         src/Platform/OpenGL/OpenGLVertexArray.h)
 
-if (MSVC)
-    # Needed to support __VA_OPTS__(x) among other things
-    target_compile_options(Flibbert PUBLIC /Zc:preprocessor)
-endif()
-
 target_include_directories(Flibbert
         PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}/src"
         "${CMAKE_CURRENT_SOURCE_DIR}/vendor")
 
 target_precompile_headers(Flibbert PRIVATE src/fbtpch.h)
+
+if (MSVC)
+    # Needed to support __VA_OPTS__(x) among other things
+    target_compile_options(Flibbert PUBLIC /Zc:preprocessor)
+endif()
+
+# Binaries output folder
+set_target_properties(Flibbert
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
+)
 
 macro(set_option option help value)
     option(${option} ${help} ${value})
@@ -141,7 +147,6 @@ target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
 add_library(tracy STATIC "${tracy_SOURCE_DIR}/public/TracyClient.cpp")
 
 if(FBT_PROFILING_ENABLED)
-    message(STATUS "Flibbert: Enabling tracy")
     target_compile_definitions(tracy PUBLIC TRACY_ENABLE)
 endif()
 
@@ -151,16 +156,10 @@ target_link_libraries(Flibbert PUBLIC glm imgui spdlog tracy)
 
 # Platform-specific stuffs
 if (APPLE)
+    message(WARNING "Apple devices will soon be unsupported because they do not support OpenGL 4.2+")
     target_link_libraries(Flibbert
             PRIVATE
             "-framework Cocoa"
             "-framework OpenGL"
             "-framework IOKit")
 endif ()
-
-# Binaries output folder
-set_target_properties(Flibbert
-        PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
-)

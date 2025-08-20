@@ -46,25 +46,30 @@ namespace Flibbert
 
 		Window& window = Application::Get().GetWindow();
 
-		RGFW_glHints* hints = RGFW_getGlobalHints_OpenGL();
-		hints->major = 4;
-		hints->minor = 1;
+		{
+			ZoneNamedN(ZoneGLContextInit, "OpenGL Context Initialization", true);
 
-		RGFW_window_createContext_OpenGL(window.GetNativeWindow(), hints);
-		int status = gladLoadGL(RGFW_getProcAddress_OpenGL);
-		FBT_CORE_ENSURE(status);
+			RGFW_glHints* hints = RGFW_getGlobalHints_OpenGL();
+			hints->major = 4;
+			hints->minor = 1;
+			RGFW_window_createContext_OpenGL(window.GetNativeWindow(), hints);
 
-		TracyGpuContext;
+			int status = gladLoadGL(RGFW_getProcAddress_OpenGL);
+			FBT_CORE_ENSURE(status);
 
-		m_WindowResizedDelegate = window.OnWindowResized.AddDynamic(this, OpenGLRendererBackend::OnWindowResized);
+			TracyGpuContext;
 
-		FBT_CORE_INFO("OpenGL Info:");
-		FBT_CORE_INFO("  Vendor: {0}",
-		              reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
-		FBT_CORE_INFO("  Renderer: {0}",
-		              reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
-		FBT_CORE_INFO("  Version: {0}",
-		              reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+			FBT_CORE_INFO("OpenGL Info:");
+			FBT_CORE_INFO("\tVendor: {0}",
+				      reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
+			FBT_CORE_INFO("\tRenderer: {0}",
+				      reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+			FBT_CORE_INFO("\tVersion: {0}",
+				      reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+		}
+
+		m_WindowResizedDelegate =
+			window.OnWindowResized.AddDynamic(this, OpenGLRendererBackend::OnWindowResized);
 
 		// When removing support for OpenGL in macOS, migrate to 4.3+ and remove extension
 		// usage instead maybe?
@@ -73,7 +78,6 @@ namespace Flibbert
 			glEnable(GL_DEBUG_OUTPUT);
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
 			glDebugMessageCallback(OpenGLMessageCallback, nullptr);
-
 			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE,
 			                      GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
 		}
@@ -86,21 +90,14 @@ namespace Flibbert
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 #if FBT_PROFILING_ENABLED
-		glGenTextures(4, m_TracyTexture);
-		glGenFramebuffers(4, m_TracyFramebuffer);
-		glGenBuffers(4, m_TracyPBO);
-		for (int i = 0; i < 4; i++) {
-			glBindTexture(GL_TEXTURE_2D, m_TracyTexture[i]);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 320, 180, 0, GL_RGBA,
-			             GL_UNSIGNED_BYTE, nullptr);
-			glBindFramebuffer(GL_FRAMEBUFFER, m_TracyFramebuffer[i]);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-			                       m_TracyTexture[i], 0);
-			glBindBuffer(GL_PIXEL_PACK_BUFFER, m_TracyPBO[i]);
-			glBufferData(GL_PIXEL_PACK_BUFFER, 320 * 180 * 4, nullptr, GL_STREAM_READ);
-		}
+		SetupTracyFrameImageData();
+#endif
+	}
+
+	OpenGLRendererBackend::~OpenGLRendererBackend()
+	{
+#if FBT_PROFILING_ENABLED
+		CleanupTracyFrameImageData();
 #endif
 	}
 
@@ -169,6 +166,32 @@ namespace Flibbert
 	}
 
 #if FBT_PROFILING_ENABLED
+	void OpenGLRendererBackend::SetupTracyFrameImageData()
+	{
+		glGenTextures(4, m_TracyTexture);
+		glGenFramebuffers(4, m_TracyFramebuffer);
+		glGenBuffers(4, m_TracyPBO);
+		for (int i = 0; i < 4; i++) {
+			glBindTexture(GL_TEXTURE_2D, m_TracyTexture[i]);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 320, 180, 0, GL_RGBA,
+				     GL_UNSIGNED_BYTE, nullptr);
+			glBindFramebuffer(GL_FRAMEBUFFER, m_TracyFramebuffer[i]);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
+					       m_TracyTexture[i], 0);
+			glBindBuffer(GL_PIXEL_PACK_BUFFER, m_TracyPBO[i]);
+			glBufferData(GL_PIXEL_PACK_BUFFER, 320 * 180 * 4, nullptr, GL_STREAM_READ);
+		}
+	}
+
+	void OpenGLRendererBackend::CleanupTracyFrameImageData()
+	{
+		glDeleteBuffers(4, m_TracyPBO);
+		glDeleteFramebuffers(4, m_TracyFramebuffer);
+		glDeleteTextures(4, m_TracyTexture);
+	}
+
 	void OpenGLRendererBackend::CaptureTracyFrameImage()
 	{
 		ZoneScoped;

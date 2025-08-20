@@ -53,6 +53,7 @@ namespace Flibbert
 			ImGui::CreateContext();
 			ImGuiIO& io = ImGui::GetIO();
 			io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+			io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 			m_Window->InitImGui();
 			m_Renderer->InitImGui();
 			ImGui::StyleColorsDark();

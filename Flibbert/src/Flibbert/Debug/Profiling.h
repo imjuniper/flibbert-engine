@@ -35,3 +35,5 @@ namespace Flibbert::ProfilingUtils
 #define TracyFunction FBT_FUNC_SIG
 
 #include "tracy/Tracy.hpp"
+
+// @todo redefine some macros that map to Tracy macros, but with prefixes for clarity/namespace stuff

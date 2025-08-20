@@ -2,7 +2,9 @@
 
 #include "Flibbert/Renderer/RendererBackend.h"
 
-#include <glad.h>
+#if FBT_PROFILING_ENABLED
+	#include <glad.h>
+#endif
 
 namespace Flibbert
 {
@@ -12,6 +14,7 @@ namespace Flibbert
 	{
 	public:
 		OpenGLRendererBackend();
+		~OpenGLRendererBackend() override;
 
 		void InitImGui() override;
 		void BeginImGuiFrame() override;
@@ -25,6 +28,8 @@ namespace Flibbert
 		          const std::shared_ptr<Shader>& shader) const override;
 
 #if FBT_PROFILING_ENABLED
+		void SetupTracyFrameImageData();
+		void CleanupTracyFrameImageData();
 		void CaptureTracyFrameImage() override;
 		void CollectTracyGPUTraces() override;
 #endif

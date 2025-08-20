@@ -4,7 +4,7 @@ Flibbert is basically a small framework/engine that I'm working on to learn game
 
 ## Requirements
 
-- A system that supports OpenGL 4.6 (or 4.1 on macOS)
+- A system that supports at least OpenGL 4.1
 - [CMake 3.31+](https://cmake.org/)
 - A C++ compiler supporting C++20 (Clang and MSVC have been tested)
 
