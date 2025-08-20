@@ -8,16 +8,8 @@
 namespace Demo
 {
 	DemoClearColor::DemoClearColor()
-	    : m_Renderer(Flibbert::Renderer::Get()), m_ClearColor{1.0f, 0.0f, 0.0f, 0.0f},
-	      m_InitialColor(m_Renderer.GetClearColor())
+	    : m_Renderer(Flibbert::Renderer::Get()), m_ClearColor{1.0f, 0.0f, 0.0f, 1.0f}
 	{
-	}
-
-	DemoClearColor::~DemoClearColor()
-	{
-		ZoneScoped;
-
-		m_Renderer.SetClearColor(m_InitialColor);
 	}
 
 	void DemoClearColor::OnRender()

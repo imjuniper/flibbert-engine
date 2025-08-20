@@ -4,6 +4,11 @@
 
 namespace Demo
 {
+	void DemoMenu::OnUpdate(float ts)
+	{
+		m_Renderer.SetClearColor(glm::vec4(0.f));
+	}
+
 	void DemoMenu::OnImGuiRender()
 	{
 		ZoneScoped;

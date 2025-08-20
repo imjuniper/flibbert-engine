@@ -25,11 +25,11 @@ public:
 		m_demoMenu = new Demo::DemoMenu(m_currentDemo);
 		m_currentDemo = m_demoMenu;
 
-		m_demoMenu->RegisterDemo<Demo::DemoClearColor>("Clear Color");
-		m_demoMenu->RegisterDemo<Demo::DemoTexture2D>("2D Texture");
-		m_demoMenu->RegisterDemo<Demo::DemoFloppyBirb>("Floppy Birb");
-		m_demoMenu->RegisterDemo<Demo::DemoCamera3D>("3D Camera");
-		m_demoMenu->RegisterDemo<Demo::DemoMeshGeneration>("Mesh Generation");
+		m_demoMenu->RegisterDemo<Demo::DemoClearColor>();
+		m_demoMenu->RegisterDemo<Demo::DemoTexture2D>();
+		m_demoMenu->RegisterDemo<Demo::DemoFloppyBirb>();
+		m_demoMenu->RegisterDemo<Demo::DemoCamera3D>();
+		m_demoMenu->RegisterDemo<Demo::DemoMeshGeneration>();
 	}
 
 	~Sandbox() override
@@ -58,6 +58,7 @@ public:
 
 		if (m_currentDemo) {
 			ImGui::Begin("Sandbox");
+			ImGui::Text("Current App: %s", m_currentDemo->GetName());
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
 				    1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			if (m_currentDemo != m_demoMenu && ImGui::Button("<--")) {
