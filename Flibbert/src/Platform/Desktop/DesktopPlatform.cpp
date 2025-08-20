@@ -1,11 +1,10 @@
 #include "Flibbert/Core/Platform.h"
 
-#include <rgfw/RGFW.h>
-
-#include <climits>
+#include <chrono>
 #include <filesystem>
 
 #if defined(FBT_PLATFORM_WINDOWS)
+	#include <Windows.h>
 	#include <libloaderapi.h>
 #elif defined(FBT_PLATFORM_MACOS)
 	#include <mach-o/dyld.h>
@@ -17,7 +16,10 @@ namespace Flibbert
 {
 	double Platform::GetTime()
 	{
-		return RGFW_getTime();
+		return duration_cast<std::chrono::milliseconds>(
+			   std::chrono::steady_clock::now().time_since_epoch())
+		           .count() /
+		       1000.0;
 	}
 
 	bool Platform::GetExecutablePath(std::filesystem::path& executablePath)

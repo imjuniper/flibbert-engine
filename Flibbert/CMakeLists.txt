@@ -75,8 +75,6 @@ target_include_directories(Flibbert
 
 target_precompile_headers(Flibbert PRIVATE src/fbtpch.h)
 
-target_compile_definitions(Flibbert PRIVATE RGFW_EXPORT)
-
 macro(set_option option help value)
     option(${option} ${help} ${value})
     if(${option})

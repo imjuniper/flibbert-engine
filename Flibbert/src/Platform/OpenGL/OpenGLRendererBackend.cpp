@@ -9,6 +9,7 @@
 
 #include <backends/imgui_impl_opengl3.h>
 
+#define RGFW_OPENGL
 #include <rgfw/RGFW.h>
 
 #define GLAD_GL_IMPLEMENTATION
@@ -44,8 +45,13 @@ namespace Flibbert
 		ZoneScoped;
 
 		Window& window = Application::Get().GetWindow();
-		RGFW_window_makeCurrent(window.GetNativeWindow());
-		int status = gladLoadGL(RGFW_getProcAddress);
+
+		RGFW_glHints* hints = RGFW_getGlobalHints_OpenGL();
+		hints->major = 4;
+		hints->minor = 1;
+
+		RGFW_window_createContext_OpenGL(window.GetNativeWindow(), hints);
+		int status = gladLoadGL(RGFW_getProcAddress_OpenGL);
 		FBT_CORE_ENSURE(status);
 
 		TracyGpuContext;

@@ -1,11 +1,11 @@
 #include "Platform/Desktop/Window.h"
 
 #include "Flibbert/Input/Input.h"
-#include "Flibbert/Renderer/Renderer.h"
 
 #ifdef FBT_DEBUG
 	#define RGFW_DEBUG
 #endif
+#define RGFW_OPENGL
 #define RGFW_IMPLEMENTATION
 #define RGFW_IMGUI_IMPLEMENTATION
 #pragma clang diagnostic push
@@ -19,27 +19,12 @@ namespace Flibbert
 	{
 		ZoneScoped;
 
-		// @todo check if this is needed on other platforms than macOS
-		if (Renderer::GetAPI() == Renderer::API::OpenGL) {
-#ifdef FBT_DEBUG
-			RGFW_setGLHint(RGFW_glDebug, 1);
-#endif
-			RGFW_setGLHint(RGFW_glMajor, 4);
-#ifdef FBT_PLATFORM_MACOS
-			/* Set OpenGL version to 4.1 on macOS */
-			RGFW_setGLHint(RGFW_glMinor, 1);
-#else
-			RGFW_setGLHint(RGFW_glMinor, 6);
-#endif
-			RGFW_setGLHint(RGFW_glProfile, RGFW_glCore);
-		}
-
 		m_WindowHandle = RGFW_createWindow(props.Title.c_str(),
-		                                   RGFW_RECT(0, 0, props.Width, props.Height),
+		                                   0, 0, props.Width, props.Height,
 		                                   RGFW_windowCenter);
 
-		m_Position = {std::max(m_WindowHandle->r.x, 0), std::max(m_WindowHandle->r.y, 0)};
-		m_Size = {std::max(m_WindowHandle->r.w, 0), std::max(m_WindowHandle->r.h, 0)};
+		m_Position = {std::max(m_WindowHandle->x, 0), std::max(m_WindowHandle->y, 0)};
+		m_Size = {std::max(m_WindowHandle->w, 0), std::max(m_WindowHandle->h, 0)};
 		m_AspectRatio = static_cast<float>(m_Size.x) / m_Size.y;
 
 		Input::Get().OnSetCursorMode.BindDynamic(this, Window::OnSetCursorMode);
@@ -77,39 +62,38 @@ namespace Flibbert
 	{
 		ZoneScoped;
 
-		while (RGFW_window_checkEvent(m_WindowHandle)) {
-			RGFW_event& event = m_WindowHandle->event;
-
+		RGFW_event event;
+		while (RGFW_window_checkEvent(m_WindowHandle, &event)) {
 			switch (event.type) {
 				case RGFW_quit: {
 					OnWindowClosed.Broadcast(*this);
 					break;
 				}
 				case RGFW_windowMoved: {
-					m_Position = {std::max(m_WindowHandle->r.x, 0),
-						      std::max(m_WindowHandle->r.y, 0)};
+					m_Position = {std::max(m_WindowHandle->x, 0),
+						      std::max(m_WindowHandle->y, 0)};
 					OnWindowMoved.Broadcast(*this, m_Position);
 					break;
 				}
 				case RGFW_windowResized: {
 					// @todo implement smooth resize
 					// https://github.com/ColleagueRiley/RGFW/blob/main/examples/smooth-resize/smooth-resize.c?rgh-link-date=2025-06-23T16%3A00%3A55.000Z
-					m_Size = {std::max(m_WindowHandle->r.w, 0),
-						  std::max(m_WindowHandle->r.h, 0)};
+					m_Size = {std::max(m_WindowHandle->w, 0),
+						  std::max(m_WindowHandle->h, 0)};
 					m_AspectRatio = static_cast<float>(m_Size.x) / m_Size.y;
 					OnWindowResized.Broadcast(*this, m_Size);
 					break;
 				}
 				case RGFW_keyPressed: {
 					auto keyEvent = std::make_shared<InputEventKey>();
-					keyEvent->Key = static_cast<Key>(event.key);
+					keyEvent->Key = static_cast<Key>(event.key.value);
 					keyEvent->IsPressed = true;
 					Input::Get().ProcessInputEvent(keyEvent);
 					break;
 				}
 				case RGFW_keyReleased: {
 					auto keyEvent = std::make_shared<InputEventKey>();
-					keyEvent->Key = static_cast<Key>(event.key);
+					keyEvent->Key = static_cast<Key>(event.key.value);
 					keyEvent->IsPressed = false;
 					Input::Get().ProcessInputEvent(keyEvent);
 					break;
@@ -118,9 +102,9 @@ namespace Flibbert
 					auto mouseButtonEvent =
 					    std::make_shared<InputEventMouseButton>();
 					mouseButtonEvent->Position =
-					    glm::vec2{event.point.x, event.point.y};
+					    glm::vec2{event.mouse.x, event.mouse.y};
 					mouseButtonEvent->Button =
-					    static_cast<MouseButton>(event.button);
+					    static_cast<MouseButton>(event.button.value);
 					mouseButtonEvent->IsPressed = true;
 					Input::Get().ProcessInputEvent(mouseButtonEvent);
 					break;
@@ -129,9 +113,9 @@ namespace Flibbert
 					auto mouseButtonEvent =
 					    std::make_shared<InputEventMouseButton>();
 					mouseButtonEvent->Position =
-					    glm::vec2{event.point.x, event.point.y};
+					    glm::vec2{event.mouse.x, event.mouse.y};
 					mouseButtonEvent->Button =
-					    static_cast<MouseButton>(event.button);
+					    static_cast<MouseButton>(event.button.value);
 					mouseButtonEvent->IsPressed = false;
 					Input::Get().ProcessInputEvent(mouseButtonEvent);
 					break;
@@ -140,9 +124,9 @@ namespace Flibbert
 					auto mouseMovementEvent =
 					    std::make_shared<InputEventMouseMovement>();
 					mouseMovementEvent->Position =
-					    glm::vec2{event.point.x, event.point.y};
+					    glm::vec2{event.mouse.x, event.mouse.y};
 					mouseMovementEvent->MovementDelta =
-					    glm::vec2{event.vector.x, event.vector.y};
+					    glm::vec2{event.mouse.vecX, event.mouse.vecY};
 					Input::Get().ProcessInputEvent(mouseMovementEvent);
 					break;
 				}
@@ -157,7 +141,7 @@ namespace Flibbert
 	{
 		ZoneScoped;
 
-		RGFW_window_swapBuffers(m_WindowHandle);
+		RGFW_window_swapBuffers_OpenGL(m_WindowHandle);
 	}
 
 	void Window::SetVSync(const bool enabled)
@@ -165,7 +149,7 @@ namespace Flibbert
 		ZoneScoped;
 
 		m_VSync = enabled;
-		RGFW_window_swapInterval(m_WindowHandle, m_VSync);
+		RGFW_window_swapInterval_OpenGL(m_WindowHandle, m_VSync);
 	}
 
 	bool Window::IsVSyncEnabled() const
@@ -189,17 +173,15 @@ namespace Flibbert
 
 		switch (mode) {
 			case CursorMode::Normal:
-				RGFW_window_mouseUnhold(m_WindowHandle);
+				RGFW_window_unholdMouse(m_WindowHandle);
 				RGFW_window_showMouse(m_WindowHandle, true);
 				break;
 			case CursorMode::Hidden:
-				RGFW_window_mouseUnhold(m_WindowHandle);
+				RGFW_window_unholdMouse(m_WindowHandle);
 				RGFW_window_showMouse(m_WindowHandle, false);
 				break;
 			case CursorMode::Locked:
-				RGFW_window_mouseHold(
-				    m_WindowHandle,
-				    RGFW_AREA(m_WindowHandle->r.w / 2, m_WindowHandle->r.h / 2));
+				RGFW_window_holdMouse(m_WindowHandle);
 				RGFW_window_showMouse(m_WindowHandle, false);
 				break;
 		}

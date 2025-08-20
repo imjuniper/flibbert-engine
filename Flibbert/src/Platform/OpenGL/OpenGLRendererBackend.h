@@ -4,8 +4,6 @@
 
 #include <glad.h>
 
-struct RGFW_window;
-
 namespace Flibbert
 {
 	class Window;

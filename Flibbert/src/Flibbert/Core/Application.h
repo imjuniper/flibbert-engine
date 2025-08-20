@@ -5,8 +5,6 @@
 #include <memory>
 #include <string>
 
-struct RGFW_window;
-
 namespace Flibbert
 {
 	class Renderer;

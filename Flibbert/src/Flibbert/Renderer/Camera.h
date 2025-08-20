@@ -1,8 +1,5 @@
 #pragma once
 
-struct RGFW_window;
-struct RGFW_point;
-
 namespace Flibbert
 {
 	class Window;
