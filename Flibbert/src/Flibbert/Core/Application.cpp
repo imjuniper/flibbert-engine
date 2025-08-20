@@ -32,16 +32,14 @@ namespace Flibbert
 		}
 
 		// @todo this feels wrong?
-		Input::Get().InputEventDispatch.Bind(
-		    FBT_BIND_EVENT(Application::DispatchInputEvent));
+		Input::Get().InputEventDispatch.BindDynamic(this, Application::DispatchInputEvent);
 
 		{
 			ZoneNamedN(ZoneWindowInit, "Window Initialization", true);
 			WindowProps props;
 			props.Title = info.Name;
 			m_Window = std::make_unique<Window>(props);
-			(void)m_Window->OnWindowClosed.Add(
-			    FBT_BIND_EVENT(Application::HandleWindowClosed));
+			(void)m_Window->OnWindowClosed.AddDynamic(this, Application::HandleWindowClosed);
 		}
 
 		{

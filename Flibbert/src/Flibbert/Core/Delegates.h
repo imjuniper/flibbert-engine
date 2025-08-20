@@ -6,17 +6,6 @@
 // https://github.com/simco50/CppDelegates/blob/master/Delegates.h
 // but I want to understand it first
 
-// Thanks Hazel <3
-#define FBT_BIND_EVENT(function)                                                                   \
-	[this](auto&&... args) -> decltype(auto) {                                                 \
-		return this->function(std::forward<decltype(args)>(args)...);                      \
-	}
-
-#define FBT_BIND_EVENT_OBJ(objectPtr, function)                                                    \
-	[objectPtr](auto&&... args) -> decltype(auto) {                                            \
-		return (objectPtr)->function(std::forward<decltype(args)>(args)...);                 \
-	}
-
 namespace Flibbert
 {
 	struct DelegateHandle {
@@ -81,7 +70,7 @@ namespace Flibbert
 		// Default constructor
 		Delegate() noexcept : m_BoundFunction() {}
 
-		void Bind(DelegateFunction function) { m_BoundFunction = function; }
+		void __Internal_Bind(DelegateFunction function) { m_BoundFunction = function; }
 
 		bool IsBound() const { return !!m_BoundFunction; }
 
@@ -114,7 +103,7 @@ namespace Flibbert
 		// Default constructor
 		MulticastDelegate() noexcept : m_Events() {}
 
-		[[nodiscard]] DelegateHandle Add(DelegateFunction function)
+		[[nodiscard]] DelegateHandle __Internal_Add(DelegateFunction function)
 		{
 			DelegateHandle newHandle(true);
 			m_Events.insert({newHandle, function});
@@ -134,6 +123,8 @@ namespace Flibbert
 					return true;
 				}
 			}
+
+			return false;
 		}
 
 		void Broadcast(Args&... args) const
@@ -147,3 +138,14 @@ namespace Flibbert
 		std::map<DelegateHandle, DelegateFunction> m_Events;
 	};
 } // namespace Flibbert
+
+// Thanks Hazel <3
+#define FBT_BIND_EVENT(objectPtr, function)                                                        \
+	[objectPtr](auto&&... args) -> decltype(auto) {                                            \
+		return (objectPtr)->function(std::forward<decltype(args)>(args)...);               \
+	}
+
+// Inspired by Unreal Engine, but autocomplete isn't as good, so I need to find a better way to do
+// this. When I have *actual* delegates, it will be better, but until then this shall do
+#define BindDynamic(object, function) __Internal_Bind(FBT_BIND_EVENT(object, function))
+#define AddDynamic(object, function) __Internal_Add(FBT_BIND_EVENT(object, function))

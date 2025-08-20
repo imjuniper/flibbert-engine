@@ -134,7 +134,7 @@ namespace Flibbert
 		ZoneScoped;
 
 		Window& window = Application::Get().GetWindow();
-		m_WindowResizedDelegate = window.OnWindowResized.Add(FBT_BIND_EVENT(Camera::OnResize));
+		m_WindowResizedDelegate = window.OnWindowResized.AddDynamic(this, Camera::OnResize);
 
 		m_AspectRatio = window.GetAspectRatio();
 		m_ProjectionMatrix = m_CameraMode->CalculateProjection(m_AspectRatio);

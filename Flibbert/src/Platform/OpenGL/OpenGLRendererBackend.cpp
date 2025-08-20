@@ -50,8 +50,7 @@ namespace Flibbert
 
 		TracyGpuContext;
 
-		m_WindowResizedDelegate = window.OnWindowResized.Add(
-		    FBT_BIND_EVENT(OpenGLRendererBackend::OnWindowResized));
+		m_WindowResizedDelegate = window.OnWindowResized.AddDynamic(this, OpenGLRendererBackend::OnWindowResized);
 
 		FBT_CORE_INFO("OpenGL Info:");
 		FBT_CORE_INFO("  Vendor: {0}",

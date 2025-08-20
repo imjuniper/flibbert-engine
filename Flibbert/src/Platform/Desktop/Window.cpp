@@ -42,7 +42,7 @@ namespace Flibbert
 		m_Size = {std::max(m_WindowHandle->r.w, 0), std::max(m_WindowHandle->r.h, 0)};
 		m_AspectRatio = static_cast<float>(m_Size.x) / m_Size.y;
 
-		Input::Get().OnSetCursorMode.Bind(FBT_BIND_EVENT(Window::OnSetCursorMode));
+		Input::Get().OnSetCursorMode.BindDynamic(this, Window::OnSetCursorMode);
 	}
 
 	Window::~Window()
