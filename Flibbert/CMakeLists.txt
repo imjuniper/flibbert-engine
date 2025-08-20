@@ -87,7 +87,6 @@ macro(set_option option help value)
     endif()
 endmacro()
 
-# @todo figure out how to set this dynamically and not cache it?
 set_option(FBT_PROFILING_ENABLED "Enable profiling" OFF)
 
 # Libraries

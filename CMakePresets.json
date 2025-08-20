@@ -14,95 +14,66 @@
 		{
 			"name": "debug",
 			"inherits": "base",
-			"displayName": "Debug (Clang)",
+			"displayName": "Debug",
 			"description": "Sets debug build type",
-			"generator": "Ninja",
 			"cacheVariables": {
-				"CMAKE_BUILD_TYPE": "Debug",
-				"CMAKE_C_COMPILER": "clang",
-				"CMAKE_CXX_COMPILER": "clang++"
+				"CMAKE_BUILD_TYPE": "Debug"
+			}
+		},
+		{
+			"name": "debug-profiling",
+			"inherits": "debug",
+			"displayName": "Profiling",
+			"description": "Sets debug build type and enables profiling",
+			"cacheVariables": {
+				"FBT_PROFILING_ENABLED": "ON"
 			}
 		},
 		{
 			"name": "release",
-			"inherits": "debug",
-			"displayName": "Release (Clang)",
+			"inherits": "base",
+			"displayName": "Release",
 			"description": "Sets release build type",
 			"cacheVariables": {
 				"CMAKE_BUILD_TYPE": "Release"
 			}
 		},
 		{
-			"name": "debug-msvc",
-			"inherits": "debug",
-			"displayName": "Debug (MSVC)",
-			"description": "Sets debug build type and uses MSVC",
-			"generator": "Visual Studio 17 2022",
+			"name": "release-profiling",
+			"inherits": "release",
+			"displayName": "Profiling",
+			"description": "Sets release build type and enables profiling",
 			"cacheVariables": {
-				"CMAKE_BUILD_TYPE": "Debug",
-				"CMAKE_C_COMPILER": "cl",
-				"CMAKE_CXX_COMPILER": "cl"
-			},
-			"condition": {
-				"type": "equals",
-				"lhs": "${hostSystemName}",
-				"rhs": "Windows"
-			}
-		},
-		{
-			"name": "release-msvc",
-			"inherits": "debug-msvc",
-			"displayName": "Release (MSVC)",
-			"description": "Sets release build type and uses MSVC",
-			"cacheVariables": {
-				"CMAKE_BUILD_TYPE": "Release"
+				"FBT_PROFILING_ENABLED": "ON"
 			}
 		}
 	],
 	"buildPresets": [
 		{
 			"name": "debug",
-			"displayName": "Debug Build (Clang)",
+			"displayName": "Debug Build",
 			"configurePreset": "debug"
 		},
 		{
-			"name": "debug-verbose",
-			"displayName": "Verbose Build (Clang)",
-			"description": "Passes -v to Ninja",
-			"configurePreset": "debug",
-			"nativeToolOptions": [
-				"-v"
-			]
+			"name": "debug-profiling",
+			"displayName": "Debug Profiling Build",
+			"configurePreset": "debug-profiling"
 		},
 		{
 			"name": "release",
-			"displayName": "Release Build (Clang)",
+			"displayName": "Release Build",
 			"configurePreset": "release"
 		},
 		{
-			"name": "debug-msvc",
-			"displayName": "Debug Build (MSVC)",
-			"configurePreset": "debug-msvc"
-		},
-		{
-			"name": "debug-msvc-verbose",
-			"displayName": "Verbose Build (MSVC)",
-			"description": "Passes /v:detailed to MSBuild. This is *very* verbose.",
-			"configurePreset": "debug-msvc",
-			"nativeToolOptions": [
-				"/v:detailed"
-			]
-		},
-		{
-			"name": "release-msvc",
-			"displayName": "Release Build (MSVC)",
-			"configurePreset": "release-msvc"
+			"name": "release-profiling",
+			"displayName": "Release Profiling Build",
+			"configurePreset": "release-profiling"
 		}
 	],
 	"packagePresets": [
 		{
 			"name": "debug",
-			"displayName": "Debug Package (Clang)",
+			"displayName": "Debug Package",
 			"configurePreset": "debug",
 			"generators": [
 				"ZIP"
@@ -110,24 +81,8 @@
 		},
 		{
 			"name": "release",
-			"displayName": "Release Package (Clang)",
+			"displayName": "Release Package",
 			"configurePreset": "release",
-			"generators": [
-				"ZIP"
-			]
-		},
-		{
-			"name": "debug-msvc",
-			"displayName": "Debug Package (MSVC)",
-			"configurePreset": "debug-msvc",
-			"generators": [
-				"ZIP"
-			]
-		},
-		{
-			"name": "release-msvc",
-			"displayName": "Release Package (MSVC)",
-			"configurePreset": "release-msvc",
 			"generators": [
 				"ZIP"
 			]

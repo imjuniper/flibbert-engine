@@ -11,10 +11,10 @@
 
 #include <rgfw/RGFW.h>
 
-#include <tracy/TracyOpenGL.hpp>
-
 #define GLAD_GL_IMPLEMENTATION
 #include <glad.h>
+
+#include <tracy/TracyOpenGL.hpp>
 
 void OpenGLMessageCallback(unsigned source, unsigned type, unsigned id, unsigned severity,
                            int length, const char* message, const void* userParam)
@@ -63,7 +63,7 @@ namespace Flibbert
 
 		// When removing support for OpenGL in macOS, migrate to 4.3+ and remove extension
 		// usage instead maybe?
-#ifndef NDEBUG
+#ifdef FBT_DEBUG
 		if (GLAD_GL_KHR_debug) {
 			glEnable(GL_DEBUG_OUTPUT);
 			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);

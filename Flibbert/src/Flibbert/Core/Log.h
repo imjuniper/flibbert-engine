@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Flibbert/Core/Base.h"
+
 // This ignores all warnings raised inside External headers
 #pragma warning(push, 0)
 #include <spdlog/spdlog.h>
@@ -53,15 +55,17 @@ inline OStream& operator<<(OStream& os, glm::qua<T, Q> quaternion)
 }
 
 // Core log macros
-#define FBT_CORE_TRACE(...) ::Flibbert::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define FBT_CORE_INFO(...) ::Flibbert::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define FBT_CORE_WARN(...) ::Flibbert::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define FBT_CORE_ERROR(...) ::Flibbert::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define FBT_CORE_CRITICAL(...) ::Flibbert::Log::GetCoreLogger()->critical(__VA_ARGS__)
+#define FBT_CORE_LOG(lvl, ...) ::Flibbert::Log::GetCoreLogger()->log(spdlog::source_loc(__FILE__, __LINE__, FBT_FUNC_SIG), spdlog::level::lvl, __VA_ARGS__)
+#define FBT_CORE_TRACE(...)    FBT_CORE_LOG(trace, __VA_ARGS__)
+#define FBT_CORE_INFO(...)     FBT_CORE_LOG(info, __VA_ARGS__)
+#define FBT_CORE_WARN(...)     FBT_CORE_LOG(warn, __VA_ARGS__)
+#define FBT_CORE_ERROR(...)    FBT_CORE_LOG(err, __VA_ARGS__)
+#define FBT_CORE_CRITICAL(...) FBT_CORE_LOG(critical, __VA_ARGS__)
 
 // Client log macros
-#define FBT_TRACE(...) ::Flibbert::Log::GetClientLogger()->trace(__VA_ARGS__)
-#define FBT_INFO(...) ::Flibbert::Log::GetClientLogger()->info(__VA_ARGS__)
-#define FBT_WARN(...) ::Flibbert::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define FBT_ERROR(...) ::Flibbert::Log::GetClientLogger()->error(__VA_ARGS__)
-#define FBT_CRITICAL(...) ::Flibbert::Log::GetClientLogger()->critical(__VA_ARGS__)
+#define FBT_LOG(lvl, ...) ::Flibbert::Log::GetClientLogger()->log(spdlog::source_loc(__FILE__, __LINE__, FBT_FUNC_SIG), spdlog::level::lvl, __VA_ARGS__)
+#define FBT_TRACE(...)    FBT_LOG(trace, __VA_ARGS__)
+#define FBT_INFO(...)     FBT_LOG(info, __VA_ARGS__)
+#define FBT_WARN(...)     FBT_LOG(warn, __VA_ARGS__)
+#define FBT_ERROR(...)    FBT_LOG(err, __VA_ARGS__)
+#define FBT_CRITICAL(...) FBT_LOG(critical, __VA_ARGS__)

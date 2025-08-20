@@ -3,7 +3,9 @@
 #include "Flibbert/Input/Input.h"
 #include "Flibbert/Renderer/Renderer.h"
 
-#define RGFW_DEBUG
+#ifdef FBT_DEBUG
+	#define RGFW_DEBUG
+#endif
 #define RGFW_IMPLEMENTATION
 #define RGFW_IMGUI_IMPLEMENTATION
 #pragma clang diagnostic push
@@ -19,7 +21,9 @@ namespace Flibbert
 
 		// @todo check if this is needed on other platforms than macOS
 		if (Renderer::GetAPI() == Renderer::API::OpenGL) {
+#ifdef FBT_DEBUG
 			RGFW_setGLHint(RGFW_glDebug, 1);
+#endif
 			RGFW_setGLHint(RGFW_glMajor, 4);
 #ifdef FBT_PLATFORM_MACOS
 			/* Set OpenGL version to 4.1 on macOS */

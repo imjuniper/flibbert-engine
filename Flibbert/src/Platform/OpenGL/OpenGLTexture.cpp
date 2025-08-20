@@ -1,8 +1,7 @@
 #include "Platform/OpenGL/OpenGLTexture.h"
 
-#include <tracy/TracyOpenGL.hpp>
-
 #include <glad.h>
+#include <tracy/TracyOpenGL.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>

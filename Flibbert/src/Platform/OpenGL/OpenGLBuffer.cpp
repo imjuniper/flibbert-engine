@@ -1,8 +1,7 @@
 #include "Platform/OpenGL/OpenGLBuffer.h"
 
-#include <tracy/TracyOpenGL.hpp>
-
 #include <glad.h>
+#include <tracy/TracyOpenGL.hpp>
 
 namespace Flibbert
 {
