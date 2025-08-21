@@ -6,7 +6,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(Sandbox
         src/SandboxApp.cpp
-        src/Demos/Demo.cpp
         src/Demos/Demo.h
         src/Demos/DemoCamera3D.cpp
         src/Demos/DemoCamera3D.h

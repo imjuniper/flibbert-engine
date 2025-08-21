@@ -13,69 +13,130 @@
 class Sandbox : public Flibbert::Application
 {
 private:
-	Demo::Demo* m_currentDemo;
-	Demo::DemoMenu* m_demoMenu;
+	std::unique_ptr<Demo::Demo> m_CurrentDemo = nullptr;
+
+	std::vector<std::pair<const char*, std::function<std::unique_ptr<Demo::Demo>()>>> m_Demos;
 
 public:
 	explicit Sandbox(const Flibbert::ApplicationInfo& info) : Application(info)
 	{
 		ZoneScoped;
 
-		m_currentDemo = nullptr;
-		m_demoMenu = new Demo::DemoMenu(m_currentDemo);
-		m_currentDemo = m_demoMenu;
-
-		m_demoMenu->RegisterDemo<Demo::DemoClearColor>();
-		m_demoMenu->RegisterDemo<Demo::DemoTexture2D>();
-		m_demoMenu->RegisterDemo<Demo::DemoFloppyBirb>();
-		m_demoMenu->RegisterDemo<Demo::DemoCamera3D>();
-		m_demoMenu->RegisterDemo<Demo::DemoMeshGeneration>();
+		RegisterDemo<Demo::DemoClearColor>();
+		RegisterDemo<Demo::DemoTexture2D>();
+		RegisterDemo<Demo::DemoFloppyBirb>();
+		RegisterDemo<Demo::DemoCamera3D>();
+		RegisterDemo<Demo::DemoMeshGeneration>();
 	}
 
-	~Sandbox() override
+	template <typename TDemo>
+	void RegisterDemo()
 	{
 		ZoneScoped;
 
-		if (m_currentDemo != m_demoMenu) {
-			delete m_demoMenu;
-		}
-		delete m_currentDemo;
+		FBT_INFO("Registering demo {}", TDemo::Name);
+		m_Demos.emplace_back(TDemo::Name, []() { return std::make_unique<TDemo>(); });
 	}
 
 	void OnUpdate(const float ts) override
 	{
 		ZoneScoped;
 
-		if (m_currentDemo) {
-			m_currentDemo->OnUpdate(ts);
-			m_currentDemo->OnRender();
+		if (m_CurrentDemo) {
+			m_CurrentDemo->OnUpdate(ts);
+			m_CurrentDemo->OnRender();
 		}
 	}
+
+	void BeginMainImguiWindow()
+	{
+		// Make the window fill the viewport
+		const ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImGui::SetNextWindowPos(viewport->Pos);
+		ImGui::SetNextWindowSize(viewport->Size);
+		ImGui::SetNextWindowViewport(viewport->ID);
+
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+
+		// Hide the main window borders, background, etc.
+		constexpr ImGuiWindowFlags windowFlags =
+		    ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking |
+		    ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar |
+		    ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+		    ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
+		    ImGuiWindowFlags_NoNavFocus;
+
+		static bool mainWindowOpen = true;
+		ImGui::Begin("Sandbox", &mainWindowOpen, windowFlags);
+
+		ImGui::PopStyleVar(3);
+
+		// Create the dock space if available
+		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable) {
+			constexpr ImGuiDockNodeFlags dockspaceFlags =
+			    ImGuiDockNodeFlags_PassthruCentralNode |
+			    ImGuiDockNodeFlags_NoDockingOverCentralNode |
+			    ImGuiDockNodeFlags_AutoHideTabBar;
+			ImGui::DockSpace(ImGui::GetID("SandboxDockSpace"), ImVec2(0.0f, 0.0f),
+			                 dockspaceFlags);
+		}
+
+		if (ImGui::BeginMenuBar()) {
+			if (ImGui::BeginMenu("Demos")) {
+				for (auto& [demoName, createDemo] : m_Demos) {
+					if (ImGui::MenuItem(demoName)) {
+						m_CurrentDemo = createDemo();
+					}
+				}
+
+				ImGui::Separator();
+
+				if (ImGui::MenuItem("Exit")) {
+					Close();
+				}
+
+				ImGui::EndMenu();
+			}
+
+			ImGui::Separator();
+
+			const std::string stats =
+			    std::format("{:.2f} FPS ({:.2f} ms)", ImGui::GetIO().Framerate,
+			                1000.0f / ImGui::GetIO().Framerate);
+			const auto statsSize = ImGui::CalcTextSize(stats.c_str());
+
+			ImGui::SameLine(ImGui::GetWindowWidth() - statsSize.x - 4.0f);
+			ImGui::Text(stats.c_str());
+
+			ImGui::EndMenuBar();
+		}
+	}
+
+	void EndMainImguiWindow() { ImGui::End(); }
 
 	void OnImguiRender() override
 	{
 		ZoneScoped;
 
-		if (m_currentDemo) {
-			ImGui::Begin("Sandbox");
-			ImGui::Text("Current App: %s", m_currentDemo->GetName());
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)",
-				    1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			if (m_currentDemo != m_demoMenu && ImGui::Button("<--")) {
-				delete m_currentDemo;
-				m_currentDemo = m_demoMenu;
-			}
-			m_currentDemo->OnImGuiRender();
+		BeginMainImguiWindow();
+
+		if (m_CurrentDemo) {
+			ImGui::Begin(m_CurrentDemo->GetName());
+			m_CurrentDemo->OnImGuiRender();
 			ImGui::End();
 		}
+
+		EndMainImguiWindow();
 	}
 
 	void OnInput(const std::shared_ptr<Flibbert::InputEvent>& event) override
 	{
 		ZoneScoped;
 
-		if (m_currentDemo) {
-			m_currentDemo->OnInput(event);
+		if (m_CurrentDemo) {
+			m_CurrentDemo->OnInput(event);
 		}
 	}
 };

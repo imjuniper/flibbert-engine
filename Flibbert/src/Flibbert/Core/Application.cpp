@@ -127,9 +127,14 @@ namespace Flibbert
 		}
 	}
 
-	void Application::HandleWindowClosed(Window& window)
+	void Application::Close()
 	{
 		m_Running = false;
+	}
+
+	void Application::HandleWindowClosed(Window& window)
+	{
+		Close();
 	}
 
 	void Application::DispatchInputEvent(const std::shared_ptr<InputEvent>& event)

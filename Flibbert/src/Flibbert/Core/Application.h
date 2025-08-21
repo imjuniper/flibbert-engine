@@ -36,6 +36,7 @@ namespace Flibbert
 		static Application& Get();
 
 		void Run();
+		void Close();
 
 		[[nodiscard]] Window& GetWindow() const;
 		[[nodiscard]] Renderer& GetRenderer() const;
