@@ -1,7 +1,9 @@
 #include "Flibbert/Renderer/Renderer.h"
 
 #include "Flibbert/Core/Application.h"
+
 #include "Platform/OpenGL/OpenGLRendererBackend.h"
+#include "Platform/Vulkan/VulkanRendererBackend.h"
 
 namespace Flibbert
 {
@@ -12,6 +14,9 @@ namespace Flibbert
 		switch (s_API) {
 			case API::OpenGL:
 				m_Backend = std::make_unique<OpenGLRendererBackend>();
+				break;
+			case API::Vulkan:
+				m_Backend = std::make_unique<VulkanRendererBackend>();
 				break;
 			default:
 				FBT_CORE_ENSURE_MSG(false, "Unsupported or unknown Renderer::API");

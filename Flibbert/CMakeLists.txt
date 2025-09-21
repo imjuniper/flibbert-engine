@@ -60,7 +60,9 @@ add_library(Flibbert STATIC
         src/Platform/OpenGL/OpenGLTexture.cpp
         src/Platform/OpenGL/OpenGLTexture.h
         src/Platform/OpenGL/OpenGLVertexArray.cpp
-        src/Platform/OpenGL/OpenGLVertexArray.h)
+        src/Platform/OpenGL/OpenGLVertexArray.h
+        src/Platform/Vulkan/VulkanRendererBackend.cpp
+        src/Platform/Vulkan/VulkanRendererBackend.h)
 
 target_include_directories(Flibbert
         PUBLIC
@@ -156,7 +158,7 @@ target_link_libraries(Flibbert PUBLIC glm imgui spdlog tracy)
 
 # Platform-specific stuffs
 if (APPLE)
-    message(WARNING "Apple devices will soon be unsupported because they do not support OpenGL 4.2+")
+    message(WARNING "Apple devices will soon be unsupported because they do not support OpenGL 4.2+. Eventually, Metal support will be added, once I figure out Vulkan too")
     target_link_libraries(Flibbert
             PRIVATE
             "-framework Cocoa"
