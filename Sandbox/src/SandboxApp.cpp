@@ -38,15 +38,24 @@ public:
 		m_Demos.emplace_back(TDemo::Name, []() { return std::make_unique<TDemo>(); });
 	}
 
-	void OnUpdate(const float ts) override
+	void OnUpdate(const double ts) override
 	{
 		ZoneScoped;
 
 		if (m_CurrentDemo) {
 			m_CurrentDemo->OnUpdate(ts);
+		}
+	}
+
+	void OnRender() override
+	{
+		ZoneScoped;
+
+		if (m_CurrentDemo) {
 			m_CurrentDemo->OnRender();
 		}
 	}
+
 
 	void BeginMainImguiWindow()
 	{

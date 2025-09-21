@@ -87,14 +87,19 @@ namespace Flibbert
 
 			const double time = Platform::GetTime();
 			m_FrameTime = time - m_LastFrameTime;
-			m_TimeStep = std::min(m_FrameTime, 0.0333);
 			m_LastFrameTime = time;
 
 			{
 				ZoneNamedN(OnUpdateFrame, "OnUpdate", true);
+
+				OnUpdate(m_FrameTime);
+			}
+
+			{
+				ZoneNamedN(OnUpdateFrame, "OnRender", true);
+
 				m_Renderer->Clear();
-				// @todo see if using double would be better
-				OnUpdate(static_cast<float>(m_FrameTime));
+				OnRender();
 			}
 
 			{
@@ -139,8 +144,6 @@ namespace Flibbert
 
 	void Application::DispatchInputEvent(const std::shared_ptr<InputEvent>& event)
 	{
-		ZoneScoped;
-
 		OnInput(event);
 	}
 

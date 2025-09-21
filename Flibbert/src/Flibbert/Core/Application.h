@@ -42,7 +42,8 @@ namespace Flibbert
 		[[nodiscard]] Renderer& GetRenderer() const;
 
 	private:
-		virtual void OnUpdate(float ts) = 0;
+		virtual void OnUpdate(double ts) = 0;
+		virtual void OnRender() = 0;
 		virtual void OnImguiRender() = 0;
 		virtual void OnInput(const std::shared_ptr<InputEvent>& event) = 0;
 
@@ -54,7 +55,6 @@ namespace Flibbert
 		std::unique_ptr<Renderer> m_Renderer = nullptr;
 		bool m_Running = false;
 
-		double m_TimeStep = 0.0;
 		double m_FrameTime = 0.0;
 		double m_LastFrameTime = 0.0;
 
