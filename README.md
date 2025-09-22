@@ -4,7 +4,7 @@ Flibbert is basically a small framework/engine that I'm working on to learn game
 
 ## Requirements
 
-- A system that supports at least OpenGL 4.1
+- A system that supports OpenGL 4.6
 - [CMake 3.31+](https://cmake.org/)
 - A C++ compiler supporting C++20 (Clang and MSVC have been tested)
 
@@ -12,7 +12,7 @@ Flibbert is basically a small framework/engine that I'm working on to learn game
 
 - OpenGL rendering backend, with abstractions
 - Dear ImGui for UI
-- 3D Camera, though it's the only 3D part implemented
+- 3D Camera
 - Input/event system
 
 ## Usage
