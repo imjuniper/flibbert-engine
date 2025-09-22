@@ -28,16 +28,19 @@ namespace Flibbert
 	class MetalRendererBackend : public RendererBackend
 	{
 	public:
-		explicit MetalRendererBackend(RGFW_window* window);
+		MetalRendererBackend();
+		~MetalRendererBackend() override;
 
-		static void InitGraphicsContext(RGFW_window* window);
+		void InitImGui() override;
+		void BeginImGuiFrame() override;
+		void EndImGuiFrame() override;
+		void ShutdownImGui() override;
 
 		void SetClearColor(const glm::vec4& color) override;
 		void Clear() override;
 
-		void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer,
-		          Shader& shader, const glm::mat4& viewProjection,
-		          const glm::mat4& transform) const override;
+		void Draw(const std::shared_ptr<VertexArray>& vertexArray,
+			  const std::shared_ptr<Shader>& shader) const override;
 
 		MTL::Device* GetDevice() const;
 		MTL::CommandQueue* GetCommandQueue() const;

@@ -2,6 +2,9 @@
 
 #include <rgfw/RGFW.h>
 
+#include "Flibbert/Core/Application.h"
+#include "Platform/Desktop/Window.h"
+
 #define NS_PRIVATE_IMPLEMENTATION
 #define MTL_PRIVATE_IMPLEMENTATION
 #define MTK_PRIVATE_IMPLEMENTATION
@@ -12,13 +15,10 @@
 
 namespace Flibbert
 {
-	void MetalRendererBackend::InitGraphicsContext(RGFW_window* window)
+	MetalRendererBackend::MetalRendererBackend()
 	{
-		FBT_CORE_ERROR("Unimplemented MetalRendererBackend::InitGraphicsContext");
-	}
+		RGFW_window* window = Application::Get().GetWindow().GetNativeWindow();
 
-	MetalRendererBackend::MetalRendererBackend(RGFW_window* window)
-	{
 		m_Device = MTLCreateSystemDefaultDevice();
 		m_CommandQueue = m_Device->newCommandQueue();
 		m_Layer = CA::MetalLayer::layer();
@@ -28,6 +28,26 @@ namespace Flibbert
 		// m_View->setLayer(m_Layer);
 		// m_View->setWantsLayer(true);
 		// m_View->setOpaque(true);
+	}
+
+	MetalRendererBackend::~MetalRendererBackend() {
+		FBT_CORE_ERROR("Unimplemented MetalRendererBackend::~MetalRendererBackend");
+	}
+
+	void MetalRendererBackend::InitImGui() {
+		FBT_CORE_ERROR("Unimplemented MetalRendererBackend::InitImGui");
+	}
+
+	void MetalRendererBackend::BeginImGuiFrame() {
+		FBT_CORE_ERROR("Unimplemented MetalRendererBackend::BeginImGuiFrame");
+	}
+
+	void MetalRendererBackend::EndImGuiFrame() {
+		FBT_CORE_ERROR("Unimplemented MetalRendererBackend::EndImGuiFrame");
+	}
+
+	void MetalRendererBackend::ShutdownImGui() {
+		FBT_CORE_ERROR("Unimplemented MetalRendererBackend::ShutdownImGui");
 	}
 
 	void MetalRendererBackend::SetClearColor(const glm::vec4& color)
@@ -41,10 +61,7 @@ namespace Flibbert
 		FBT_CORE_ERROR("Unimplemented MetalRendererBackend::Clear");
 	}
 
-	void MetalRendererBackend::Draw(const VertexArray& vertexArray,
-	                                const IndexBuffer& indexBuffer, Shader& shader,
-	                                const glm::mat4& viewProjection,
-	                                const glm::mat4& transform) const
+	void MetalRendererBackend::Draw(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader) const
 	{
 		FBT_CORE_ERROR("Unimplemented MetalRendererBackend::Draw");
 	}

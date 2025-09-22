@@ -2,39 +2,39 @@
 
 #include <glad.h>
 
-#include <fstream>
-
 namespace Flibbert
 {
-	OpenGLShader::OpenGLShader(const std::string& vertexShaderFilepath,
-	                           const std::string& fragmentShaderFilepath)
+	OpenGLShader::OpenGLShader(std::string_view vertexShaderFilepath,
+	                           std::string_view fragmentShaderFilepath)
 	    : m_VertexShaderFilePath(vertexShaderFilepath),
 	      m_FragmentShaderFilePath(fragmentShaderFilepath), m_RendererID(0)
 	{
-		std::string vertexShader = LoadShader(vertexShaderFilepath);
-		std::string fragmentShader = LoadShader(fragmentShaderFilepath);
+		ZoneScoped;
+
+		const auto vertexShader = LoadAndPreprocessShader(m_VertexShaderFilePath);
+		const auto fragmentShader = LoadAndPreprocessShader(m_FragmentShaderFilePath);
 
 		m_RendererID = CreateShader(vertexShader, fragmentShader);
+		if (m_RendererID != 0) {
+			CacheUniformLocations();
+		}
 	}
 
 	OpenGLShader::~OpenGLShader()
 	{
+		ZoneScoped;
+
 		glDeleteProgram(m_RendererID);
-	}
-
-	std::string OpenGLShader::LoadShader(const std::string& filepath)
-	{
-		std::ifstream stream(filepath);
-
-		std::stringstream ss;
-		ss << stream.rdbuf();
-
-		return ss.str();
 	}
 
 	uint32_t OpenGLShader::CompileShader(uint32_t type, const std::string& source)
 	{
+		ZoneScoped;
+
+		// @todo migrate to SPIR-V here, so code can be reused for Vulkan and maybe DXIL? aka HLSL -> SPIR-V & DXIL
+
 		uint32_t id = glCreateShader(type);
+		// source is not a std::string_view to ensure it's null-terminated
 		const char* src = source.c_str();
 		glShaderSource(id, 1, &src, nullptr);
 		glCompileShader(id);
@@ -47,10 +47,8 @@ namespace Flibbert
 			char* message = (char*)alloca(length * sizeof(char));
 			glGetShaderInfoLog(id, length, &length, message);
 
-			std::cout << "Failed to compile "
-				  << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader"
-				  << std::endl;
-			std::cout << message << std::endl;
+			FBT_CORE_ERROR("Failed to compile {} shader:\n\t{}",
+			               (type == GL_VERTEX_SHADER ? "vertex" : "fragment"), message);
 			glDeleteShader(id);
 			return 0;
 		}
@@ -61,6 +59,8 @@ namespace Flibbert
 	uint32_t OpenGLShader::CreateShader(const std::string& vertexShader,
 	                                    const std::string& fragmentShader)
 	{
+		ZoneScoped;
+
 		uint32_t program = glCreateProgram();
 		uint32_t vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
 		uint32_t fs = CompileShader(GL_FRAGMENT_SHADER, fragmentShader);
@@ -78,50 +78,63 @@ namespace Flibbert
 
 	void OpenGLShader::Bind() const
 	{
+		ZoneScoped;
+
 		glUseProgram(m_RendererID);
 	}
 
 	void OpenGLShader::Unbind() const
 	{
+		ZoneScoped;
+
 		glUseProgram(0);
 	}
 
-	void OpenGLShader::SetUniform1i(const std::string& name, const int value)
+	void OpenGLShader::SetUniform1i(std::string_view name, const int value)
 	{
-		glUniform1i(GetUniformLocation(name), value);
+		ZoneScoped;
+
+		if (!m_Uniforms.contains(name.data())) {
+			FBT_CORE_WARN("Uniform {} doesn't exist", name);
+			return;
+		}
+
+		glProgramUniform1i(m_RendererID, m_Uniforms[name.data()].Location, value);
 	}
 
-	void OpenGLShader::SetUniform1f(const std::string& name, const float value)
+	void OpenGLShader::BindUniformBuffer(std::string_view name, uint32_t binding)
 	{
-		glUniform1f(GetUniformLocation(name), value);
+		ZoneScoped;
+
+		uint32_t blockIndex = glGetUniformBlockIndex(m_RendererID, name.data());
+		glUniformBlockBinding(m_RendererID, blockIndex, binding);
 	}
 
-	void OpenGLShader::SetUniform2f(const std::string& name, const glm::vec2& value)
+	void OpenGLShader::CacheUniformLocations()
 	{
-		glUniform2f(GetUniformLocation(name), value.x, value.y);
-	}
+		int32_t uniformCount = 0;
+		glGetProgramiv(m_RendererID, GL_ACTIVE_UNIFORMS, &uniformCount);
 
-	void OpenGLShader::SetUniform4f(const std::string& name, const glm::vec4& value)
-	{
-		glUniform4f(GetUniformLocation(name), value.x, value.y, value.z, value.w);
-	}
+		if (uniformCount != 0)
+		{
+			GLint 	maxNameLength = 0;
+			GLsizei length = 0;
+			GLsizei size = 0;
+			GLenum 	type = GL_NONE;
+			glGetProgramiv(m_RendererID, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxNameLength);
 
-	void OpenGLShader::SetUniformMat4f(const std::string& name, const glm::mat4& value)
-	{
-		glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &value[0][0]);
-	}
+			auto uniformName = std::make_unique<char[]>(maxNameLength);
 
-	int OpenGLShader::GetUniformLocation(const std::string& name)
-	{
-		if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
-			return m_UniformLocationCache[name];
+			for (GLint i = 0; i < uniformCount; ++i)
+			{
+				glGetActiveUniform(m_RendererID, i, maxNameLength, &length, &size, &type, uniformName.get());
 
-		int location = glGetUniformLocation(m_RendererID, name.c_str());
-		if (location == -1)
-			std::cout << "[Warning] uniform '" << name << "' doesn't exist!"
-				  << std::endl;
+				OpenGLUniformInfo uniformInfo = {};
+				uniformInfo.Location = glGetUniformLocation(m_RendererID, uniformName.get());
+				uniformInfo.Size = size;
 
-		m_UniformLocationCache[name] = location;
-		return location;
+				m_Uniforms.emplace(std::make_pair(std::string(uniformName.get(), length), uniformInfo));
+			}
+		}
 	}
 } // namespace Flibbert

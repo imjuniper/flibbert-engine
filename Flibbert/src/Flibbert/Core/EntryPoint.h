@@ -3,27 +3,24 @@
 #include "Flibbert/Core/PlatformDetection.h"
 
 #include "Flibbert/Core/Application.h"
-#include "Flibbert/Debug/Instrumentor.h"
+#include "Flibbert/Debug/Profiling.h"
 
-#if defined(FBT_PLATFORM_WINDOWS) || defined(FBT_PLATFORM_MACOS)
+#ifdef FBT_PLATFORM_DESKTOP
 
-extern Flibbert::Application* Flibbert::CreateApplication();
+extern Flibbert::Application* Flibbert::CreateApplication(LaunchArguments arguments);
 
 int main(int argc, char** argv)
 {
 	Flibbert::Log::Init();
 
-	FBT_PROFILE_BEGIN_SESSION("Startup", "FlibbertProfile-Startup.json");
-	auto app = Flibbert::CreateApplication();
-	FBT_PROFILE_END_SESSION();
+	TracyMessageL("Application Initialization");
+	auto app = Flibbert::CreateApplication({argc, argv});
 
-	FBT_PROFILE_BEGIN_SESSION("Runtime", "FlibbertProfile-Runtime.json");
+	TracyMessageL("Application Runtime");
 	app->Run();
-	FBT_PROFILE_END_SESSION();
 
-	FBT_PROFILE_BEGIN_SESSION("Shutdown", "FlibbertProfile-Shutdown.json");
+	TracyMessageL("Application Shutdown");
 	delete app;
-	FBT_PROFILE_END_SESSION();
 }
 
 #endif

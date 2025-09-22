@@ -1,111 +1,91 @@
 {
-	"version": 3,
+	"version": 10,
 	"cmakeMinimumRequired": {
 		"major": 3,
-		"minor": 20,
+		"minor": 31,
 		"patch": 0
 	},
 	"configurePresets": [
 		{
 			"name": "base",
 			"hidden": true,
-			"generator": "Ninja",
-			"architecture": {
-				"value": "x64",
-				"strategy": "external"
-			},
-			"binaryDir": "${sourceDir}/Build/${presetName}",
-			"cacheVariables": {
-				"CMAKE_C_COMPILER": "clang",
-				"CMAKE_CXX_COMPILER": "clang++"
-			}
+			"binaryDir": "${sourceDir}/Build/${presetName}"
 		},
 		{
-			"name": "x64-debug",
-			"displayName": "x64 Debug",
-			"description": "Sets debug build type and x64 arch",
+			"name": "debug",
 			"inherits": "base",
-			"cacheVariables": {
-				"CMAKE_BUILD_TYPE": "Debug"
-			},
-			"condition": {
-				"type": "equals",
-				"lhs": "${hostSystemName}",
-				"rhs": "Windows"
-			},
-			"vendor": {
-				"microsoft.com/VisualStudioSettings/CMake/1.0": {
-					"hostOS": ["Windows"]
-				}
-			}
-		},
-		{
-			"name": "x64-release",
-			"displayName": "x64 Release",
-			"description": "Sets release build type",
-			"inherits": "x64-debug",
-			"cacheVariables": {
-				"CMAKE_BUILD_TYPE": "Release"
-			}
-		},
-		{
-			"name": "macos-debug",
-			"displayName": "macOS Debug",
+			"displayName": "Debug",
 			"description": "Sets debug build type",
-			"inherits": "base",
-			"architecture": {
-				"value": "arm64",
-				"strategy": "external"
-			},
 			"cacheVariables": {
 				"CMAKE_BUILD_TYPE": "Debug"
-			},
-			"condition": {
-				"type": "equals",
-				"lhs": "${hostSystemName}",
-				"rhs": "Darwin"
-			},
-			"vendor": {
-				"microsoft.com/VisualStudioSettings/CMake/1.0": {
-					"hostOS": ["macOS"]
-				}
 			}
 		},
 		{
-			"name": "macos-release",
-			"displayName": "macOS Release",
+			"name": "debug-profiling",
+			"inherits": "debug",
+			"displayName": "Profiling",
+			"description": "Sets debug build type and enables profiling",
+			"cacheVariables": {
+				"FBT_PROFILING_ENABLED": "ON"
+			}
+		},
+		{
+			"name": "release",
+			"inherits": "base",
+			"displayName": "Release",
 			"description": "Sets release build type",
-			"inherits": "macos-debug",
 			"cacheVariables": {
 				"CMAKE_BUILD_TYPE": "Release"
+			}
+		},
+		{
+			"name": "release-profiling",
+			"inherits": "release",
+			"displayName": "Profiling",
+			"description": "Sets release build type and enables profiling",
+			"cacheVariables": {
+				"FBT_PROFILING_ENABLED": "ON"
 			}
 		}
 	],
 	"buildPresets": [
 		{
-			"name": "default-build-windows",
-			"displayName": "Default",
-			"description": "Vanilla build",
-			"configurePreset": "x64-debug"
+			"name": "debug",
+			"displayName": "Debug Build",
+			"configurePreset": "debug"
 		},
 		{
-			"name": "default-build-macos",
-			"displayName": "Default",
-			"description": "Vanilla build",
-			"configurePreset": "macos-debug"
+			"name": "debug-profiling",
+			"displayName": "Debug Profiling Build",
+			"configurePreset": "debug-profiling"
 		},
 		{
-			"name": "verbose-build-windows",
-			"displayName": "Verbose Build",
-			"description": "Passes -v to Ninja",
-			"configurePreset": "x64-debug",
-			"nativeToolOptions": ["-v"]
+			"name": "release",
+			"displayName": "Release Build",
+			"configurePreset": "release"
 		},
 		{
-			"name": "verbose-build-macos",
-			"displayName": "Verbose Build",
-			"configurePreset": "macos-debug",
-			"inherits": "verbose-build-windows"
+			"name": "release-profiling",
+			"displayName": "Release Profiling Build",
+			"configurePreset": "release-profiling"
+		}
+	],
+	"packagePresets": [
+		{
+			"name": "debug",
+			"displayName": "Debug Package",
+			"configurePreset": "debug",
+			"generators": [
+				"ZIP"
+			]
+		},
+		{
+			"name": "release",
+			"displayName": "Release Package",
+			"configurePreset": "release",
+			"generators": [
+				"ZIP"
+			]
 		}
 	]
 }

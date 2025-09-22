@@ -1,9 +1,0 @@
-[submodule "Flibbert/vendor/glm"]
-	path = Flibbert/vendor/glm
-	url = https://github.com/g-truc/glm.git
-[submodule "Flibbert/vendor/imgui"]
-	path = Flibbert/vendor/imgui
-	url = https://github.com/ocornut/imgui.git
-[submodule "Flibbert/vendor/spdlog"]
-	path = Flibbert/vendor/spdlog
-	url = https://github.com/gabime/spdlog.git

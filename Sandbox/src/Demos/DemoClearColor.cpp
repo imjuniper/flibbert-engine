@@ -2,29 +2,27 @@
 
 #include <Flibbert.h>
 
+#include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 
 namespace Demo
 {
-	DemoClearColor::DemoClearColor() : m_ClearColor{1.0f, 0.0f, 0.0f, 0.0f}, m_InitialColor()
+	DemoClearColor::DemoClearColor()
+	    : m_Renderer(Flibbert::Renderer::Get()), m_ClearColor{1.0f, 0.0f, 0.0f, 1.0f}
 	{
-		m_Renderer = Flibbert::Application::Get().GetRenderer()->GetBackend();
-		m_InitialColor = m_Renderer->GetClearColor();
-	}
-
-	DemoClearColor::~DemoClearColor()
-	{
-		m_Renderer->SetClearColor(m_InitialColor);
 	}
 
 	void DemoClearColor::OnRender()
 	{
-		m_Renderer->SetClearColor(
-		    {m_ClearColor[0], m_ClearColor[1], m_ClearColor[2], m_ClearColor[3]});
+		ZoneScoped;
+
+		m_Renderer.SetClearColor(m_ClearColor);
 	}
 
 	void DemoClearColor::OnImGuiRender()
 	{
-		ImGui::ColorEdit4("Clear Color", m_ClearColor);
+		ZoneScoped;
+
+		ImGui::ColorEdit4("Clear Color", glm::value_ptr(m_ClearColor));
 	}
 } // namespace Demo

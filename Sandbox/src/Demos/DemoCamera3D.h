@@ -8,22 +8,37 @@ namespace Demo
 {
 	class DemoCamera3D : public Demo
 	{
-	private:
-		Flibbert::RendererBackend* m_Renderer;
-		Flibbert::VertexArray* m_VAO;
-		Flibbert::VertexBuffer* m_VertexBuffer;
-		Flibbert::IndexBuffer* m_IndexBuffer;
-		Flibbert::Shader* m_Shader;
-		Flibbert::Texture* m_Texture;
-
-		Flibbert::Camera3D* m_Camera;
-		glm::vec3 m_TranslationA, m_TranslationB;
-
 	public:
 		DemoCamera3D();
 
-		void OnUpdate(float deltaTime) override;
+		void OnUpdate(float ts) override;
 		void OnRender() override;
 		void OnImGuiRender() override;
+		void OnInput(const std::shared_ptr<Flibbert::InputEvent>& event) override;
+
+		const char* GetName() const override { return Name; }
+
+	public:
+		static constexpr auto Name = "3D Camera";
+
+	private:
+		Flibbert::Renderer& m_Renderer;
+
+		std::shared_ptr<Flibbert::VertexArray> m_VAO;
+		std::shared_ptr<Flibbert::VertexBuffer> m_VertexBuffer;
+		std::shared_ptr<Flibbert::IndexBuffer> m_IndexBuffer;
+		std::shared_ptr<Flibbert::Shader> m_Shader;
+		std::shared_ptr<Flibbert::Texture> m_Texture;
+		std::shared_ptr<Flibbert::UniformBuffer> m_PerFrameBuffer;
+		std::shared_ptr<Flibbert::UniformBuffer> m_PerObjectBuffer;
+
+		std::unique_ptr<Flibbert::Camera> m_Camera;
+
+		std::shared_ptr<Flibbert::CameraModePerspective> m_CameraModePerspective;
+		std::shared_ptr<Flibbert::CameraModeOrthographic> m_CameraModeOrthographic;
+
+		bool m_UsingOrthographicMode = false;
+
+		glm::vec3 m_TranslationA, m_TranslationB;
 	};
 } // namespace Demo

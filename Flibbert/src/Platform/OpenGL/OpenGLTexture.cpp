@@ -1,23 +1,23 @@
 #include "Platform/OpenGL/OpenGLTexture.h"
 
 #include <glad.h>
+#include <tracy/TracyOpenGL.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
 namespace Flibbert
 {
-	OpenGLTexture::OpenGLTexture(const std::string& path) : m_RendererID(0)
+	OpenGLTexture::OpenGLTexture(std::string_view path) : m_RendererID(0)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
 		stbi_set_flip_vertically_on_load(1);
 		int width, height, channels;
 		void* data = nullptr;
 		{
-			FBT_PROFILE_SCOPE(
-			    "stbi_load - OpenGLTexture::OpenGLTexture(const std::string&)");
-			data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+			ZoneNamedN(ZoneStbImageLoad, "stbi_load(...)", true);
+			data = stbi_load(path.data(), &width, &height, &channels, 0);
 		}
 		if (data == nullptr) return;
 
@@ -36,36 +36,40 @@ namespace Flibbert
 		m_InternalFormat = internalFormat;
 		m_DataFormat = dataFormat;
 
-		glGenTextures(1, &m_RendererID);
-		glBindTexture(GL_TEXTURE_2D, m_RendererID);
+		TracyGpuZone("OpenGLTexture");
 
-		glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_DataFormat,
-		             GL_UNSIGNED_BYTE, data);
+		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
+		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
 
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-		glBindTexture(GL_TEXTURE_2D, 0);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
 		stbi_image_free(data);
 	}
 
 	OpenGLTexture::~OpenGLTexture()
 	{
+		ZoneScoped;
+
 		glDeleteTextures(1, &m_RendererID);
 	}
 
 	void OpenGLTexture::Bind(uint32_t slot) const
 	{
-		glActiveTexture(GL_TEXTURE0 + slot);
-		glBindTexture(GL_TEXTURE_2D, m_RendererID);
+		ZoneScoped;
+
+		glBindTextureUnit(slot, m_RendererID);
 	}
 
-	void OpenGLTexture::Unbind() const
+	void OpenGLTexture::Unbind(uint32_t slot) const
 	{
-		glBindTexture(GL_TEXTURE_2D, 0);
+		ZoneScoped;
+
+		glBindTextureUnit(slot, 0);
 	}
 } // namespace Flibbert

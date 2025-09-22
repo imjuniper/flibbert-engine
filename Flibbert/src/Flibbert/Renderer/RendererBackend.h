@@ -1,27 +1,38 @@
 #pragma once
 
-#include "Flibbert/Renderer/Buffer.h"
-#include "Flibbert/Renderer/Shader.h"
-#include "Flibbert/Renderer/VertexArray.h"
-
-struct RGFW_window;
-
 namespace Flibbert
 {
+	class Renderer;
+	class IndexBuffer;
+	class Shader;
+	class VertexArray;
+
 	class RendererBackend
 	{
+		friend Renderer;
+
 	public:
-		RendererBackend() = default;
-		explicit RendererBackend(RGFW_window* window) {};
 		virtual ~RendererBackend() = default;
+
+	protected:
+		RendererBackend() = default;
+
+		virtual void InitImGui() = 0;
+		virtual void BeginImGuiFrame() = 0;
+		virtual void EndImGuiFrame() = 0;
+		virtual void ShutdownImGui() = 0;
 
 		[[nodiscard]] virtual glm::vec4 GetClearColor() const { return m_clearColor; }
 		virtual void SetClearColor(const glm::vec4& color) { m_clearColor = color; }
 		virtual void Clear() = 0;
 
-		virtual void Draw(const VertexArray& vertexArray, const IndexBuffer& indexBuffer,
-		                  Shader& shader, const glm::mat4& viewProjection,
-		                  const glm::mat4& transform) const = 0;
+		virtual void Draw(const std::shared_ptr<VertexArray>& vertexArray,
+				  const std::shared_ptr<Shader>& shader) const = 0;
+
+		#if FBT_PROFILING_ENABLED
+		virtual void CaptureTracyFrameImage() = 0;
+		virtual void CollectTracyGPUTraces() = 0;
+		#endif
 
 	protected:
 		glm::vec4 m_clearColor = glm::vec4(0.f);

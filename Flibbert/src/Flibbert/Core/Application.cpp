@@ -1,81 +1,73 @@
 #include "Flibbert/Core/Application.h"
 
+#include "Flibbert/Core/Platform.h"
+#include "Flibbert/Input/Input.h"
 #include "Flibbert/Renderer/Renderer.h"
-#include "Flibbert/Renderer/RendererBackend.h"
 #include "Platform/Desktop/Window.h"
 
-#include "Platform/Metal/MetalRendererBackend.h"
-
-#include <backends/imgui_impl_opengl3.h>
 #include <imgui.h>
-#include <imgui_impl_metal_cpp.h>
-#define RGFW_IMGUI_IMPLEMENTATION
 
-#include <rgfw/imgui_impl_rgfw.h>
-
-#include <Metal/Metal.hpp>
-
-#define NS_STRING_FROM_CSTRING(STR) NS::String::string(STR, NS::UTF8StringEncoding)
+#include <filesystem>
 
 namespace Flibbert
 {
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application()
+	Application::Application(const ApplicationInfo& info)
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
-		// FBT_CORE_ASSERT(!s_Instance, "Application already exists!");
-		if (s_Instance != nullptr) return;
+		if (!FBT_CORE_ENSURE_MSG(s_Instance == nullptr, "Application already exists!")) {
+			return;
+		}
 		s_Instance = this;
 
-		m_Window = new Window();
-		m_Renderer = new Renderer(m_Window);
+		TracySetProgramName(info.Name.c_str())
 
-		IMGUI_CHECKVERSION();
-		ImGui::CreateContext();
-
-		MTL::Device* mtlDevice = nullptr;
-		switch (Renderer::GetAPI()) {
-			case Renderer::API::Metal:
-				ImGui_ImplRgfw_InitForOther(m_Window->GetNativeWindow(), true);
-				mtlDevice =
-				    ((MetalRendererBackend*)m_Renderer->GetBackend())->GetDevice();
-				ImGui_ImplMetal_Init(mtlDevice);
-				m_ImGuiRenderPassDescriptor =
-				    MTL::RenderPassDescriptor::alloc()->init();
-				break;
-			case Renderer::API::OpenGL:
-				ImGui_ImplRgfw_InitForOpenGL(m_Window->GetNativeWindow(), true);
-#ifdef FBT_PLATFORM_MACOS
-				/* Set OpenGL version to 4.1 on macOS */
-				ImGui_ImplOpenGL3_Init("#version 410");
-#else
-				ImGui_ImplOpenGL3_Init("#version 460");
-#endif
-				break;
-			default:
-				break;
+		// Set the working directory to be the folder containing the exe by default,
+		// eventually add an option to replace it
+		std::filesystem::path executablePath;
+		if (Platform::GetExecutablePath(executablePath)) {
+			std::filesystem::current_path(executablePath.parent_path());
 		}
-		ImGui::StyleColorsDark();
+
+		// @todo this feels wrong?
+		Input::Get().InputEventDispatch.BindDynamic(this, Application::DispatchInputEvent);
+
+		{
+			ZoneNamedN(ZoneWindowInit, "Window Initialization", true);
+			WindowProps props;
+			props.Title = info.Name;
+			m_Window = std::make_unique<Window>(props);
+			(void)m_Window->OnWindowClosed.AddDynamic(this, Application::HandleWindowClosed);
+		}
+
+		{
+			ZoneNamedN(ZoneRendererInit, "Renderer Initialization", true);
+			m_Renderer = std::make_unique<Renderer>();
+		}
+
+		{
+			ZoneNamedN(ZoneImguiInit, "ImGui Initialization", true);
+			IMGUI_CHECKVERSION();
+			ImGui::CreateContext();
+			ImGuiIO& io = ImGui::GetIO();
+			io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+			io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+			m_Window->InitImGui();
+			m_Renderer->InitImGui();
+			ImGui::StyleColorsDark();
+		}
+
+		m_Running = true;
 	}
 
 	Application::~Application()
 	{
-		FBT_PROFILE_FUNCTION();
+		ZoneScoped;
 
-		switch (Renderer::GetAPI()) {
-			case Renderer::API::Metal:
-				m_ImGuiRenderPassDescriptor->release();
-				ImGui_ImplMetal_Shutdown();
-				break;
-			case Renderer::API::OpenGL:
-				ImGui_ImplOpenGL3_Shutdown();
-				break;
-			default:
-				break;
-		}
-		ImGui_ImplRgfw_Shutdown();
+		m_Renderer->ShutdownImGui();
+		m_Window->ShutdownImGui();
 		ImGui::DestroyContext();
 
 		s_Instance = nullptr;
@@ -88,60 +80,82 @@ namespace Flibbert
 
 	void Application::Run()
 	{
-		while (RGFW_window_shouldClose(m_Window->GetNativeWindow()) == RGFW_FALSE) {
-			while (RGFW_window_checkEvent(m_Window->GetNativeWindow()))
-				;
-			// m_Renderer->GetBackend()->Clear();
+		ZoneScoped;
 
-			auto mtlBackend = (MetalRendererBackend*)m_Renderer->GetBackend();
-			switch (Renderer::GetAPI()) {
-				case Renderer::API::Metal:
-					ImGui_ImplMetal_NewFrame(m_ImGuiRenderPassDescriptor);
-					break;
-				case Renderer::API::OpenGL:
-					ImGui_ImplOpenGL3_NewFrame();
-					break;
-				default:
-					break;
-			}
-			ImGui_ImplRgfw_NewFrame();
-			ImGui::NewFrame();
+		while (m_Running) {
+			m_Window->ProcessEvents();
 
-			this->Render(m_TimeStep);
-
-			ImGui::Render();
-
-			auto commandBuffer = mtlBackend->GetCommandQueue()->commandBuffer();
-			MTL::RenderCommandEncoder* encoder =
-			    commandBuffer->renderCommandEncoder(m_ImGuiRenderPassDescriptor);
-			encoder->setLabel(NS_STRING_FROM_CSTRING("UIRenderEncoder"));
-			encoder->pushDebugGroup(NS_STRING_FROM_CSTRING("UIRenderEncoder"));
-			switch (Renderer::GetAPI()) {
-				case Renderer::API::Metal:
-					ImGui_ImplMetal_RenderDrawData(ImGui::GetDrawData(),
-					                               commandBuffer, encoder);
-					break;
-				case Renderer::API::OpenGL:
-					ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-					break;
-				default:
-					break;
-			}
-
-			encoder->popDebugGroup();
-			encoder->endEncoding();
-
-			// RGFW_window_swapBuffers(m_Window->GetNativeWindow());
-
-			const float time = GetTime();
+			const double time = Platform::GetTime();
 			m_FrameTime = time - m_LastFrameTime;
-			m_TimeStep = glm::min<float>(m_FrameTime, 0.0333f);
 			m_LastFrameTime = time;
+
+			{
+				ZoneNamedN(OnUpdateFrame, "OnUpdate", true);
+
+				OnUpdate(m_FrameTime);
+			}
+
+			{
+				ZoneNamedN(OnUpdateFrame, "OnRender", true);
+
+				m_Renderer->Clear();
+				OnRender();
+			}
+
+			{
+				ZoneNamedN(ImGuiFrame, "ImGuiFrame", true);
+				m_Window->BeginImGuiFrame();
+				m_Renderer->BeginImGuiFrame();
+				{
+					ZoneNamedN(ImGuiNewFrame, "ImGui::NewFrame()", true);
+					ImGui::NewFrame();
+				}
+
+				OnImguiRender();
+
+				{
+					ZoneNamedN(ImGuiRender, "ImGui::Render()", true);
+					ImGui::Render();
+				}
+				m_Renderer->EndImGuiFrame();
+			}
+
+#if FBT_PROFILING_ENABLED
+			m_Renderer->CaptureTracyFrameImage();
+#endif
+
+			m_Window->SwapBuffers();
+			FrameMark;
+#if FBT_PROFILING_ENABLED
+			m_Renderer->CollectTracyGPUTraces();
+#endif
 		}
 	}
 
-	float Application::GetTime() const
+	void Application::Close()
 	{
-		return static_cast<float>(RGFW_getTime());
+		m_Running = false;
+	}
+
+	void Application::HandleWindowClosed(Window& window)
+	{
+		Close();
+	}
+
+	void Application::DispatchInputEvent(const std::shared_ptr<InputEvent>& event)
+	{
+		OnInput(event);
+	}
+
+	Window& Application::GetWindow() const
+	{
+		FBT_CORE_ENSURE(m_Window != nullptr);
+		return *m_Window;
+	}
+
+	Renderer& Application::GetRenderer() const
+	{
+		FBT_CORE_ENSURE(m_Renderer != nullptr);
+		return *m_Renderer;
 	}
 } // namespace Flibbert

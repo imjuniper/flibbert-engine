@@ -1,16 +1,14 @@
 /*
     dear imgui RGFW backend
     This needs to be used along with a Renderer (e.g. OpenGL3, Vulkan, WebGPU..)
-
-    added lines 397 & 398
-*/ 
+*/
 
 #pragma once
 
 #ifndef RGFW_IMGUI_H
-#include "imgui.h"
+#include "imgui.h"      // IMGUI_IMPL_API
 
-	#ifdef _MSC_VER
+#ifdef _MSC_VER
     #if _MSC_VER < 600
         #define RGFW_USE_INT
     #endif
@@ -46,6 +44,7 @@
 #define RGFW_IMGUI_H
 
 #include <stdbool.h>
+#include <chrono>
 
 typedef struct RGFW_window RGFW_window;
 
@@ -71,11 +70,11 @@ typedef struct {int x; int y;} impoint;
 
 // RGFW callbacks (individual callbacks to call yourself if you didn't install callbacks)
 IMGUI_IMPL_API void     ImGui_ImplRgfw_WindowFocusCallback(RGFW_window* window, u8 inFocus);        // Since 1.84
-IMGUI_IMPL_API void     ImGui_ImplRgfw_CursorEnterCallback(RGFW_window* window, RGFW_point point, u8 status);        // Since 1.84
-IMGUI_IMPL_API void     ImGui_ImplRgfw_CursorPosCallback(RGFW_window* window, RGFW_point p, RGFW_point v);   // Since 1.87
+IMGUI_IMPL_API void     ImGui_ImplRgfw_CursorEnterCallback(RGFW_window* window, i32 x, i32 y, u8 status);        // Since 1.84
+IMGUI_IMPL_API void     ImGui_ImplRgfw_CursorPosCallback(RGFW_window* window, i32 x, i32 y, float vecX, float vecY);   // Since 1.87
 IMGUI_IMPL_API void     ImGui_ImplRgfw_MouseButtonCallback(RGFW_window* window, u8 button, double scroll, u8 pressed);
 IMGUI_IMPL_API void     ImGui_ImplRgfw_ScrollCallback(RGFW_window* window, double xoffset, double yoffset);
-IMGUI_IMPL_API void     ImGui_ImplRgfw_KeyCallback(RGFW_window* window, u8 keycode, u8 keyChar, u8 modState, u8 pressed);
+IMGUI_IMPL_API void     ImGui_ImplRgfw_KeyCallback(RGFW_window* window, u8 keycode, u8 keyChar, u8 modState, u8 repeat, u8 pressed);
 IMGUI_IMPL_API void     ImGui_ImplRgfw_CharCallback(RGFW_window* window, unsigned int c);
 #endif /* ifndef RGFW_IMGUI_H */
 
@@ -109,7 +108,7 @@ struct ImGui_ImplRgfw_Data
     RGFW_mouseButtonfunc      PrevUserCallbackMousebutton;
     RGFW_keyfunc              PrevUserCallbackKey;
 
-    ImGui_ImplRgfw_Data()   { memset((void*)this, 0, sizeof(*this)); }
+    ImGui_ImplRgfw_Data()   { memset(static_cast<void*>(this), 0, sizeof(*this)); }
 };
 
 static ImGui_ImplRgfw_Data* ImGui_ImplRgfw_GetBackendData()
@@ -123,7 +122,7 @@ char* clipboard_str = nullptr;
 static const char* ImGui_ImplRgfw_GetClipboardText(void* user_data)
 {
     RGFW_UNUSED(user_data);
-    
+
     size_t size;
     return RGFW_readClipboard(&size);
 }
@@ -132,19 +131,19 @@ static void ImGui_ImplRgfw_SetClipboardText(void* user_data, const char* text)
 {
     RGFW_UNUSED(user_data);
     RGFW_UNUSED(text);
-    RGFW_writeClipboard(text, (u32)strlen(text));
+    RGFW_writeClipboard(text, static_cast<u32>(strlen(text)));
 }
 
 static ImGuiKey ImGui_ImplRgfw_KeyToImGuiKey(int key)
 {
-    static const ImGuiKey map[] = {        
+    static const ImGuiKey map[] = {
         ImGuiKey_None,
         ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None,
-        ImGuiKey_Backspace, 
-        ImGuiKey_Tab, 
-        ImGuiKey_Enter, 
+        ImGuiKey_Backspace,
+        ImGuiKey_Tab,
+        ImGuiKey_Enter,
         ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None,
-        ImGuiKey_Escape, 
+        ImGuiKey_Escape,
         ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None,
         ImGuiKey_Space,
         ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None,
@@ -157,7 +156,7 @@ static ImGuiKey ImGui_ImplRgfw_KeyToImGuiKey(int key)
         ImGuiKey_0, ImGuiKey_1, ImGuiKey_2, ImGuiKey_3, ImGuiKey_4, ImGuiKey_5, ImGuiKey_6, ImGuiKey_7, ImGuiKey_8, ImGuiKey_9,
         ImGuiKey_None,
         ImGuiKey_Semicolon,
-        ImGuiKey_None, 
+        ImGuiKey_None,
         ImGuiKey_Equal,
         ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None,
         ImGuiKey_Backslash,
@@ -197,7 +196,7 @@ static ImGuiKey ImGui_ImplRgfw_KeyToImGuiKey(int key)
         ImGuiKey_Insert,
         ImGuiKey_End,
         ImGuiKey_Home,
-        
+
         ImGuiKey_PageUp,
         ImGuiKey_PageDown,
         ImGuiKey_NumLock,
@@ -233,7 +232,7 @@ void ImGui_ImplRgfw_MouseButtonCallback(RGFW_window* window, u8 button, double s
     if (button >= RGFW_mouseScrollUp) {
         return ImGui_ImplRgfw_ScrollCallback(window, 0, scroll);
     }
-    
+
     if (button == RGFW_mouseMiddle) button = RGFW_mouseRight;
     else if (button == RGFW_mouseRight) button = RGFW_mouseMiddle;
 
@@ -254,15 +253,15 @@ void ImGui_ImplRgfw_ScrollCallback(RGFW_window* window, double xoffset, double y
         bd->PrevUserCallbackMousebutton(window, RGFW_mouseScrollUp + (yoffset > 0), yoffset, RGFW_TRUE);
 
     ImGuiIO& io = ImGui::GetIO();
-    io.AddMouseWheelEvent((float)xoffset, (float)yoffset);
+    io.AddMouseWheelEvent(static_cast<float>(xoffset), static_cast<float>(yoffset));
 }
 
-void ImGui_ImplRgfw_KeyCallback(RGFW_window* window, u8 key, u8 keyChar, u8 modState, RGFW_bool pressed)
+void ImGui_ImplRgfw_KeyCallback(RGFW_window* window, u8 key, u8 keyChar, u8 modState, RGFW_bool repeat, RGFW_bool pressed)
 {
     ImGui_ImplRgfw_Data* bd = ImGui_ImplRgfw_GetBackendData();
     if (bd->PrevUserCallbackKey != nullptr && ImGui_ImplRgfw_ShouldChainCallback(window))
-        bd->PrevUserCallbackKey(window, key, keyChar, modState, pressed);
-    
+        bd->PrevUserCallbackKey(window, key, keyChar, modState, repeat, pressed);
+
     ImGuiIO& io = ImGui::GetIO();
     io.AddKeyEvent(ImGuiMod_Ctrl, modState & RGFW_modControl);
     io.AddKeyEvent(ImGuiMod_Shift, modState & RGFW_modShift);
@@ -289,24 +288,24 @@ void ImGui_ImplRgfw_WindowFocusCallback(RGFW_window* window, RGFW_bool inFocus)
     io.AddFocusEvent(inFocus != 0);
 }
 
-void ImGui_ImplRgfw_CursorPosCallback(RGFW_window* window, RGFW_point p, RGFW_point v)
+void ImGui_ImplRgfw_CursorPosCallback(RGFW_window* window, i32 x, i32 y, float vecX, float vecY)
 {
     ImGui_ImplRgfw_Data* bd = ImGui_ImplRgfw_GetBackendData();
     if (bd->PrevUserCallbackCursorPos != nullptr && ImGui_ImplRgfw_ShouldChainCallback(window))
-        bd->PrevUserCallbackCursorPos(window, p, v);
+        bd->PrevUserCallbackCursorPos(window, x, y, vecX, vecY);
 
     ImGuiIO& io = ImGui::GetIO();
-    io.AddMousePosEvent((float)p.x, (float)p.y);
-    bd->LastValidMousePos = ImVec2((float)p.x, (float)p.y);
+    io.AddMousePosEvent(static_cast<float>(x), static_cast<float>(y));
+    bd->LastValidMousePos = ImVec2(static_cast<float>(x), static_cast<float>(y));
 }
 
 // Workaround: X11 seems to send spurious Leave/Enter events which would make us lose our position,
 // so we back it up and restore on Leave/Enter (see https://github.com/ocornut/imgui/issues/4984)
-void ImGui_ImplRgfw_CursorEnterCallback(RGFW_window* window, RGFW_point point, RGFW_bool status)
+void ImGui_ImplRgfw_CursorEnterCallback(RGFW_window* window, i32 x, i32 y, RGFW_bool status)
 {
     ImGui_ImplRgfw_Data* bd = ImGui_ImplRgfw_GetBackendData();
     if (bd->PrevUserCallbackCursorEnter != nullptr && ImGui_ImplRgfw_ShouldChainCallback(window))
-        bd->PrevUserCallbackCursorEnter(window, point, status);
+        bd->PrevUserCallbackCursorEnter(window, x, y, status);
 
     ImGuiIO& io = ImGui::GetIO();
     if (status)
@@ -335,7 +334,7 @@ void ImGui_ImplRgfw_InstallCallbacks(RGFW_window* window)
     IM_ASSERT(bd->InstalledCallbacks == false && "Callbacks already installed!");
     IM_ASSERT(bd->Window == window);
 
-    /* 
+    /*
         TODO: RGFW doesn't have anyway to do this yet
         update this when I add it to RGFW
     */
@@ -389,13 +388,10 @@ static bool ImGui_ImplRgfw_Init(RGFW_window* window, bool install_callbacks, Rgf
 
     // Setup backend capabilities flags
     ImGui_ImplRgfw_Data* bd = IM_NEW(ImGui_ImplRgfw_Data)();
-    io.BackendPlatformUserData = (void*)bd;
+    io.BackendPlatformUserData = static_cast<void*>(bd);
     io.BackendPlatformName = "imgui_impl_rgfw";
     io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;         // We can honor GetMouseCursor() values (optional)
     io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;          // We can honor io.WantSetMousePos requests (optional, rarely used)
-
-    RGFW_monitor monitor = RGFW_window_getMonitor(window);
-    io.DisplayFramebufferScale = ImVec2(monitor.pixelRatio, monitor.pixelRatio);
 
     bd->Window = window;
     bd->Time = 0.0;
@@ -412,7 +408,7 @@ static bool ImGui_ImplRgfw_Init(RGFW_window* window, bool install_callbacks, Rgf
 
     // Set platform dependent data in viewport
     ImGuiViewport* main_viewport = ImGui::GetMainViewport();
-    main_viewport->PlatformHandle = (void*)bd->Window;
+    main_viewport->PlatformHandle = static_cast<void*>(bd->Window);
 #if defined(_WIN32) || defined(__APPLE__)
     main_viewport->PlatformHandleRaw = bd->Window->src.window;
 #else
@@ -446,10 +442,10 @@ void ImGui_ImplRgfw_Shutdown()
 
     if (bd->InstalledCallbacks)
         ImGui_ImplRgfw_RestoreCallbacks(bd->Window);
-    
+
     io.BackendPlatformName = nullptr;
     io.BackendPlatformUserData = nullptr;
-    io.BackendFlags &= ~(ImGuiBackendFlags_HasMouseCursors | ImGuiBackendFlags_HasSetMousePos | ImGuiBackendFlags_HasGamepad);
+    io.BackendFlags &= ~(ImGuiBackendFlags_HasMouseCursors | ImGuiBackendFlags_HasSetMousePos);
     IM_DELETE(bd);
 }
 
@@ -466,14 +462,15 @@ static void ImGui_ImplRgfw_UpdateMouseData()
         {
             // (Optional) Set OS mouse position from Dear ImGui if requested (rarely used, only when ImGuiConfigFlags_NavEnableSetMousePos is enabled by user)
             if (io.WantSetMousePos)
-                RGFW_window_moveMouse(window, RGFW_POINT((i32)io.MousePos.x, (i32)io.MousePos.y));
+                RGFW_window_moveMouse(window, static_cast<i32>(io.MousePos.x), static_cast<i32>(io.MousePos.y));
 
             // (Optional) Fallback to provide mouse position when focused (ImGui_ImplRgfw_CursorPosCallback already provides this when hovered or captured)
             if (bd->MouseWindow == nullptr)
             {
-                RGFW_point point = RGFW_window_getMousePoint(window);
-                bd->LastValidMousePos = ImVec2((float)point.x, (float)point.y);
-                io.AddMousePosEvent((float)point.x, (float)point.y);
+                i32 x, y;
+                RGFW_window_getMouse(window, &x, &y);
+                bd->LastValidMousePos = ImVec2(static_cast<float>(x), static_cast<float>(y));
+                io.AddMousePosEvent(static_cast<float>(x), static_cast<float>(y));
             }
         }
     }
@@ -483,7 +480,7 @@ static void ImGui_ImplRgfw_UpdateMouseCursor()
 {
     ImGuiIO& io = ImGui::GetIO();
     ImGui_ImplRgfw_Data* bd = ImGui_ImplRgfw_GetBackendData();
-    if ((io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) || (bd->Window->_flags & (1L<<2)))
+    if ((io.ConfigFlags & ImGuiConfigFlags_NoMouseCursorChange) || (bd->Window->internal.flags & (1L<<2)))
         return;
 
     ImGuiMouseCursor imgui_cursor = ImGui::GetMouseCursor();
@@ -520,44 +517,6 @@ static void ImGui_ImplRgfw_UpdateMouseCursor()
     }
 }
 
-// Update gamepad inputs
-static inline float Saturate(float v) { return v < 0.0f ? 0.0f : v  > 1.0f ? 1.0f : v; }
-static void ImGui_ImplRgfw_UpdateGamepads()
-{
-    ImGuiIO& io = ImGui::GetIO();
-    if ((io.ConfigFlags & ImGuiConfigFlags_NavEnableGamepad) == 0) // FIXME: Technically feeding gamepad shouldn't depend on this now that they are regular inputs.
-        return;
-
-    ImGui_ImplRgfw_Data* bd = ImGui_ImplRgfw_GetBackendData();
-    IM_ASSERT(bd != nullptr && "Context or backend not initialized! Did you call ImGui_ImplRgfw_InitForXXX()?");
-
-    io.BackendFlags &= ~ImGuiBackendFlags_HasGamepad;
-    int axes_count = bd->Window->event.axisesCount;
-    int buttons_count = 8;
-
-    if (axes_count == 0 || buttons_count == 0)
-        return;
-    #define MAP_BUTTON(KEY_NO, _UNUSED, BUTTON_NO)          do { io.AddKeyEvent(KEY_NO, (buttons_count > BUTTON_NO && RGFW_isPressedGamepad(bd->Window, 1, BUTTON_NO) == RGFW_TRUE)); } while (0)
-    #define MAP_ANALOG(KEY_NO, _UNUSED, AXIS_NO, V0, V1)    do { float v = (axes_count > AXIS_NO) ? axes[AXIS_NO] : V0; v = (v - V0) / (V1 - V0); io.AddKeyAnalogEvent(KEY_NO, v > 0.10f, Saturate(v)); } while (0)
-    io.BackendFlags |= ImGuiBackendFlags_HasGamepad;
-    MAP_BUTTON(ImGuiKey_GamepadStart,       RGFW_gamepadStart,          9);
-    MAP_BUTTON(ImGuiKey_GamepadBack,        RGFW_gamepadSelect,           8);
-    MAP_BUTTON(ImGuiKey_GamepadFaceLeft,    RGFW_gamepadY,              2);     // Xbox X, PS Square
-    MAP_BUTTON(ImGuiKey_GamepadFaceRight,   RGFW_gamepadB,              1);     // Xbox B, PS Circle
-    MAP_BUTTON(ImGuiKey_GamepadFaceUp,      RGFW_gamepadX,              3);     // Xbox Y, PS Triangle
-    MAP_BUTTON(ImGuiKey_GamepadFaceDown,    RGFW_gamepadA,              0);     // Xbox A, PS Cross
-    MAP_BUTTON(ImGuiKey_GamepadDpadLeft,    RGFW_gamepadLeft,      15);
-    MAP_BUTTON(ImGuiKey_GamepadDpadRight,   RGFW_gamepadRight,     16);
-    MAP_BUTTON(ImGuiKey_GamepadDpadUp,      RGFW_gamepadUp,        13);
-    MAP_BUTTON(ImGuiKey_GamepadDpadDown,    RGFW_gamepadDown,      14);
-    MAP_BUTTON(ImGuiKey_GamepadR3,          RGFW_gamepadR3,           RGFW_gamepadR3);
-    MAP_BUTTON(ImGuiKey_GamepadL3,          RGFW_gamepadL3,           RGFW_gamepadL3);
-    MAP_BUTTON(ImGuiKey_GamepadL1,          RGFW_gamepadL1,    4);
-    MAP_BUTTON(ImGuiKey_GamepadR1,          RGFW_gamepadR1,   6);
-    #undef MAP_BUTTON
-    #undef MAP_ANALOG
-}
-
 void ImGui_ImplRgfw_NewFrame()
 {
     ImGuiIO& io = ImGui::GetIO();
@@ -565,22 +524,23 @@ void ImGui_ImplRgfw_NewFrame()
     IM_ASSERT(bd != nullptr && "Context or backend not initialized! Did you call ImGui_ImplRgfw_InitForXXX()?");
 
     // Setup display size (every frame to accommodate for window resizing)
-    RGFW_rect size = bd->Window->r;
-    io.DisplaySize = ImVec2((float)size.w, (float)size.h);
+    // @todo remove -- Juniper fix added 2025-08-20
+    const float width = std::max(0.f, static_cast<float>(bd->Window->w));
+    const float height = std::max(0.f, static_cast<float>(bd->Window->h));
+    // end fix
+    io.DisplaySize = ImVec2(width, height);
 
     // Setup time step
-    // (Accept RGFW_getTime() not returning a monotonically increasing value. Seems to happens on disconnecting peripherals and probably on VMs and Emscripten, see #6491, #6189, #6114, #3644)
-    double current_time = RGFW_getTime();
-    if (current_time <= bd->Time)
-        current_time = bd->Time + 0.00001f;
-    io.DeltaTime = bd->Time > 0.0 ? (float)(current_time - bd->Time) : (float)(1.0f / 60.0f);
+    using namespace std::chrono;
+    double current_time = duration_cast<milliseconds>(steady_clock::now().time_since_epoch()).count() / 1000.0f;
+    if(current_time <= bd->Time) {
+        current_time = bd->Time + 0.000001;
+    }
+    io.DeltaTime = bd->Time == 0.0 ? static_cast<float>(1.0f / 60.0f) : static_cast<float>(current_time - bd->Time);
     bd->Time = current_time;
 
     ImGui_ImplRgfw_UpdateMouseData();
     ImGui_ImplRgfw_UpdateMouseCursor();
-
-    // Update game controllers (if enabled and available)
-    ImGui_ImplRgfw_UpdateGamepads();
 }
 
 //-----------------------------------------------------------------------------

@@ -1,7 +1,6 @@
 #pragma once
 
-#include <string>
-#include <vector>
+#include "Flibbert/Core/Base.h"
 
 namespace Flibbert
 {
@@ -20,33 +19,29 @@ namespace Flibbert
 		Bool
 	};
 
-	static uint32_t GetShaderDataTypeSize(ShaderDataType type)
+	static uint32_t GetShaderDataTypeSize(const ShaderDataType type)
 	{
 		switch (type) {
 			case ShaderDataType::Float:
+			case ShaderDataType::Int:
 				return 4;
 			case ShaderDataType::Float2:
+			case ShaderDataType::Int2:
 				return 4 * 2;
 			case ShaderDataType::Float3:
+			case ShaderDataType::Int3:
 				return 4 * 3;
 			case ShaderDataType::Float4:
+			case ShaderDataType::Int4:
 				return 4 * 4;
 			case ShaderDataType::Mat3:
 				return 4 * 3 * 3;
 			case ShaderDataType::Mat4:
 				return 4 * 4 * 4;
-			case ShaderDataType::Int:
-				return 4;
-			case ShaderDataType::Int2:
-				return 4 * 2;
-			case ShaderDataType::Int3:
-				return 4 * 3;
-			case ShaderDataType::Int4:
-				return 4 * 4;
 			case ShaderDataType::Bool:
 				return 1;
 			default:
-				// assert(false, "Unknown ShaderDataType!");
+				FBT_CORE_ENSURE_MSG(false, "Unknown ShaderDataType!");
 				return 0;
 		}
 	}
@@ -60,7 +55,8 @@ namespace Flibbert
 
 		BufferElement() = default;
 
-		BufferElement(ShaderDataType type, const std::string& name, bool normalized = false)
+		BufferElement(const ShaderDataType type, const std::string_view name,
+		              const bool normalized = false)
 		    : Name(name), Type(type), Size(GetShaderDataTypeSize(type)), Offset(0),
 		      Normalized(normalized)
 		{
@@ -70,38 +66,31 @@ namespace Flibbert
 		{
 			switch (Type) {
 				case ShaderDataType::Float:
-					return 1;
-				case ShaderDataType::Float2:
-					return 2;
-				case ShaderDataType::Float3:
-					return 3;
-				case ShaderDataType::Float4:
-					return 4;
-				case ShaderDataType::Mat3:
-					return 3 * 3;
-				case ShaderDataType::Mat4:
-					return 4 * 4;
 				case ShaderDataType::Int:
-					return 1;
-				case ShaderDataType::Int2:
-					return 2;
-				case ShaderDataType::Int3:
-					return 3;
-				case ShaderDataType::Int4:
-					return 4;
 				case ShaderDataType::Bool:
 					return 1;
+				case ShaderDataType::Float2:
+				case ShaderDataType::Int2:
+					return 2;
+				case ShaderDataType::Float3:
+				case ShaderDataType::Int3:
+				case ShaderDataType::Mat3: // 3* float3
+					return 3;
+				case ShaderDataType::Float4:
+				case ShaderDataType::Int4:
+				case ShaderDataType::Mat4: // 4* float4
+					return 4;
 				default:
-					// assert(false, "Unknown ShaderDataType!");
+					FBT_CORE_ENSURE_MSG(false, "Unknown ShaderDataType!");
 					return 0;
 			}
 		}
 	};
 
-	class BufferLayout
+	class BufferLayout final
 	{
 	public:
-		BufferLayout() {}
+		BufferLayout() = default;
 
 		BufferLayout(const std::initializer_list<BufferElement>& elements)
 		    : m_Elements(elements)
@@ -142,13 +131,11 @@ namespace Flibbert
 	public:
 		virtual ~VertexBuffer() = default;
 
-		virtual void Bind() const = 0;
-		virtual void Unbind() const = 0;
-
+		virtual const uint32_t GetRendererID() const = 0;
 		virtual const BufferLayout& GetLayout() const { return m_Layout; };
 		virtual void SetLayout(const BufferLayout& layout) { m_Layout = layout; };
 
-		static VertexBuffer* Create(const float* vertices, uint32_t size);
+		static std::shared_ptr<VertexBuffer> Create(const float* vertices, uint32_t size);
 
 	protected:
 		BufferLayout m_Layout;
@@ -159,11 +146,18 @@ namespace Flibbert
 	public:
 		virtual ~IndexBuffer() = default;
 
-		virtual void Bind() const = 0;
-		virtual void Unbind() const = 0;
+		virtual const uint32_t GetRendererID() const = 0;
+		virtual uint32_t GetCount() const = 0;
 
-		[[nodiscard]] virtual uint32_t GetCount() const = 0;
+		static std::shared_ptr<IndexBuffer> Create(const uint32_t* indices, uint32_t size);
+	};
 
-		static IndexBuffer* Create(const uint32_t* indices, uint32_t size);
+	class UniformBuffer
+	{
+	public:
+		virtual ~UniformBuffer() = default;
+		virtual void SetData(const void* data, uint32_t size, uint32_t offset = 0) = 0;
+
+		static std::shared_ptr<UniformBuffer> Create(uint32_t size, uint32_t binding);
 	};
 } // namespace Flibbert

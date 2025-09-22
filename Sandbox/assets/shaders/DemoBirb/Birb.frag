@@ -1,9 +1,14 @@
-#version 410 core
+#version 460 core
 
-layout(location = 0) out vec4 color;
+// Inputs
+in VertexData
+{
+    vec3 Color;
+} vertexData;
 
-uniform vec4 u_Color;
+// Outputs
+layout(location = 0) out vec4 frag_color;
 
 void main() {
-    color = u_Color;
+    frag_color = vec4(vertexData.Color, 1.0);
 }

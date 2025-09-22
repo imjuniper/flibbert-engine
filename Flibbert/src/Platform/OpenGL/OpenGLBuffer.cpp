@@ -1,52 +1,79 @@
 #include "Platform/OpenGL/OpenGLBuffer.h"
 
 #include <glad.h>
+#include <tracy/TracyOpenGL.hpp>
 
 namespace Flibbert
 {
+	///////////////////////////////////////////////////////////////////////
+	/// Vertex buffer
+	///////////////////////////////////////////////////////////////////////
+
 	OpenGLVertexBuffer::OpenGLVertexBuffer(const void* data, uint32_t size) : m_RendererID(0)
 	{
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-		glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+		ZoneScoped;
+
+		glCreateBuffers(1, &m_RendererID);
+		constexpr GLbitfield bufferFlags = 0;
+		glNamedBufferStorage(m_RendererID, size, data, bufferFlags);
 	}
 
 	OpenGLVertexBuffer::~OpenGLVertexBuffer()
 	{
+		ZoneScoped;
+
 		glDeleteBuffers(1, &m_RendererID);
 	}
 
-	void OpenGLVertexBuffer::Bind() const
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-	}
-
-	void OpenGLVertexBuffer::Unbind() const
-	{
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
+	///////////////////////////////////////////////////////////////////////
+	/// Index buffer
+	///////////////////////////////////////////////////////////////////////
 
 	OpenGLIndexBuffer::OpenGLIndexBuffer(const uint32_t* data, const uint32_t count)
 	    : m_RendererID(0), m_Count(count)
 	{
-		glGenBuffers(1, &m_RendererID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), data,
-		             GL_STATIC_DRAW);
+		ZoneScoped;
+
+		glCreateBuffers(1, &m_RendererID);
+		constexpr GLbitfield bufferFlags = 0;
+		glNamedBufferStorage(m_RendererID, count * sizeof(uint32_t), data, bufferFlags);
 	}
 
 	OpenGLIndexBuffer::~OpenGLIndexBuffer()
 	{
+		ZoneScoped;
+
 		glDeleteBuffers(1, &m_RendererID);
 	}
 
-	void OpenGLIndexBuffer::Bind() const
+	///////////////////////////////////////////////////////////////////////
+	/// Uniform buffer
+	///////////////////////////////////////////////////////////////////////
+
+	OpenGLUniformBuffer::OpenGLUniformBuffer(const uint32_t size, const uint32_t binding)
+	    : m_RendererID(0)
 	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
+		ZoneScoped;
+
+		glCreateBuffers(1, &m_RendererID);
+		glNamedBufferStorage(m_RendererID, size, nullptr, GL_DYNAMIC_STORAGE_BIT);
+
+		glBindBufferRange(GL_UNIFORM_BUFFER, binding, m_RendererID, 0, size);
 	}
 
-	void OpenGLIndexBuffer::Unbind() const
+	OpenGLUniformBuffer::~OpenGLUniformBuffer()
 	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		ZoneScoped;
+
+		glDeleteBuffers(1, &m_RendererID);
+	}
+
+	void OpenGLUniformBuffer::SetData(const void* data, const uint32_t size,
+	                                  const uint32_t offset)
+	{
+		ZoneScoped;
+		TracyGpuZone("OpenGLUniformBuffer::SetData");
+
+		glNamedBufferSubData(m_RendererID, offset, size, data);
 	}
 } // namespace Flibbert
