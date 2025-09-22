@@ -1,4 +1,4 @@
-#version 410 core
+#version 460 core
 
 // Uniform buffers
 uniform sampler2D u_Texture; // @todo get rid of this

@@ -1,4 +1,4 @@
-#version 410 core
+#version 460 core
 
 // Uniform buffers
 layout (std140) uniform PerFrameData
