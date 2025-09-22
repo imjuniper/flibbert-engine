@@ -5,7 +5,7 @@ AllowShortFunctionsOnASingleLine: Inline # Change to empty?
 AllowShortIfStatementsOnASingleLine: WithoutElse # remove?
 BreakTemplateDeclarations: Yes
 BreakBeforeBraces: Linux # Use Custom with BraceWrapping? I kinda like UE's style minus the ifs
-ColumnLimit: 100
+ColumnLimit: 120
 EmptyLineAfterAccessModifier: Never
 EmptyLineBeforeAccessModifier: Always
 FixNamespaceComments: true

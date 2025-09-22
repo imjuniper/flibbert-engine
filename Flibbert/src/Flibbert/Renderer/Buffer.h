@@ -131,9 +131,7 @@ namespace Flibbert
 	public:
 		virtual ~VertexBuffer() = default;
 
-		virtual void Bind() const = 0;
-		virtual void Unbind() const = 0;
-
+		virtual const uint32_t GetRendererID() const = 0;
 		virtual const BufferLayout& GetLayout() const { return m_Layout; };
 		virtual void SetLayout(const BufferLayout& layout) { m_Layout = layout; };
 
@@ -148,10 +146,8 @@ namespace Flibbert
 	public:
 		virtual ~IndexBuffer() = default;
 
-		virtual void Bind() const = 0;
-		virtual void Unbind() const = 0;
-
-		[[nodiscard]] virtual uint32_t GetCount() const = 0;
+		virtual const uint32_t GetRendererID() const = 0;
+		virtual uint32_t GetCount() const = 0;
 
 		static std::shared_ptr<IndexBuffer> Create(const uint32_t* indices, uint32_t size);
 	};

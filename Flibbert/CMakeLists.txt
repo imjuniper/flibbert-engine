@@ -39,6 +39,8 @@ add_library(Flibbert STATIC
         src/Flibbert/Renderer/Buffer.h
         src/Flibbert/Renderer/Camera.cpp
         src/Flibbert/Renderer/Camera.h
+        src/Flibbert/Renderer/Framebuffer.cpp
+        src/Flibbert/Renderer/Framebuffer.h
         src/Flibbert/Renderer/Renderer.cpp
         src/Flibbert/Renderer/Renderer.h
         src/Flibbert/Renderer/RendererBackend.h
@@ -53,6 +55,8 @@ add_library(Flibbert STATIC
         src/Platform/Desktop/Window.h
         src/Platform/OpenGL/OpenGLBuffer.cpp
         src/Platform/OpenGL/OpenGLBuffer.h
+        src/Platform/OpenGL/OpenGLFramebuffer.cpp
+        src/Platform/OpenGL/OpenGLFramebuffer.h
         src/Platform/OpenGL/OpenGLRendererBackend.cpp
         src/Platform/OpenGL/OpenGLRendererBackend.h
         src/Platform/OpenGL/OpenGLShader.cpp
@@ -158,10 +162,5 @@ target_link_libraries(Flibbert PUBLIC glm imgui spdlog tracy)
 
 # Platform-specific stuffs
 if (APPLE)
-    message(WARNING "Apple devices will soon be unsupported because they do not support OpenGL 4.2+. Eventually, Metal support will be added, once I figure out Vulkan too")
-    target_link_libraries(Flibbert
-            PRIVATE
-            "-framework Cocoa"
-            "-framework OpenGL"
-            "-framework IOKit")
+    message(FATAL_ERROR "Apple devices are be unsupported because they do not support OpenGL 4.2+. Eventually, Metal support will be added, once I figure out Vulkan too")
 endif ()

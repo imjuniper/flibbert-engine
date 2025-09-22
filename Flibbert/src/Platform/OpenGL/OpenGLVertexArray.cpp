@@ -10,7 +10,7 @@ namespace Flibbert
 	{
 		ZoneScoped;
 
-		glGenVertexArrays(1, &m_RendererID);
+		glCreateVertexArrays(1, &m_RendererID);
 	}
 
 	OpenGLVertexArray::~OpenGLVertexArray()
@@ -38,29 +38,27 @@ namespace Flibbert
 	{
 		ZoneScoped;
 
-		Bind();
-		vertexBuffer->Bind();
-
 		m_VertexBuffers.push_back(vertexBuffer);
+		const auto vboIndex = m_VertexBuffers.size() - 1;
 
 		const auto& layout = vertexBuffer->GetLayout();
+
+		glVertexArrayVertexBuffer(m_RendererID, vboIndex, vertexBuffer->GetRendererID(), 0, layout.GetStride());
+
 		for (const auto& element : layout) {
 			const auto componentCount = element.GetComponentCount();
-			const auto stride = layout.GetStride();
-			const auto offset = (void*)element.Offset;
+			const auto offset = element.Offset;
 
 			switch (element.Type) {
 				case ShaderDataType::Float:
 				case ShaderDataType::Float2:
 				case ShaderDataType::Float3:
 				case ShaderDataType::Float4: {
-					glEnableVertexAttribArray(m_VertexAttributeIndex);
-					glVertexAttribPointer(m_VertexAttributeIndex,
-					                      componentCount,
-					                      GL_FLOAT,
-					                      element.Normalized ? GL_TRUE : GL_FALSE,
-					                      stride,
-					                      offset);
+					glEnableVertexArrayAttrib(m_RendererID, m_VertexAttributeIndex);
+					glVertexArrayAttribFormat(m_RendererID, m_VertexAttributeIndex, componentCount,
+					                          GL_FLOAT, element.Normalized ? GL_TRUE : GL_FALSE,
+					                          offset);
+					glVertexArrayAttribBinding(m_RendererID, m_VertexAttributeIndex, vboIndex);
 					m_VertexAttributeIndex++;
 					break;
 				}
@@ -68,36 +66,33 @@ namespace Flibbert
 				case ShaderDataType::Int2:
 				case ShaderDataType::Int3:
 				case ShaderDataType::Int4: {
-					glEnableVertexAttribArray(m_VertexAttributeIndex);
-					glVertexAttribIPointer(m_VertexAttributeIndex,
-					                       componentCount,
-					                       GL_INT,
-					                       stride,
-					                       offset);
+					glEnableVertexArrayAttrib(m_RendererID, m_VertexAttributeIndex);
+					glVertexArrayAttribFormat(m_RendererID, m_VertexAttributeIndex, componentCount,
+					                          GL_INT, element.Normalized ? GL_TRUE : GL_FALSE,
+					                          offset);
+					glVertexArrayAttribBinding(m_RendererID, m_VertexAttributeIndex, vboIndex);
 					m_VertexAttributeIndex++;
 					break;
 				}
 				case ShaderDataType::Bool: {
-					glEnableVertexAttribArray(m_VertexAttributeIndex);
-					glVertexAttribIPointer(m_VertexAttributeIndex,
-					                       componentCount,
-					                       GL_BOOL,
-					                       stride,
-					                       offset);
+					glEnableVertexArrayAttrib(m_RendererID, m_VertexAttributeIndex);
+					glVertexArrayAttribFormat(m_RendererID, m_VertexAttributeIndex, componentCount,
+					                          GL_BOOL, element.Normalized ? GL_TRUE : GL_FALSE,
+					                          offset);
+					glVertexArrayAttribBinding(m_RendererID, m_VertexAttributeIndex, vboIndex);
 					m_VertexAttributeIndex++;
 					break;
 				}
 				case ShaderDataType::Mat3:
 				case ShaderDataType::Mat4: {
 					for (uint32_t i = 0; i < componentCount; i++) {
-						glEnableVertexAttribArray(m_VertexAttributeIndex);
-						glVertexAttribPointer(m_VertexAttributeIndex,
-						                      componentCount,
-						                      GL_FLOAT,
-						                      element.Normalized ? GL_TRUE : GL_FALSE,
-						                      stride,
-						                      (void*)(element.Offset + sizeof(float) * componentCount * i));
-						glVertexAttribDivisor(m_VertexAttributeIndex, 1);
+						glEnableVertexArrayAttrib(m_RendererID, m_VertexAttributeIndex);
+						glVertexArrayAttribFormat(
+						    m_RendererID, m_VertexAttributeIndex, componentCount, GL_FLOAT,
+						    element.Normalized ? GL_TRUE : GL_FALSE,
+						    (element.Offset + sizeof(float) * componentCount * i));
+						glVertexArrayAttribBinding(m_RendererID, m_VertexAttributeIndex, vboIndex);
+						glVertexArrayBindingDivisor(m_RendererID, m_VertexAttributeIndex, 1);
 						m_VertexAttributeIndex++;
 					}
 					break;
@@ -108,8 +103,7 @@ namespace Flibbert
 		}
 	}
 
-	const std::vector<std::shared_ptr<VertexBuffer>>&
-	OpenGLVertexArray::GetVertexBuffers() const
+	const std::vector<std::shared_ptr<VertexBuffer>>& OpenGLVertexArray::GetVertexBuffers() const
 	{
 		return m_VertexBuffers;
 	}
@@ -123,9 +117,8 @@ namespace Flibbert
 	{
 		ZoneScoped;
 
-		Bind();
-		indexBuffer->Bind();
-
 		m_IndexBuffer = indexBuffer;
+
+		glVertexArrayElementBuffer(m_RendererID, m_IndexBuffer->GetRendererID());
 	}
 } // namespace Flibbert

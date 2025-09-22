@@ -13,7 +13,7 @@ namespace Flibbert
 		~OpenGLTexture() override;
 
 		void Bind(uint32_t slot) const override;
-		void Unbind() const override;
+		void Unbind(uint32_t slot) const override;
 
 	private:
 		uint32_t m_RendererID;

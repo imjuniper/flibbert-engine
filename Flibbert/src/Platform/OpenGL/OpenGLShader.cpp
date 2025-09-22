@@ -15,6 +15,9 @@ namespace Flibbert
 		const auto fragmentShader = LoadAndPreprocessShader(m_FragmentShaderFilePath);
 
 		m_RendererID = CreateShader(vertexShader, fragmentShader);
+		if (m_RendererID != 0) {
+			CacheUniformLocations();
+		}
 	}
 
 	OpenGLShader::~OpenGLShader()
@@ -27,6 +30,8 @@ namespace Flibbert
 	uint32_t OpenGLShader::CompileShader(uint32_t type, const std::string& source)
 	{
 		ZoneScoped;
+
+		// @todo migrate to SPIR-V here, so code can be reused for Vulkan and maybe DXIL? aka HLSL -> SPIR-V & DXIL
 
 		uint32_t id = glCreateShader(type);
 		// source is not a std::string_view to ensure it's null-terminated
@@ -89,7 +94,12 @@ namespace Flibbert
 	{
 		ZoneScoped;
 
-		glUniform1i(GetUniformLocation(name), value);
+		if (!m_Uniforms.contains(name.data())) {
+			FBT_CORE_WARN("Uniform {} doesn't exist", name);
+			return;
+		}
+
+		glProgramUniform1i(m_RendererID, m_Uniforms[name.data()].Location, value);
 	}
 
 	void OpenGLShader::BindUniformBuffer(std::string_view name, uint32_t binding)
@@ -100,15 +110,31 @@ namespace Flibbert
 		glUniformBlockBinding(m_RendererID, blockIndex, binding);
 	}
 
-	int OpenGLShader::GetUniformLocation(std::string_view name)
+	void OpenGLShader::CacheUniformLocations()
 	{
-		ZoneScoped;
+		int32_t uniformCount = 0;
+		glGetProgramiv(m_RendererID, GL_ACTIVE_UNIFORMS, &uniformCount);
 
-		const int location = glGetUniformLocation(m_RendererID, name.data());
-		if (location == -1) {
-			FBT_CORE_WARN("Uniform {} doesn't exist", name);
+		if (uniformCount != 0)
+		{
+			GLint 	maxNameLength = 0;
+			GLsizei length = 0;
+			GLsizei size = 0;
+			GLenum 	type = GL_NONE;
+			glGetProgramiv(m_RendererID, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxNameLength);
+
+			auto uniformName = std::make_unique<char[]>(maxNameLength);
+
+			for (GLint i = 0; i < uniformCount; ++i)
+			{
+				glGetActiveUniform(m_RendererID, i, maxNameLength, &length, &size, &type, uniformName.get());
+
+				OpenGLUniformInfo uniformInfo = {};
+				uniformInfo.Location = glGetUniformLocation(m_RendererID, uniformName.get());
+				uniformInfo.Size = size;
+
+				m_Uniforms.emplace(std::make_pair(std::string(uniformName.get(), length), uniformInfo));
+			}
 		}
-
-		return location;
 	}
 } // namespace Flibbert

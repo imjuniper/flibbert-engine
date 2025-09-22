@@ -10,8 +10,7 @@ namespace Flibbert
 		OpenGLVertexBuffer(const void* data, uint32_t size);
 		~OpenGLVertexBuffer() override;
 
-		void Bind() const override;
-		void Unbind() const override;
+		const uint32_t GetRendererID() const override { return m_RendererID; };
 
 	private:
 		uint32_t m_RendererID;
@@ -23,9 +22,7 @@ namespace Flibbert
 		OpenGLIndexBuffer(const uint32_t* data, uint32_t count);
 		~OpenGLIndexBuffer() override;
 
-		void Bind() const override;
-		void Unbind() const override;
-
+		const uint32_t GetRendererID() const override { return m_RendererID; };
 		[[nodiscard]] uint32_t GetCount() const override { return m_Count; }
 
 	private:

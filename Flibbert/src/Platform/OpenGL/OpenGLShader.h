@@ -6,6 +6,12 @@
 
 namespace Flibbert
 {
+	struct OpenGLUniformInfo
+	{
+		int32_t Location;
+		int32_t Size;
+	};
+
 	class OpenGLShader : public Shader
 	{
 	public:
@@ -25,11 +31,13 @@ namespace Flibbert
 		uint32_t CompileShader(uint32_t type, const std::string& source);
 		uint32_t CreateShader(const std::string& vertexShader,
 		                      const std::string& fragmentShader);
-		int GetUniformLocation(std::string_view name);
+		void CacheUniformLocations();
 
 	private:
 		std::filesystem::path m_VertexShaderFilePath;
 		std::filesystem::path m_FragmentShaderFilePath;
 		uint32_t m_RendererID;
+
+		std::unordered_map<std::string, OpenGLUniformInfo> m_Uniforms;
 	};
 } // namespace Flibbert

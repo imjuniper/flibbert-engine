@@ -8,7 +8,7 @@ namespace Flibbert
 		virtual ~Texture() = default;
 
 		virtual void Bind(uint32_t slot) const = 0;
-		virtual void Unbind() const = 0;
+		virtual void Unbind(uint32_t slot) const = 0;
 
 		[[nodiscard]] uint32_t GetWidth() const { return m_Width; }
 		[[nodiscard]] uint32_t GetHeight() const { return m_Height; }

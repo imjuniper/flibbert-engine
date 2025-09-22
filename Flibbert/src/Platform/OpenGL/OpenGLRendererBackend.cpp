@@ -20,18 +20,45 @@
 void OpenGLMessageCallback(unsigned source, unsigned type, unsigned id, unsigned severity,
                            int length, const char* message, const void* userParam)
 {
+	const auto srcString = [source]() {
+		switch (source)
+		{
+			case GL_DEBUG_SOURCE_API: return "API";
+			case GL_DEBUG_SOURCE_WINDOW_SYSTEM: return "WINDOW SYSTEM";
+			case GL_DEBUG_SOURCE_SHADER_COMPILER: return "SHADER COMPILER";
+			case GL_DEBUG_SOURCE_THIRD_PARTY: return "THIRD PARTY";
+			case GL_DEBUG_SOURCE_APPLICATION: return "APPLICATION";
+			case GL_DEBUG_SOURCE_OTHER: return "OTHER";
+		}
+	}();
+
+	const auto typeString = [type]() {
+		switch (type)
+		{
+			case GL_DEBUG_TYPE_ERROR: return "ERROR";
+			case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: return "DEPRECATED_BEHAVIOR";
+			case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: return "UNDEFINED_BEHAVIOR";
+			case GL_DEBUG_TYPE_PORTABILITY: return "PORTABILITY";
+			case GL_DEBUG_TYPE_PERFORMANCE: return "PERFORMANCE";
+			case GL_DEBUG_TYPE_MARKER: return "MARKER";
+			case GL_DEBUG_TYPE_OTHER: return "OTHER";
+		}
+	}();
+
+	const auto formattedMessage = std::format("{0}, {1}, {2}: {3}", srcString, typeString, id, message);
+
 	switch (severity) {
 		case GL_DEBUG_SEVERITY_HIGH:
-			FBT_CORE_CRITICAL(message);
+			FBT_CORE_CRITICAL(formattedMessage);
 			return;
 		case GL_DEBUG_SEVERITY_MEDIUM:
-			FBT_CORE_ERROR(message);
+			FBT_CORE_ERROR(formattedMessage);
 			return;
 		case GL_DEBUG_SEVERITY_LOW:
-			FBT_CORE_WARN(message);
+			FBT_CORE_WARN(formattedMessage);
 			return;
 		case GL_DEBUG_SEVERITY_NOTIFICATION:
-			FBT_CORE_TRACE(message);
+			FBT_CORE_TRACE(formattedMessage);
 			return;
 	}
 
@@ -51,7 +78,8 @@ namespace Flibbert
 
 			RGFW_glHints* hints = RGFW_getGlobalHints_OpenGL();
 			hints->major = 4;
-			hints->minor = 1;
+			hints->minor = 6;
+			hints->profile = RGFW_glCore;
 			RGFW_window_createContext_OpenGL(window.GetNativeWindow(), hints);
 
 			int status = gladLoadGL(RGFW_getProcAddress_OpenGL);
@@ -71,16 +99,12 @@ namespace Flibbert
 		m_WindowResizedDelegate =
 			window.OnWindowResized.AddDynamic(this, OpenGLRendererBackend::OnWindowResized);
 
-		// When removing support for OpenGL in macOS, migrate to 4.3+ and remove extension
-		// usage instead maybe?
 #ifdef FBT_DEBUG
-		if (GLAD_GL_KHR_debug) {
-			glEnable(GL_DEBUG_OUTPUT);
-			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-			glDebugMessageCallback(OpenGLMessageCallback, nullptr);
-			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE,
-			                      GL_DEBUG_SEVERITY_NOTIFICATION, 0, NULL, GL_FALSE);
-		}
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallback(OpenGLMessageCallback, nullptr);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE,
+		                      GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
 #endif
 
 		glEnable(GL_CULL_FACE);
@@ -105,12 +129,7 @@ namespace Flibbert
 	{
 		ZoneScoped;
 
-#ifdef FBT_PLATFORM_MACOS
-		/* Set OpenGL version to 4.1 on macOS */
-		ImGui_ImplOpenGL3_Init("#version 410");
-#else
 		ImGui_ImplOpenGL3_Init("#version 460");
-#endif
 	}
 
 	void OpenGLRendererBackend::BeginImGuiFrame()

@@ -15,12 +15,13 @@
          * to ensure that we're running on MAC
          * and not some other Apple platform */
 	#if TARGET_IPHONE_SIMULATOR == 1
-		#error "IOS simulator is not supported!"
+		#error "iOS simulator is not supported!"
 	#elif TARGET_OS_IPHONE == 1
 		#define FBT_PLATFORM_IOS
-		#error "IOS is not supported!"
+		#error "iOS is not supported!"
 	#elif TARGET_OS_MAC == 1
 		#define FBT_PLATFORM_MACOS
+		#error "macOS is not supported for now, as it does not support OpenGL 4.2+! Eventually Metal support will be implemented, or MoltenVK will be added"
 	#else
 		#error "Unknown Apple platform!"
 	#endif
