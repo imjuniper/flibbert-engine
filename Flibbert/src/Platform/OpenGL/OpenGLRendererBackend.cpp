@@ -80,6 +80,7 @@ namespace Flibbert
 			hints->major = 4;
 			hints->minor = 6;
 			hints->profile = RGFW_glCore;
+			hints->samples = 4;
 			RGFW_window_createContext_OpenGL(window.GetNativeWindow(), hints);
 
 			int status = gladLoadGL(RGFW_getProcAddress_OpenGL);
@@ -107,6 +108,7 @@ namespace Flibbert
 		                      GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
 #endif
 
+		glEnable(GL_MULTISAMPLE);
 		glEnable(GL_CULL_FACE);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_LINE_SMOOTH);
