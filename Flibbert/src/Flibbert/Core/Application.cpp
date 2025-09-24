@@ -96,18 +96,19 @@ namespace Flibbert
 				OnUpdate(m_FrameTime);
 			}
 
+			m_Renderer->BeginFrame();
+
 			{
 				ZoneNamedN(OnUpdateFrame, "OnRender", true);
 
-				m_Renderer->Clear();
 				OnRender();
 			}
 
 			{
 				ZoneNamedN(ImGuiFrame, "ImGuiFrame", true);
 
-				m_Renderer->BeginImGuiFrame();
 				m_Window->BeginImGuiFrame();
+
 				{
 					ZoneNamedN(ImGuiNewFrame, "ImGui::NewFrame()", true);
 					ImGui::NewFrame();
@@ -119,9 +120,9 @@ namespace Flibbert
 					ZoneNamedN(ImGuiRender, "ImGui::Render()", true);
 					ImGui::Render();
 				}
-
-				m_Renderer->EndImGuiFrame();
 			}
+
+			m_Renderer->EndFrame();
 
 #if FBT_PROFILING_ENABLED
 			m_Renderer->CaptureTracyFrameImage();

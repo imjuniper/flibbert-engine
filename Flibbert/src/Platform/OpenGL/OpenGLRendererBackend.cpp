@@ -132,25 +132,27 @@ namespace Flibbert
 #endif
 	}
 
+	void OpenGLRendererBackend::BeginFrame()
+	{
+		ZoneScoped;
+
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		ImGui_ImplOpenGL3_NewFrame();
+	}
+
+	void OpenGLRendererBackend::EndFrame()
+	{
+		ZoneScoped;
+
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	}
+
 	void OpenGLRendererBackend::InitImGui()
 	{
 		ZoneScoped;
 
 		ImGui_ImplOpenGL3_Init("#version 460");
-	}
-
-	void OpenGLRendererBackend::BeginImGuiFrame()
-	{
-		ZoneScoped;
-
-		ImGui_ImplOpenGL3_NewFrame();
-	}
-
-	void OpenGLRendererBackend::EndImGuiFrame()
-	{
-		ZoneScoped;
-
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 
 	void OpenGLRendererBackend::ShutdownImGui()
@@ -167,14 +169,6 @@ namespace Flibbert
 
 		RendererBackend::SetClearColor(color);
 		glClearColor(color.r, color.g, color.b, color.a);
-	}
-
-	void OpenGLRendererBackend::Clear()
-	{
-		ZoneScoped;
-		TracyGpuZone("OpenGLRendererBackend::Clear");
-
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
 	void OpenGLRendererBackend::Draw(const std::shared_ptr<VertexArray>& vertexArray,

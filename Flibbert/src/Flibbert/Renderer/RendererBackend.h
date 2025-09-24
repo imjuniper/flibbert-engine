@@ -17,14 +17,14 @@ namespace Flibbert
 	protected:
 		RendererBackend() = default;
 
+		virtual void BeginFrame() = 0;
+		virtual void EndFrame() = 0;
+
 		virtual void InitImGui() = 0;
-		virtual void BeginImGuiFrame() = 0;
-		virtual void EndImGuiFrame() = 0;
 		virtual void ShutdownImGui() = 0;
 
 		[[nodiscard]] virtual glm::vec4 GetClearColor() const { return m_clearColor; }
 		virtual void SetClearColor(const glm::vec4& color) { m_clearColor = color; }
-		virtual void Clear() = 0;
 
 		virtual void Draw(const std::shared_ptr<VertexArray>& vertexArray,
 				  const std::shared_ptr<Shader>& shader) const = 0;

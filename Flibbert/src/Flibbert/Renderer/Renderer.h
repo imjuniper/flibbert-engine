@@ -17,14 +17,14 @@ namespace Flibbert
 		Renderer();
 		~Renderer() = default;
 
+		void BeginFrame() const;
+		void EndFrame() const;
+
 		void InitImGui() const;
-		void BeginImGuiFrame() const;
-		void EndImGuiFrame() const;
 		void ShutdownImGui() const;
 
 		[[nodiscard]] glm::vec4 GetClearColor() const;
 		void SetClearColor(glm::vec4 color) const;
-		void Clear() const;
 
 		void Draw(const std::shared_ptr<VertexArray>& vertexArray,
 			  const std::shared_ptr<Shader>& shader) const;

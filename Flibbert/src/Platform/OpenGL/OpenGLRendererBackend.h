@@ -16,13 +16,13 @@ namespace Flibbert
 		OpenGLRendererBackend();
 		~OpenGLRendererBackend() override;
 
+		void BeginFrame() override;
+		void EndFrame() override;
+
 		void InitImGui() override;
-		void BeginImGuiFrame() override;
-		void EndImGuiFrame() override;
 		void ShutdownImGui() override;
 
 		void SetClearColor(const glm::vec4& color) override;
-		void Clear() override;
 
 		void Draw(const std::shared_ptr<VertexArray>& vertexArray,
 			  const std::shared_ptr<Shader>& shader) const override;

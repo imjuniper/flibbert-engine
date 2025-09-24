@@ -51,6 +51,9 @@ namespace Flibbert
 				break;
 
 		}
+
+		auto scale = RGFW_window_getMonitor(m_WindowHandle).pixelRatio;
+		ImGui::GetIO().DisplayFramebufferScale = {scale, scale};
 	}
 
 	void Window::BeginImGuiFrame()

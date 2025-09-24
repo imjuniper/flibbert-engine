@@ -40,25 +40,25 @@ namespace Flibbert
 		m_Backend->InitImGui();
 	}
 
-	void Renderer::BeginImGuiFrame() const
-	{
-		ZoneScoped;
-
-		m_Backend->BeginImGuiFrame();
-	}
-
-	void Renderer::EndImGuiFrame() const
-	{
-		ZoneScoped;
-
-		m_Backend->EndImGuiFrame();
-	}
-
 	void Renderer::ShutdownImGui() const
 	{
 		ZoneScoped;
 
 		m_Backend->ShutdownImGui();
+	}
+
+	void Renderer::BeginFrame() const
+	{
+		ZoneScoped;
+
+		m_Backend->BeginFrame();
+	}
+
+	void Renderer::EndFrame() const
+	{
+		ZoneScoped;
+
+		m_Backend->EndFrame();
 	}
 
 	glm::vec4 Renderer::GetClearColor() const
@@ -75,13 +75,6 @@ namespace Flibbert
 		return m_Backend->SetClearColor(color);
 	}
 
-	void Renderer::Clear() const
-	{
-		ZoneScoped;
-
-		return m_Backend->Clear();
-	}
-
 	void Renderer::Draw(const std::shared_ptr<VertexArray>& vertexArray,
 			    const std::shared_ptr<Shader>& shader) const
 	{
@@ -90,7 +83,7 @@ namespace Flibbert
 		return m_Backend->Draw(vertexArray, shader);
 	}
 
-	#if FBT_PROFILING_ENABLED
+#if FBT_PROFILING_ENABLED
 	void Renderer::CaptureTracyFrameImage()
 	{
 		return m_Backend->CaptureTracyFrameImage();
@@ -100,7 +93,7 @@ namespace Flibbert
 	{
 		return m_Backend->CollectTracyGPUTraces();
 	}
-	#endif
+#endif
 
 	Renderer& Renderer::Get()
 	{

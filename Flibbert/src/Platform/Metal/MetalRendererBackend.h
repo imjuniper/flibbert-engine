@@ -22,24 +22,31 @@ namespace NS
 
 namespace Flibbert
 {
+	class Window;
+
 	class MetalRendererBackend : public RendererBackend
 	{
 	public:
 		MetalRendererBackend();
 		~MetalRendererBackend() override;
 
+		void BeginFrame() override;
+		void EndFrame() override;
+
 		void InitImGui() override;
-		void BeginImGuiFrame() override;
-		void EndImGuiFrame() override;
 		void ShutdownImGui() override;
 
 		void SetClearColor(const glm::vec4& color) override;
-		void Clear() override;
 
 		void Draw(const std::shared_ptr<VertexArray>& vertexArray,
 			  const std::shared_ptr<Shader>& shader) const override;
 
 	private:
+		void OnWindowResized(Window& window, const glm::u32vec2& size);
+
+	private:
+		DelegateHandle m_WindowResizedDelegate;
+
 		MTL::Device* m_Device;
 		MTL::CommandQueue* m_CommandQueue;
 		CA::MetalDrawable* m_Drawable;

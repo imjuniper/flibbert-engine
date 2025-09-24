@@ -32,12 +32,12 @@ namespace Flibbert
 		ZoneScoped;
 	}
 
-	void VulkanRendererBackend::BeginImGuiFrame()
+	void VulkanRendererBackend::BeginFrame()
 	{
 		ZoneScoped;
 	}
 
-	void VulkanRendererBackend::EndImGuiFrame()
+	void VulkanRendererBackend::EndFrame()
 	{
 		ZoneScoped;
 	}
@@ -48,10 +48,6 @@ namespace Flibbert
 	}
 
 	void VulkanRendererBackend::SetClearColor(const glm::vec4& color)
-	{
-	}
-
-	void VulkanRendererBackend::Clear()
 	{
 	}
 
