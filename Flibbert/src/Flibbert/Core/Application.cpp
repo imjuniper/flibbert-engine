@@ -54,9 +54,10 @@ namespace Flibbert
 			ImGuiIO& io = ImGui::GetIO();
 			io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
 			io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-			m_Window->InitImGui();
-			m_Renderer->InitImGui();
 			ImGui::StyleColorsDark();
+
+			m_Renderer->InitImGui();
+			m_Window->InitImGui();
 		}
 
 		m_Running = true;
@@ -104,8 +105,9 @@ namespace Flibbert
 
 			{
 				ZoneNamedN(ImGuiFrame, "ImGuiFrame", true);
-				m_Window->BeginImGuiFrame();
+
 				m_Renderer->BeginImGuiFrame();
+				m_Window->BeginImGuiFrame();
 				{
 					ZoneNamedN(ImGuiNewFrame, "ImGui::NewFrame()", true);
 					ImGui::NewFrame();
@@ -117,6 +119,7 @@ namespace Flibbert
 					ZoneNamedN(ImGuiRender, "ImGui::Render()", true);
 					ImGui::Render();
 				}
+
 				m_Renderer->EndImGuiFrame();
 			}
 

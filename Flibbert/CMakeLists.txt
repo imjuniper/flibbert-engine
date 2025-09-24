@@ -105,7 +105,7 @@ set_option(FBT_PROFILING_ENABLED "Enable profiling" OFF)
 FetchContent_Declare(
         glm
         GIT_REPOSITORY https://github.com/g-truc/glm.git
-        GIT_TAG        2d4c4b4dd31fde06cfffad7915c2b3006402322f # branch origin/master as of Feb 7 2025
+        GIT_TAG        e7714885929f1dcd2bdc2531cc99d3c1dc6daa18 # branch origin/master as of Sep 23 2025
         GIT_SHALLOW    true
         GIT_PROGRESS   true
 )
@@ -163,6 +163,9 @@ target_include_directories(tracy PUBLIC "${tracy_SOURCE_DIR}/public")
 target_link_libraries(Flibbert PUBLIC glm imgui spdlog tracy)
 
 add_subdirectory(vendor/metal-cpp)
+
+# @todo move this to the metal file or move imgui metal impl somewhere else?
+target_link_libraries(metal PUBLIC imgui)
 
 # Platform-specific stuffs
 if (APPLE)

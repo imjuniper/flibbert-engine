@@ -21,7 +21,6 @@
 		#error "iOS is not supported!"
 	#elif TARGET_OS_MAC == 1
 		#define FBT_PLATFORM_MACOS
-		#error "macOS is not supported for now, as it does not support OpenGL 4.2+! Eventually Metal support will be implemented, or MoltenVK will be added"
 	#else
 		#error "Unknown Apple platform!"
 	#endif

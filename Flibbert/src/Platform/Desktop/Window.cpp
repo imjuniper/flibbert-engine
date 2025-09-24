@@ -6,12 +6,12 @@
 #ifdef FBT_DEBUG
 	#define RGFW_DEBUG
 #endif
-#define RGFW_NO_API
+#define RGFW_NATIVE
 #define RGFW_IMPLEMENTATION
 #define RGFW_IMGUI_IMPLEMENTATION
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wc++11-narrowing"
-#include <rgfw/imgui_impl_rgfw.h> // Also includes RGFW.h
+#include <rgfw/imgui_impl_rgfw.h>
 #pragma clang diagnostic pop
 
 namespace Flibbert
@@ -150,7 +150,8 @@ namespace Flibbert
 	{
 		ZoneScoped;
 
-		RGFW_window_swapBuffers_OpenGL(m_WindowHandle);
+		// @todo probably implement this manually?
+		//RGFW_window_swapBuffers_OpenGL(m_WindowHandle);
 	}
 
 	void Window::SetVSync(const bool enabled)
@@ -158,7 +159,7 @@ namespace Flibbert
 		ZoneScoped;
 
 		m_VSync = enabled;
-		RGFW_window_swapInterval_OpenGL(m_WindowHandle, m_VSync);
+		//RGFW_window_swapInterval_OpenGL(m_WindowHandle, m_VSync);
 	}
 
 	bool Window::IsVSyncEnabled() const

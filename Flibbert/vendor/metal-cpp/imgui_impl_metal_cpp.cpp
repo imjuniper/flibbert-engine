@@ -1,5 +1,7 @@
 #include "imgui_impl_metal_cpp.h"
 
+// @todo Juni: should copy parts from obj-c imhgui implementtion
+
 // clang-format off
 #if __has_include(<Foundation/Foundation.hpp>) && __has_include(<Metal/Metal.hpp>) && __has_include(<QuartzCore/QuartzCore.hpp>)
 #include <Foundation/Foundation.hpp>
@@ -234,8 +236,16 @@ IMGUI_IMPL_API bool ImGui_ImplMetal_Init(MTL::Device* device)
 
 IMGUI_IMPL_API void ImGui_ImplMetal_Shutdown()
 {
+	ImGui_ImplMetal_Data* bd = ImGui_ImplMetal_GetBackendData();
+	IM_UNUSED(bd);
+	IM_ASSERT(bd != nullptr && "No renderer backend to shutdown, or already shutdown?");
 	ImGui_ImplMetal_DestroyDeviceObjects();
 	ImGui_ImplMetal_DestroyBackendData();
+
+	ImGuiIO& io = ImGui::GetIO();
+	io.BackendRendererName = nullptr;
+	io.BackendRendererUserData = nullptr;
+	io.BackendFlags &= ~(ImGuiBackendFlags_RendererHasVtxOffset | ImGuiBackendFlags_RendererHasTextures | ImGuiBackendFlags_RendererHasViewports);
 }
 
 IMGUI_IMPL_API void ImGui_ImplMetal_NewFrame(MTL::RenderPassDescriptor* renderPassDescriptor)

@@ -1,11 +1,11 @@
 #include "Platform/OpenGL/OpenGLRendererBackend.h"
 
 #include "Flibbert/Core/Application.h"
+#include "Flibbert/Renderer/Buffer.h"
+#include "Flibbert/Renderer/Shader.h"
+#include "Flibbert/Renderer/VertexArray.h"
 
 #include "Platform/Desktop/Window.h"
-#include "Platform/OpenGL/OpenGLBuffer.h"
-#include "Platform/OpenGL/OpenGLShader.h"
-#include "Platform/OpenGL/OpenGLVertexArray.h"
 
 #include <backends/imgui_impl_opengl3.h>
 
@@ -28,7 +28,9 @@ void OpenGLMessageCallback(unsigned source, unsigned type, unsigned id, unsigned
 			case GL_DEBUG_SOURCE_SHADER_COMPILER: return "SHADER COMPILER";
 			case GL_DEBUG_SOURCE_THIRD_PARTY: return "THIRD PARTY";
 			case GL_DEBUG_SOURCE_APPLICATION: return "APPLICATION";
-			case GL_DEBUG_SOURCE_OTHER: return "OTHER";
+			case GL_DEBUG_SOURCE_OTHER:
+			default:
+				return "OTHER";
 		}
 	}();
 
@@ -41,7 +43,9 @@ void OpenGLMessageCallback(unsigned source, unsigned type, unsigned id, unsigned
 			case GL_DEBUG_TYPE_PORTABILITY: return "PORTABILITY";
 			case GL_DEBUG_TYPE_PERFORMANCE: return "PERFORMANCE";
 			case GL_DEBUG_TYPE_MARKER: return "MARKER";
-			case GL_DEBUG_TYPE_OTHER: return "OTHER";
+			case GL_DEBUG_TYPE_OTHER:
+			default:
+				return "OTHER";
 		}
 	}();
 
@@ -76,6 +80,7 @@ namespace Flibbert
 		{
 			ZoneNamedN(ZoneGLContextInit, "OpenGL Context Initialization", true);
 
+			/*
 			RGFW_glHints* hints = RGFW_getGlobalHints_OpenGL();
 			hints->major = 4;
 			hints->minor = 6;
@@ -84,7 +89,7 @@ namespace Flibbert
 			RGFW_window_createContext_OpenGL(window.GetNativeWindow(), hints);
 
 			int status = gladLoadGL(RGFW_getProcAddress_OpenGL);
-			FBT_CORE_ENSURE(status);
+			FBT_CORE_ENSURE(status); */
 
 			TracyGpuContext;
 
@@ -145,8 +150,7 @@ namespace Flibbert
 	{
 		ZoneScoped;
 
-		ImDrawData* DrawData = ImGui::GetDrawData();
-		ImGui_ImplOpenGL3_RenderDrawData(DrawData);
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 
 	void OpenGLRendererBackend::ShutdownImGui()

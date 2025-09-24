@@ -1,12 +1,10 @@
 #pragma once
 
 #include "Flibbert/Renderer/RendererBackend.h"
-#include "Platform/OpenGL/OpenGLBuffer.h"
-#include "Platform/OpenGL/OpenGLShader.h"
-#include "Platform/OpenGL/OpenGLVertexArray.h"
 
 namespace CA
 {
+	class MetalDrawable;
 	class MetalLayer;
 } // namespace CA
 
@@ -14,14 +12,13 @@ namespace MTL
 {
 	class Device;
 	class CommandQueue;
+	class RenderPassDescriptor;
 } // namespace MTL
 
 namespace NS
 {
 	class View;
 } // namespace NS
-
-struct RGFW_window;
 
 namespace Flibbert
 {
@@ -42,13 +39,12 @@ namespace Flibbert
 		void Draw(const std::shared_ptr<VertexArray>& vertexArray,
 			  const std::shared_ptr<Shader>& shader) const override;
 
-		MTL::Device* GetDevice() const;
-		MTL::CommandQueue* GetCommandQueue() const;
-
 	private:
 		MTL::Device* m_Device;
 		MTL::CommandQueue* m_CommandQueue;
+		CA::MetalDrawable* m_Drawable;
 		CA::MetalLayer* m_Layer;
 		NS::View* m_View;
+		MTL::RenderPassDescriptor* m_ImGuiRenderPassDescriptor;
 	};
 } // namespace Flibbert

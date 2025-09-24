@@ -2,19 +2,25 @@
 
 #include "Flibbert/Core/Application.h"
 
-#include "Platform/Metal/MetalRendererBackend.h"
+#ifdef FBT_PLATFORM_MACOS
+	#include "Platform/Metal/MetalRendererBackend.h"
+#endif
 #include "Platform/OpenGL/OpenGLRendererBackend.h"
 #include "Platform/Vulkan/VulkanRendererBackend.h"
 
 namespace Flibbert
 {
-	Renderer::API Renderer::s_API = API::OpenGL;
+	Renderer::API Renderer::s_API = API::Metal;
 
 	Renderer::Renderer()
 	{
 		switch (s_API) {
 			case API::Metal:
+#ifdef FBT_PLATFORM_MACOS
 				m_Backend = std::make_unique<MetalRendererBackend>();
+#else
+				FBT_CORE_ENSURE_MSG(false, "Metal is only supported on macOS")
+#endif
 				break;
 			case API::OpenGL:
 				m_Backend = std::make_unique<OpenGLRendererBackend>();
