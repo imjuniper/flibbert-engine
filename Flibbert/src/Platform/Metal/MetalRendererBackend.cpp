@@ -87,6 +87,7 @@ namespace Flibbert
 
 		s_CommandBuffer->presentDrawable(m_Drawable);
 		s_CommandBuffer->commit();
+		s_CommandBuffer->waitUntilCompleted();
 
 		m_Drawable->release(); // is this necessary?
 	}
