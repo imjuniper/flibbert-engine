@@ -6,6 +6,10 @@
 /cmake-build*/
 /Binaries/
 /Packaging/
+compile_commands.json
+# This is just a symlink to the actual debug file that gets
+# generated. Nova's addon doesn't pick up the file in the subdirectory
+!/compile_commands.json
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

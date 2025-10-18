@@ -1,0 +1,17 @@
+{
+  "actions" : {
+    "build" : {
+      "enabled" : true,
+      "script" : "#!\/bin\/zsh\n\ncmake --preset release\ncmake --build --preset release\n"
+    },
+    "clean" : {
+      "enabled" : true,
+      "script" : "#!\/bin\/zsh\n\nrm -rf .\/Build\/release\n"
+    },
+    "run" : {
+      "enabled" : true,
+      "script" : "#!\/bin\/zsh\n\npushd .\/Binaries\/Release\/Sandbox\n.\/Sandbox\npopd\n"
+    }
+  },
+  "buildBeforeRunning" : true
+}

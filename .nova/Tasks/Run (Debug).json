@@ -1,0 +1,17 @@
+{
+  "actions" : {
+    "build" : {
+      "enabled" : true,
+      "script" : "#!\/bin\/zsh\n\ncmake --preset debug\ncmake --build --preset debug\n"
+    },
+    "clean" : {
+      "enabled" : true,
+      "script" : "#!\/bin\/zsh\n\nrm -rf .\/Build\/debug\n"
+    },
+    "run" : {
+      "enabled" : true,
+      "script" : "#!\/bin\/zsh\n\npushd .\/Binaries\/Debug\/Sandbox\n.\/Sandbox\npopd\n"
+    }
+  },
+  "buildBeforeRunning" : true
+}
