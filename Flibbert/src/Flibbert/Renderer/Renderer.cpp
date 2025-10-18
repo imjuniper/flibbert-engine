@@ -5,8 +5,10 @@
 #ifdef FBT_PLATFORM_MACOS
 	#include "Platform/Metal/MetalRendererBackend.h"
 #endif
-#include "Platform/OpenGL/OpenGLRendererBackend.h"
-#include "Platform/Vulkan/VulkanRendererBackend.h"
+#ifndef FBT_PLATFORM_MACOS
+	#include "Platform/OpenGL/OpenGLRendererBackend.h"
+	#include "Platform/Vulkan/VulkanRendererBackend.h"
+#endif
 
 namespace Flibbert
 {
@@ -19,17 +21,25 @@ namespace Flibbert
 #ifdef FBT_PLATFORM_MACOS
 				m_Backend = std::make_unique<MetalRendererBackend>();
 #else
-				FBT_CORE_ENSURE_MSG(false, "Metal is only supported on macOS")
+				FBT_CORE_ENSURE_MSG(false, "Metal is only supported on macOS");
 #endif
 				break;
 			case API::OpenGL:
+#ifndef FBT_PLATFORM_MACOS
 				m_Backend = std::make_unique<OpenGLRendererBackend>();
+#else
+				FBT_CORE_ENSURE_MSG(false, "OpenGL is not supported on macOS");
+#endif
 				break;
 			case API::Vulkan:
+#ifndef FBT_PLATFORM_MACOS
 				m_Backend = std::make_unique<VulkanRendererBackend>();
+#else
+				FBT_CORE_ENSURE_MSG(false, "Vulkan is not supported on macOS");
+#endif
 				break;
 			default:
-				FBT_CORE_ENSURE_MSG(false, "Unsupported or unknown Renderer::API");
+				FBT_CORE_ENSURE_MSG(false, "Unknown Renderer::API");
 		}
 	}
 

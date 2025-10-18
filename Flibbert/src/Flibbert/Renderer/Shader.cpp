@@ -1,7 +1,9 @@
 #include "Flibbert/Renderer/Shader.h"
 
 #include "Flibbert/Renderer/Renderer.h"
-#include "Platform/OpenGL/OpenGLShader.h"
+#ifndef FBT_PLATFORM_MACOS
+	#include "Platform/OpenGL/OpenGLShader.h"
+#endif
 
 #include <fstream>
 #include <regex>
@@ -13,8 +15,10 @@ namespace Flibbert
 	                                       std::string_view fragmentPath)
 	{
 		switch (Renderer::GetAPI()) {
+#ifndef FBT_PLATFORM_MACOS
 			case Renderer::API::OpenGL:
 				return std::make_shared<OpenGLShader>(vertexPath, fragmentPath);
+#endif
 			default:
 				return nullptr;
 		}

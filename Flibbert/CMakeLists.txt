@@ -8,6 +8,30 @@ project(
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if (APPLE)
+    set(RENDERER_SOURCES
+        src/Platform/Metal/MetalRendererBackend.cpp
+        src/Platform/Metal/MetalRendererBackend.h
+    )
+else()
+    set(RENDERER_SOURCES
+        src/Platform/OpenGL/OpenGLBuffer.cpp
+        src/Platform/OpenGL/OpenGLBuffer.h
+        src/Platform/OpenGL/OpenGLFramebuffer.cpp
+        src/Platform/OpenGL/OpenGLFramebuffer.h
+        src/Platform/OpenGL/OpenGLRendererBackend.cpp
+        src/Platform/OpenGL/OpenGLRendererBackend.h
+        src/Platform/OpenGL/OpenGLShader.cpp
+        src/Platform/OpenGL/OpenGLShader.h
+        src/Platform/OpenGL/OpenGLTexture.cpp
+        src/Platform/OpenGL/OpenGLTexture.h
+        src/Platform/OpenGL/OpenGLVertexArray.cpp
+        src/Platform/OpenGL/OpenGLVertexArray.h
+        src/Platform/Vulkan/VulkanRendererBackend.cpp
+        src/Platform/Vulkan/VulkanRendererBackend.h
+    )
+endif()
+
 # Project
 add_library(Flibbert STATIC
         src/fbtpch.h
@@ -53,22 +77,7 @@ add_library(Flibbert STATIC
         src/Platform/Desktop/DesktopPlatform.cpp
         src/Platform/Desktop/Window.cpp
         src/Platform/Desktop/Window.h
-        src/Platform/Metal/MetalRendererBackend.cpp
-        src/Platform/Metal/MetalRendererBackend.h
-        src/Platform/OpenGL/OpenGLBuffer.cpp
-        src/Platform/OpenGL/OpenGLBuffer.h
-        src/Platform/OpenGL/OpenGLFramebuffer.cpp
-        src/Platform/OpenGL/OpenGLFramebuffer.h
-        src/Platform/OpenGL/OpenGLRendererBackend.cpp
-        src/Platform/OpenGL/OpenGLRendererBackend.h
-        src/Platform/OpenGL/OpenGLShader.cpp
-        src/Platform/OpenGL/OpenGLShader.h
-        src/Platform/OpenGL/OpenGLTexture.cpp
-        src/Platform/OpenGL/OpenGLTexture.h
-        src/Platform/OpenGL/OpenGLVertexArray.cpp
-        src/Platform/OpenGL/OpenGLVertexArray.h
-        src/Platform/Vulkan/VulkanRendererBackend.cpp
-        src/Platform/Vulkan/VulkanRendererBackend.h)
+        ${RENDERER_SOURCES})
 
 target_include_directories(Flibbert
         PUBLIC
@@ -162,13 +171,13 @@ target_include_directories(tracy PUBLIC "${tracy_SOURCE_DIR}/public")
 
 target_link_libraries(Flibbert PUBLIC glm imgui spdlog tracy)
 
-add_subdirectory(vendor/metal-cpp)
-
-# @todo move this to the metal file or move imgui metal impl somewhere else?
-target_link_libraries(metal PUBLIC imgui)
-
 # Platform-specific stuffs
 if (APPLE)
+    add_subdirectory(vendor/metal-cpp)
+
+    # @todo move this to the metal file or move imgui metal impl somewhere else?
+    target_link_libraries(metal PUBLIC imgui)
+
     target_link_libraries(Flibbert
             PUBLIC
             metal

@@ -72,11 +72,13 @@ namespace Demo
 		}
 
 		if (ImGui::Checkbox("Toggle Wireframe", &m_EnableWireframe)) {
+#ifndef FBT_PLATFORM_MACOS
 			if (m_EnableWireframe) {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			} else {
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
+#endif
 		}
 
 		if (ImGui::Button("Regenerate")) {

@@ -80,7 +80,6 @@ namespace Flibbert
 		{
 			ZoneNamedN(ZoneGLContextInit, "OpenGL Context Initialization", true);
 
-			/*
 			RGFW_glHints* hints = RGFW_getGlobalHints_OpenGL();
 			hints->major = 4;
 			hints->minor = 6;
@@ -89,7 +88,7 @@ namespace Flibbert
 			RGFW_window_createContext_OpenGL(window.GetNativeWindow(), hints);
 
 			int status = gladLoadGL(RGFW_getProcAddress_OpenGL);
-			FBT_CORE_ENSURE(status); */
+			FBT_CORE_ENSURE(status);
 
 			TracyGpuContext;
 
