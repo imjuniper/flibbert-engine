@@ -105,7 +105,7 @@ set_option(FBT_PROFILING_ENABLED "Enable profiling" OFF)
 FetchContent_Declare(
         glm
         GIT_REPOSITORY https://github.com/g-truc/glm.git
-        GIT_TAG        e7714885929f1dcd2bdc2531cc99d3c1dc6daa18 # branch origin/master as of Sep 23 2025
+        GIT_TAG        master # for some reason, they don't tag their stuff
         GIT_SHALLOW    true
         GIT_PROGRESS   true
 )
