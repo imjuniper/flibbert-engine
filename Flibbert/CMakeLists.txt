@@ -104,7 +104,7 @@ FetchContent_Declare(
         glm
         GIT_REPOSITORY https://github.com/g-truc/glm.git
         GIT_TAG        2d4c4b4dd31fde06cfffad7915c2b3006402322f # branch origin/master as of Feb 7 2025
-        GIT_SHALLOW    true
+        GIT_SHALLOW    false
         GIT_PROGRESS   true
 )
 FetchContent_Declare(
