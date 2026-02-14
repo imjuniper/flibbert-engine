@@ -60,8 +60,9 @@ namespace Flibbert
 		}
 
 #elif defined(FBT_PLATFORM_LINUX)
+		ssize_t length;
 		while (true) {
-			ssize_t length = readlink("/proc/self/exe", buffer.data(), buffer.size());
+			length = readlink("/proc/self/exe", buffer.data(), buffer.size());
 			if (length == -1) {
 				return false;
 			}
