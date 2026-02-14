@@ -173,15 +173,15 @@ namespace Flibbert
 
 		switch (mode) {
 			case CursorMode::Normal:
-				RGFW_window_unholdMouse(m_WindowHandle);
+				RGFW_window_captureMouse(m_WindowHandle, false);
 				RGFW_window_showMouse(m_WindowHandle, true);
 				break;
 			case CursorMode::Hidden:
-				RGFW_window_unholdMouse(m_WindowHandle);
+				RGFW_window_captureMouse(m_WindowHandle, false);
 				RGFW_window_showMouse(m_WindowHandle, false);
 				break;
 			case CursorMode::Locked:
-				RGFW_window_holdMouse(m_WindowHandle);
+				RGFW_window_captureMouse(m_WindowHandle, true);
 				RGFW_window_showMouse(m_WindowHandle, false);
 				break;
 		}

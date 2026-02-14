@@ -44,7 +44,6 @@
 #define RGFW_IMGUI_H
 
 #include <stdbool.h>
-#include <chrono>
 
 typedef struct RGFW_window RGFW_window;
 
@@ -72,13 +71,15 @@ typedef struct {int x; int y;} impoint;
 IMGUI_IMPL_API void     ImGui_ImplRgfw_WindowFocusCallback(RGFW_window* window, u8 inFocus);        // Since 1.84
 IMGUI_IMPL_API void     ImGui_ImplRgfw_CursorEnterCallback(RGFW_window* window, i32 x, i32 y, u8 status);        // Since 1.84
 IMGUI_IMPL_API void     ImGui_ImplRgfw_CursorPosCallback(RGFW_window* window, i32 x, i32 y, float vecX, float vecY);   // Since 1.87
-IMGUI_IMPL_API void     ImGui_ImplRgfw_MouseButtonCallback(RGFW_window* window, u8 button, double scroll, u8 pressed);
-IMGUI_IMPL_API void     ImGui_ImplRgfw_ScrollCallback(RGFW_window* window, double xoffset, double yoffset);
+IMGUI_IMPL_API void     ImGui_ImplRgfw_MouseButtonCallback(RGFW_window* window, u8 button, u8 pressed);
+IMGUI_IMPL_API void     ImGui_ImplRgfw_MouseScrollCallback(RGFW_window* window, float xoffset, float yoffset);
 IMGUI_IMPL_API void     ImGui_ImplRgfw_KeyCallback(RGFW_window* window, u8 keycode, u8 keyChar, u8 modState, u8 repeat, u8 pressed);
-IMGUI_IMPL_API void     ImGui_ImplRgfw_CharCallback(RGFW_window* window, unsigned int c);
+IMGUI_IMPL_API void     ImGui_ImplRgfw_KeyCharCallback(RGFW_window* window, unsigned int c);
 #endif /* ifndef RGFW_IMGUI_H */
 
 #ifdef RGFW_IMGUI_IMPLEMENTATION
+
+#include <chrono>
 
 #define RGFWDEF
 #include "RGFW.h"
@@ -106,7 +107,9 @@ struct ImGui_ImplRgfw_Data
     RGFW_mousePosfunc        PrevUserCallbackCursorPos;
     RGFW_mouseNotifyfunc      PrevUserCallbackCursorEnter;
     RGFW_mouseButtonfunc      PrevUserCallbackMousebutton;
+    RGFW_mouseScrollfunc      PrevUserCallbackMouseScroll;
     RGFW_keyfunc              PrevUserCallbackKey;
+    RGFW_keyCharfunc          PrevUserCallbackKeyChar;
 
     ImGui_ImplRgfw_Data()   { memset(static_cast<void*>(this), 0, sizeof(*this)); }
 };
@@ -119,106 +122,146 @@ static ImGui_ImplRgfw_Data* ImGui_ImplRgfw_GetBackendData()
 char* clipboard_str = nullptr;
 
 // Functions
-static const char* ImGui_ImplRgfw_GetClipboardText(void* user_data)
+static const char* ImGui_ImplRgfw_GetClipboardText(ImGuiContext* ctx)
 {
-    RGFW_UNUSED(user_data);
+    RGFW_UNUSED(ctx);
 
     size_t size;
     return RGFW_readClipboard(&size);
 }
 
-static void ImGui_ImplRgfw_SetClipboardText(void* user_data, const char* text)
+static void ImGui_ImplRgfw_SetClipboardText(ImGuiContext* ctx, const char* text)
 {
-    RGFW_UNUSED(user_data);
+    RGFW_UNUSED(ctx);
     RGFW_UNUSED(text);
     RGFW_writeClipboard(text, static_cast<u32>(strlen(text)));
 }
 
 static ImGuiKey ImGui_ImplRgfw_KeyToImGuiKey(int key)
 {
-    static const ImGuiKey map[] = {
-        ImGuiKey_None,
-        ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None,
-        ImGuiKey_Backspace,
-        ImGuiKey_Tab,
-        ImGuiKey_Enter,
-        ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None,
-        ImGuiKey_Escape,
-        ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None,
-        ImGuiKey_Space,
-        ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None,
-        ImGuiKey_Apostrophe,
-        ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None,
-        ImGuiKey_Comma,
-        ImGuiKey_Minus,
-        ImGuiKey_Period,
-        ImGuiKey_Slash,
-        ImGuiKey_0, ImGuiKey_1, ImGuiKey_2, ImGuiKey_3, ImGuiKey_4, ImGuiKey_5, ImGuiKey_6, ImGuiKey_7, ImGuiKey_8, ImGuiKey_9,
-        ImGuiKey_None,
-        ImGuiKey_Semicolon,
-        ImGuiKey_None,
-        ImGuiKey_Equal,
-        ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None, ImGuiKey_None,
-        ImGuiKey_Backslash,
-        ImGuiKey_None, ImGuiKey_None, ImGuiKey_None,
-        ImGuiKey_GraveAccent,
-        ImGuiKey_A, ImGuiKey_B, ImGuiKey_C, ImGuiKey_D, ImGuiKey_E, ImGuiKey_F, ImGuiKey_G, ImGuiKey_H, ImGuiKey_I, ImGuiKey_J, ImGuiKey_K, ImGuiKey_L, ImGuiKey_M, ImGuiKey_N, ImGuiKey_O, ImGuiKey_P, ImGuiKey_Q, ImGuiKey_R, ImGuiKey_S, ImGuiKey_T, ImGuiKey_U, ImGuiKey_V, ImGuiKey_W, ImGuiKey_X, ImGuiKey_Y, ImGuiKey_Z,
-        ImGuiKey_LeftBracket,
-        ImGuiKey_None,
-        ImGuiKey_RightBracket,
-        ImGuiKey_None,
-        ImGuiKey_Delete,
-        ImGuiKey_F1,
-        ImGuiKey_F2,
-        ImGuiKey_F3,
-        ImGuiKey_F4,
-        ImGuiKey_F5,
-        ImGuiKey_F6,
-        ImGuiKey_F7,
-        ImGuiKey_F8,
-        ImGuiKey_F9,
-        ImGuiKey_F10,
-        ImGuiKey_F11,
-        ImGuiKey_F12,
-        ImGuiKey_CapsLock,
-        ImGuiKey_LeftShift,
-        ImGuiKey_LeftCtrl,
-        ImGuiKey_LeftAlt,
-        ImGuiKey_LeftSuper,
-        ImGuiKey_RightShift,
-        ImGuiKey_RightCtrl,
-        ImGuiKey_RightAlt,
-        ImGuiKey_RightSuper,
-        ImGuiKey_UpArrow,
-        ImGuiKey_DownArrow,
-        ImGuiKey_LeftArrow,
-        ImGuiKey_RightArrow,
-        ImGuiKey_Insert,
-        ImGuiKey_End,
-        ImGuiKey_Home,
-
-        ImGuiKey_PageUp,
-        ImGuiKey_PageDown,
-        ImGuiKey_NumLock,
-        ImGuiKey_KeypadDivide,
-        ImGuiKey_KeypadMultiply,
-        ImGuiKey_KeypadSubtract,
-        ImGuiKey_Keypad1,
-        ImGuiKey_Keypad2,
-        ImGuiKey_Keypad3,
-        ImGuiKey_Keypad4,
-        ImGuiKey_Keypad5,
-        ImGuiKey_Keypad6,
-        ImGuiKey_Keypad7,
-        ImGuiKey_Keypad8,
-        ImGuiKey_Keypad9,
-        ImGuiKey_Keypad0,
-        ImGuiKey_KeypadDecimal,
-        ImGuiKey_KeypadEnter,
-	ImGuiKey_None
-    };
-
-    return map[key];
+    switch(key) {
+        case RGFW_escape:       return ImGuiKey_Escape;
+        case RGFW_backtick:     return ImGuiKey_GraveAccent;
+        case RGFW_0:            return ImGuiKey_0;
+        case RGFW_1:            return ImGuiKey_1;
+        case RGFW_2:            return ImGuiKey_2;
+        case RGFW_3:            return ImGuiKey_3;
+        case RGFW_4:            return ImGuiKey_4;
+        case RGFW_5:            return ImGuiKey_5;
+        case RGFW_6:            return ImGuiKey_6;
+        case RGFW_7:            return ImGuiKey_7;
+        case RGFW_8:            return ImGuiKey_8;
+        case RGFW_9:            return ImGuiKey_9;
+        case RGFW_minus:        return ImGuiKey_Minus;
+        case RGFW_equals:       return ImGuiKey_Equal;
+        case RGFW_backSpace:    return ImGuiKey_Backspace;
+        case RGFW_tab:          return ImGuiKey_Tab;
+        case RGFW_space:        return ImGuiKey_Space;
+        case RGFW_a:            return ImGuiKey_A;
+        case RGFW_b:            return ImGuiKey_B;
+        case RGFW_c:            return ImGuiKey_C;
+        case RGFW_d:            return ImGuiKey_D;
+        case RGFW_e:            return ImGuiKey_E;
+        case RGFW_f:            return ImGuiKey_F;
+        case RGFW_g:            return ImGuiKey_G;
+        case RGFW_h:            return ImGuiKey_H;
+        case RGFW_i:            return ImGuiKey_I;
+        case RGFW_j:            return ImGuiKey_J;
+        case RGFW_k:            return ImGuiKey_K;
+        case RGFW_l:            return ImGuiKey_L;
+        case RGFW_m:            return ImGuiKey_M;
+        case RGFW_n:            return ImGuiKey_N;
+        case RGFW_o:            return ImGuiKey_O;
+        case RGFW_p:            return ImGuiKey_P;
+        case RGFW_q:            return ImGuiKey_Q;
+        case RGFW_r:            return ImGuiKey_R;
+        case RGFW_s:            return ImGuiKey_S;
+        case RGFW_t:            return ImGuiKey_T;
+        case RGFW_u:            return ImGuiKey_U;
+        case RGFW_v:            return ImGuiKey_V;
+        case RGFW_w:            return ImGuiKey_W;
+        case RGFW_x:            return ImGuiKey_X;
+        case RGFW_y:            return ImGuiKey_Y;
+        case RGFW_z:            return ImGuiKey_Z;
+        case RGFW_period:       return ImGuiKey_Period;
+        case RGFW_comma:        return ImGuiKey_Comma;
+        case RGFW_slash:        return ImGuiKey_Slash;
+        case RGFW_bracket:      return ImGuiKey_LeftBracket;
+        case RGFW_closeBracket: return ImGuiKey_RightBracket;
+        case RGFW_semicolon:    return ImGuiKey_Semicolon;
+        case RGFW_apostrophe:   return ImGuiKey_Apostrophe;
+        case RGFW_backSlash:    return ImGuiKey_Backslash;
+        case RGFW_return:       return ImGuiKey_Enter;  // Same as RGFW_enter
+        case RGFW_delete:       return ImGuiKey_Delete;
+        case RGFW_F1:           return ImGuiKey_F1;
+        case RGFW_F2:           return ImGuiKey_F2;
+        case RGFW_F3:           return ImGuiKey_F3;
+        case RGFW_F4:           return ImGuiKey_F4;
+        case RGFW_F5:           return ImGuiKey_F5;
+        case RGFW_F6:           return ImGuiKey_F6;
+        case RGFW_F7:           return ImGuiKey_F7;
+        case RGFW_F8:           return ImGuiKey_F8;
+        case RGFW_F9:           return ImGuiKey_F9;
+        case RGFW_F10:          return ImGuiKey_F10;
+        case RGFW_F11:          return ImGuiKey_F11;
+        case RGFW_F12:          return ImGuiKey_F12;
+        case RGFW_F13:          return ImGuiKey_F13;
+        case RGFW_F14:          return ImGuiKey_F14;
+        case RGFW_F15:          return ImGuiKey_F15;
+        case RGFW_F16:          return ImGuiKey_F16;
+        case RGFW_F17:          return ImGuiKey_F17;
+        case RGFW_F18:          return ImGuiKey_F18;
+        case RGFW_F19:          return ImGuiKey_F19;
+        case RGFW_F20:          return ImGuiKey_F20;
+        case RGFW_F21:          return ImGuiKey_F21;
+        case RGFW_F22:          return ImGuiKey_F22;
+        case RGFW_F23:          return ImGuiKey_F23;
+        case RGFW_F24:          return ImGuiKey_F24;
+        case RGFW_F25:          return ImGuiKey_None;  // No ImGuiKey_F25
+        case RGFW_capsLock:     return ImGuiKey_CapsLock;
+        case RGFW_shiftL:       return ImGuiKey_LeftShift;
+        case RGFW_controlL:     return ImGuiKey_LeftCtrl;
+        case RGFW_altL:         return ImGuiKey_LeftAlt;
+        case RGFW_superL:       return ImGuiKey_LeftSuper;
+        case RGFW_shiftR:       return ImGuiKey_RightShift;
+        case RGFW_controlR:     return ImGuiKey_RightCtrl;
+        case RGFW_altR:         return ImGuiKey_RightAlt;
+        case RGFW_superR:       return ImGuiKey_RightSuper;
+        case RGFW_up:           return ImGuiKey_UpArrow;
+        case RGFW_down:         return ImGuiKey_DownArrow;
+        case RGFW_left:         return ImGuiKey_LeftArrow;
+        case RGFW_right:        return ImGuiKey_RightArrow;
+        case RGFW_insert:       return ImGuiKey_Insert;
+        case RGFW_menu:         return ImGuiKey_Menu;
+        case RGFW_end:          return ImGuiKey_End;
+        case RGFW_home:         return ImGuiKey_Home;
+        case RGFW_pageUp:       return ImGuiKey_PageUp;
+        case RGFW_pageDown:     return ImGuiKey_PageDown;
+        case RGFW_numLock:      return ImGuiKey_NumLock;
+        case RGFW_kpSlash:      return ImGuiKey_KeypadDivide;
+        case RGFW_kpMultiply:   return ImGuiKey_KeypadMultiply;
+        case RGFW_kpPlus:       return ImGuiKey_KeypadAdd;
+        case RGFW_kpMinus:      return ImGuiKey_KeypadSubtract;
+        case RGFW_kpEqual:      return ImGuiKey_KeypadEqual;
+        case RGFW_kp1:          return ImGuiKey_Keypad1;
+        case RGFW_kp2:          return ImGuiKey_Keypad2;
+        case RGFW_kp3:          return ImGuiKey_Keypad3;
+        case RGFW_kp4:          return ImGuiKey_Keypad4;
+        case RGFW_kp5:          return ImGuiKey_Keypad5;
+        case RGFW_kp6:          return ImGuiKey_Keypad6;
+        case RGFW_kp7:          return ImGuiKey_Keypad7;
+        case RGFW_kp8:          return ImGuiKey_Keypad8;
+        case RGFW_kp9:          return ImGuiKey_Keypad9;
+        case RGFW_kp0:          return ImGuiKey_Keypad0;
+        case RGFW_kpPeriod:     return ImGuiKey_KeypadDecimal;
+        case RGFW_kpReturn:     return ImGuiKey_KeypadEnter;
+        case RGFW_scrollLock:   return ImGuiKey_ScrollLock;
+        case RGFW_printScreen:  return ImGuiKey_PrintScreen;
+        case RGFW_pause:        return ImGuiKey_Pause;
+        case RGFW_world1:       return ImGuiKey_None;  // Not supported
+        case RGFW_world2:       return ImGuiKey_None;  // Not supported
+        default:                return ImGuiKey_None;
+    }
 }
 
 static bool ImGui_ImplRgfw_ShouldChainCallback(RGFW_window* window)
@@ -227,18 +270,14 @@ static bool ImGui_ImplRgfw_ShouldChainCallback(RGFW_window* window)
     return bd->CallbacksChainForAllWindows ? true : (window == bd->Window);
 }
 
-void ImGui_ImplRgfw_MouseButtonCallback(RGFW_window* window, u8 button, double scroll, u8 pressed)
+void ImGui_ImplRgfw_MouseButtonCallback(RGFW_window* window, u8 button, u8 pressed)
 {
-    if (button >= RGFW_mouseScrollUp) {
-        return ImGui_ImplRgfw_ScrollCallback(window, 0, scroll);
-    }
-
     if (button == RGFW_mouseMiddle) button = RGFW_mouseRight;
     else if (button == RGFW_mouseRight) button = RGFW_mouseMiddle;
 
     ImGui_ImplRgfw_Data* bd = ImGui_ImplRgfw_GetBackendData();
     if (bd->PrevUserCallbackMousebutton != nullptr && ImGui_ImplRgfw_ShouldChainCallback(window))
-        bd->PrevUserCallbackMousebutton(window, button, scroll, pressed);
+        bd->PrevUserCallbackMousebutton(window, button, pressed);
 
     ImGuiIO& io = ImGui::GetIO();
     if (button < ImGuiMouseButton_COUNT) {
@@ -246,32 +285,28 @@ void ImGui_ImplRgfw_MouseButtonCallback(RGFW_window* window, u8 button, double s
     }
 }
 
-void ImGui_ImplRgfw_ScrollCallback(RGFW_window* window, double xoffset, double yoffset)
+void ImGui_ImplRgfw_MouseScrollCallback(RGFW_window* window, float xoffset, float yoffset)
 {
     ImGui_ImplRgfw_Data* bd = ImGui_ImplRgfw_GetBackendData();
-    if (bd->PrevUserCallbackMousebutton != nullptr && ImGui_ImplRgfw_ShouldChainCallback(window))
-        bd->PrevUserCallbackMousebutton(window, RGFW_mouseScrollUp + (yoffset > 0), yoffset, RGFW_TRUE);
+    if (bd->PrevUserCallbackMouseScroll != nullptr && ImGui_ImplRgfw_ShouldChainCallback(window))
+        bd->PrevUserCallbackMouseScroll(window, xoffset, yoffset);
 
     ImGuiIO& io = ImGui::GetIO();
-    io.AddMouseWheelEvent(static_cast<float>(xoffset), static_cast<float>(yoffset));
+    io.AddMouseWheelEvent(xoffset, yoffset);
 }
 
-void ImGui_ImplRgfw_KeyCallback(RGFW_window* window, u8 key, u8 keyChar, u8 modState, RGFW_bool repeat, RGFW_bool pressed)
+void ImGui_ImplRgfw_KeyCallback(RGFW_window* window, u8 key, RGFW_keymod mod, RGFW_bool repeat, RGFW_bool pressed)
 {
     ImGui_ImplRgfw_Data* bd = ImGui_ImplRgfw_GetBackendData();
     if (bd->PrevUserCallbackKey != nullptr && ImGui_ImplRgfw_ShouldChainCallback(window))
-        bd->PrevUserCallbackKey(window, key, keyChar, modState, repeat, pressed);
+        bd->PrevUserCallbackKey(window, key, mod, repeat, pressed);
 
     ImGuiIO& io = ImGui::GetIO();
-    io.AddKeyEvent(ImGuiMod_Ctrl, modState & RGFW_modControl);
-    io.AddKeyEvent(ImGuiMod_Shift, modState & RGFW_modShift);
-    io.AddKeyEvent(ImGuiMod_Alt,  modState & RGFW_modAlt);
-    io.AddKeyEvent(ImGuiMod_Super, modState & RGFW_modSuper);
-    io.AddKeyEvent(ImGuiMod_Super, modState & RGFW_modSuper);
-
-    if (pressed == RGFW_TRUE) {
-        ImGui_ImplRgfw_CharCallback(window, keyChar);
-    }
+    io.AddKeyEvent(ImGuiMod_Ctrl, mod & RGFW_modControl);
+    io.AddKeyEvent(ImGuiMod_Shift, mod & RGFW_modShift);
+    io.AddKeyEvent(ImGuiMod_Alt,  mod & RGFW_modAlt);
+    io.AddKeyEvent(ImGuiMod_Super, mod & RGFW_modSuper);
+    io.AddKeyEvent(ImGuiMod_Super, mod & RGFW_modSuper);
 
     ImGuiKey imgui_key = ImGui_ImplRgfw_KeyToImGuiKey(key);
     io.AddKeyEvent(imgui_key, pressed);
@@ -321,9 +356,11 @@ void ImGui_ImplRgfw_CursorEnterCallback(RGFW_window* window, i32 x, i32 y, RGFW_
     }
 }
 
-void ImGui_ImplRgfw_CharCallback(RGFW_window* window, unsigned int c)
+void ImGui_ImplRgfw_KeyCharCallback(RGFW_window* window, unsigned int c)
 {
-    RGFW_UNUSED(window);
+    ImGui_ImplRgfw_Data* bd = ImGui_ImplRgfw_GetBackendData();
+    if (bd->PrevUserCallbackKeyChar != nullptr && ImGui_ImplRgfw_ShouldChainCallback(window))
+        bd->PrevUserCallbackKeyChar(window, c);
     ImGuiIO& io = ImGui::GetIO();
     io.AddInputCharacter(c);
 }
@@ -343,7 +380,9 @@ void ImGui_ImplRgfw_InstallCallbacks(RGFW_window* window)
     bd->PrevUserCallbackCursorEnter = RGFW_setMouseNotifyCallback(ImGui_ImplRgfw_CursorEnterCallback);
     bd->PrevUserCallbackCursorPos = RGFW_setMousePosCallback(ImGui_ImplRgfw_CursorPosCallback);
     bd->PrevUserCallbackMousebutton = RGFW_setMouseButtonCallback(ImGui_ImplRgfw_MouseButtonCallback);
+    bd->PrevUserCallbackMouseScroll = RGFW_setMouseScrollCallback(ImGui_ImplRgfw_MouseScrollCallback);
     bd->PrevUserCallbackKey = RGFW_setKeyCallback(ImGui_ImplRgfw_KeyCallback);
+    bd->PrevUserCallbackKeyChar = RGFW_setKeyCharCallback(ImGui_ImplRgfw_KeyCharCallback);
     bd->InstalledCallbacks = true;
 }
 
@@ -358,12 +397,14 @@ void ImGui_ImplRgfw_RestoreCallbacks(RGFW_window* window)
     RGFW_setMousePosCallback(bd->PrevUserCallbackCursorPos);
     RGFW_setMouseButtonCallback(bd->PrevUserCallbackMousebutton);
     RGFW_setKeyCallback(bd->PrevUserCallbackKey);
+    RGFW_setKeyCharCallback(bd->PrevUserCallbackKeyChar);
     bd->InstalledCallbacks = false;
     bd->PrevUserCallbackWindowFocus = nullptr;
     bd->PrevUserCallbackCursorEnter = nullptr;
     bd->PrevUserCallbackCursorPos = nullptr;
     bd->PrevUserCallbackMousebutton = nullptr;
     bd->PrevUserCallbackKey = nullptr;
+    bd->PrevUserCallbackKeyChar = nullptr;
 }
 
 // Set to 'true' to enable chaining installed callbacks for all windows (including secondary viewports created by backends or by user.
@@ -396,9 +437,10 @@ static bool ImGui_ImplRgfw_Init(RGFW_window* window, bool install_callbacks, Rgf
     bd->Window = window;
     bd->Time = 0.0;
 
-    io.SetClipboardTextFn = ImGui_ImplRgfw_SetClipboardText;
-    io.GetClipboardTextFn = ImGui_ImplRgfw_GetClipboardText;
-    io.ClipboardUserData = bd->Window;
+    ImGuiPlatformIO& platform_io = ImGui::GetPlatformIO();
+    platform_io.Platform_SetClipboardTextFn = ImGui_ImplRgfw_SetClipboardText;
+    platform_io.Platform_GetClipboardTextFn = ImGui_ImplRgfw_GetClipboardText;
+    platform_io.Platform_ClipboardUserData = bd->Window;
 #ifdef __EMSCRIPTEN__
       // io.PlatformOpenInShellFn = [](ImGuiContext*, const char* url) { ImGui_ImplRgfw_EmscriptenOpenURL(url); return true; };
 #endif
