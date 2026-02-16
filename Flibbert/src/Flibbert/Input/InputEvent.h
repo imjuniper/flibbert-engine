@@ -118,7 +118,7 @@ namespace Flibbert
 
 	enum class CursorMode { Normal = 0, Hidden = 1, Locked = 2 };
 
-	enum class MouseButton { Left = 0, Right = 1, Middle = 2, X1 = 3, X2 = 4 };
+	enum class MouseButton { Left = 0, Middle = 1, Right = 2, X1 = 3, X2 = 4 };
 
 	struct InputEvent {
 		virtual ~InputEvent() = default;

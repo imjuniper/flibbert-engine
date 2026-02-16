@@ -115,7 +115,7 @@ namespace Flibbert
 					mouseButtonEvent->Position =
 					    glm::vec2{event.motion.x, event.motion.y};
 					mouseButtonEvent->Button =
-					    static_cast<MouseButton>(event.button.button);
+					    static_cast<MouseButton>(event.button.button - 1);
 					mouseButtonEvent->IsPressed = event.button.down;
 					Input::Get().ProcessInputEvent(mouseButtonEvent);
 					Application::Get().DispatchInputEvent(mouseButtonEvent);
