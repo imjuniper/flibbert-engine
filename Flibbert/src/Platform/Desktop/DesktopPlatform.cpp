@@ -66,7 +66,7 @@ namespace Flibbert
 			if (length == -1) {
 				return false;
 			}
-			if (buffer.size() < length) {
+			if (length < buffer.size()) {
 				break;
 			}
 			buffer.resize(buffer.size() * 2);
