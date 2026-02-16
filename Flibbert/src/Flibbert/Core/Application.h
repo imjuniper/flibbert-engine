@@ -38,6 +38,8 @@ namespace Flibbert
 		void Run();
 		void Close();
 
+		void DispatchInputEvent(const std::shared_ptr<InputEvent>& event);
+
 		[[nodiscard]] Window& GetWindow() const;
 		[[nodiscard]] Renderer& GetRenderer() const;
 
@@ -48,7 +50,6 @@ namespace Flibbert
 		virtual void OnInput(const std::shared_ptr<InputEvent>& event) = 0;
 
 		void HandleWindowClosed(Window& window);
-		void DispatchInputEvent(const std::shared_ptr<InputEvent>& event);
 
 	private:
 		std::unique_ptr<Window> m_Window = nullptr;

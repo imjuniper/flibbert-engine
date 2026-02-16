@@ -1,7 +1,6 @@
 #include "Flibbert/Core/Application.h"
 
 #include "Flibbert/Core/Platform.h"
-#include "Flibbert/Input/Input.h"
 #include "Flibbert/Renderer/Renderer.h"
 #include "Platform/Desktop/Window.h"
 
@@ -30,9 +29,6 @@ namespace Flibbert
 		if (Platform::GetExecutablePath(executablePath)) {
 			std::filesystem::current_path(executablePath.parent_path());
 		}
-
-		// @todo this feels wrong?
-		Input::Get().InputEventDispatch.BindDynamic(this, Application::DispatchInputEvent);
 
 		{
 			ZoneNamedN(ZoneWindowInit, "Window Initialization", true);

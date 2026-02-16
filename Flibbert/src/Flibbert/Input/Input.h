@@ -10,8 +10,6 @@ namespace Flibbert
 	{
 	public:
 		using OnSetCursorModeDelegate = Delegate<void, CursorMode>;
-		using InputEventDispatcherDelegate =
-		    Delegate<void, const std::shared_ptr<InputEvent>&>;
 
 		Input() = default;
 		Input(const Input&) = delete;
@@ -30,7 +28,6 @@ namespace Flibbert
 
 	public:
 		OnSetCursorModeDelegate OnSetCursorMode;
-		InputEventDispatcherDelegate InputEventDispatch;
 
 	private:
 		static uint32_t GetMouseButtonAsMask(MouseButton button);

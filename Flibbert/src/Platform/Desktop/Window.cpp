@@ -1,5 +1,6 @@
 #include "Platform/Desktop/Window.h"
 
+#include "Flibbert/Core/Application.h"
 #include "Flibbert/Input/Input.h"
 
 #include "SDL3/SDL_events.h"
@@ -19,7 +20,6 @@ namespace Flibbert
 		constexpr SDL_WindowFlags flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 
 		m_WindowHandle = SDL_CreateWindow(props.Title.c_str(), props.Width, props.Height, flags);
-		FBT_CORE_INFO("Created window {0}", fmt::ptr(m_WindowHandle));
 
 		int x, y;
 		if (SDL_GetWindowPosition(m_WindowHandle, &x, &y)) {
@@ -105,6 +105,7 @@ namespace Flibbert
 					keyEvent->Key = static_cast<Key>(event.key.key);
 					keyEvent->IsPressed = event.key.down;
 					Input::Get().ProcessInputEvent(keyEvent);
+					Application::Get().DispatchInputEvent(keyEvent);
 					break;
 				}
 				case SDL_EVENT_MOUSE_BUTTON_UP:
@@ -117,6 +118,7 @@ namespace Flibbert
 					    static_cast<MouseButton>(event.button.button);
 					mouseButtonEvent->IsPressed = event.button.down;
 					Input::Get().ProcessInputEvent(mouseButtonEvent);
+					Application::Get().DispatchInputEvent(mouseButtonEvent);
 					break;
 				}
 				case SDL_EVENT_MOUSE_MOTION: {
@@ -127,6 +129,7 @@ namespace Flibbert
 					mouseMovementEvent->MovementDelta =
 					    glm::vec2{event.motion.xrel, event.motion.yrel};
 					Input::Get().ProcessInputEvent(mouseMovementEvent);
+					Application::Get().DispatchInputEvent(mouseMovementEvent);
 					break;
 				}
 				default:

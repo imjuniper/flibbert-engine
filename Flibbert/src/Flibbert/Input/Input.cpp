@@ -1,7 +1,6 @@
 #include "Flibbert/Input/Input.h"
 
 #include "Flibbert/Core/Application.h"
-#include "Platform/Desktop/Window.h"
 
 namespace Flibbert
 {
@@ -39,8 +38,6 @@ namespace Flibbert
 		if (mouseMovementEvent) {
 			m_MousePosition = mouseMovementEvent->Position;
 		}
-
-		InputEventDispatch.ExecuteIfBound(event);
 	}
 
 	bool Input::IsKeyPressed(Key key) const
