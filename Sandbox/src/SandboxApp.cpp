@@ -4,11 +4,22 @@
 #include "Demos/DemoFloppyBirb.h"
 #include "Demos/DemoMeshGeneration.h"
 #include "Demos/DemoTexture2D.h"
+#include "Flibbert/Core/ClassRegistry.h"
 
 #include <Flibbert.h>
 #include <Flibbert/Core/EntryPoint.h>
 
 #include <imgui.h>
+
+class TestBaseClass
+{
+	FBTBASECLASS(TestBaseClass)
+};
+
+class TestClass : public TestBaseClass
+{
+	FBTCLASS(TestClass, TestBaseClass)
+};
 
 class Sandbox : public Flibbert::Application
 {
@@ -21,6 +32,12 @@ public:
 	explicit Sandbox(const Flibbert::ApplicationInfo& info) : Application(info)
 	{
 		ZoneScoped;
+
+		Flibbert::ClassRegistry::RegisterClass<TestClass>();
+
+		TestClass* testobj = Flibbert::ClassRegistry::Create<TestClass>();
+
+		FBT_INFO("Created {0} from registry!", testobj->GetClassName());
 
 		RegisterDemo<Demo::DemoClearColor>();
 		RegisterDemo<Demo::DemoTexture2D>();

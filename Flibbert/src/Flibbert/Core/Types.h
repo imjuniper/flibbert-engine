@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <type_traits>
 
 // Brings cstdint types into global scope. Better than having to deal with std::[type]
 // clang-format off
@@ -40,3 +41,11 @@ using std::uintptr_t;
 using std::intmax_t;
 using std::uintmax_t;
 // clang-format on
+
+namespace Flibbert::Utils
+{
+	template <typename T, typename O>
+	bool DerivesFrom(O* Object) {
+		return std::is_base_of_v<T, O>;
+	}
+}

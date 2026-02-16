@@ -20,6 +20,8 @@ set(LIB_SOURCES
     src/Flibbert/Core/AssertionMacros.cpp
     src/Flibbert/Core/AssertionMacros.h
     src/Flibbert/Core/Base.h
+    src/Flibbert/Core/ClassRegistry.cpp
+    src/Flibbert/Core/ClassRegistry.h
     src/Flibbert/Core/Delegates.cpp
     src/Flibbert/Core/Delegates.h
     src/Flibbert/Core/EntryPoint.h

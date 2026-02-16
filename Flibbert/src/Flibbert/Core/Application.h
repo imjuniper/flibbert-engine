@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Flibbert/Core/Base.h"
+#include "Flibbert/Core/ClassRegistry.h"
 
 #include <memory>
 #include <string>
@@ -29,6 +30,8 @@ namespace Flibbert
 
 	class Application
 	{
+		FBTBASECLASS(Application)
+
 	public:
 		explicit Application(const ApplicationInfo& info);
 		virtual ~Application();
