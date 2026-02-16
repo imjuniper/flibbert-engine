@@ -26,9 +26,20 @@ set_target_properties(Sandbox
         PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Sandbox"
         VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Sandbox"
-        INSTALL_RPATH $ORIGIN
-        BUILD_WITH_INSTALL_RPATH true
 )
+
+if(APPLE)
+    set_target_properties(Sandbox PROPERTIES
+        INSTALL_RPATH "@executable_path;@loader_path"
+        BUILD_WITH_INSTALL_RPATH TRUE
+        MACOSX_RPATH TRUE
+    )
+elseif(UNIX)
+    set_target_properties(Sandbox PROPERTIES
+        INSTALL_RPATH "$ORIGIN"
+        BUILD_WITH_INSTALL_RPATH TRUE
+    )
+endif()
 
 add_custom_command(
         TARGET Sandbox PRE_BUILD

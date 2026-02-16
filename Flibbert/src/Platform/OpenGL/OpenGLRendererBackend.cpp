@@ -6,11 +6,9 @@
 #include "Platform/OpenGL/OpenGLBuffer.h"
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "Platform/OpenGL/OpenGLVertexArray.h"
+#include "SDL3/SDL_video.h"
 
 #include <backends/imgui_impl_opengl3.h>
-
-#define RGFW_OPENGL
-#include <rgfw/RGFW.h>
 
 #define GLAD_GL_IMPLEMENTATION
 #include <glad.h>
@@ -76,14 +74,14 @@ namespace Flibbert
 		{
 			ZoneNamedN(ZoneGLContextInit, "OpenGL Context Initialization", true);
 
-			RGFW_glHints* hints = RGFW_getGlobalHints_OpenGL();
-			hints->major = 4;
-			hints->minor = 6;
-			hints->profile = RGFW_glCore;
-			hints->samples = 4;
-			RGFW_window_createContext_OpenGL(window.GetNativeWindow(), hints);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 
-			int status = gladLoadGL(RGFW_getProcAddress_OpenGL);
+			m_GlContext = SDL_GL_CreateContext(window.GetNativeWindow());
+
+			int status = gladLoadGL(SDL_GL_GetProcAddress);
 			FBT_CORE_ENSURE(status);
 
 			TracyGpuContext;

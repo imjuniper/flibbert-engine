@@ -98,6 +98,8 @@ macro(set_option option help value)
 endmacro()
 
 set_option(FBT_PROFILING_ENABLED "Enable profiling" OFF)
+set(BUILD_SHARED_LIBS FALSE)
+set(SDL_X11 OFF)
 
 # Libraries
 FetchContent_Declare(
@@ -129,7 +131,14 @@ FetchContent_Declare(
         GIT_PROGRESS   true
         SOURCE_SUBDIR  pls_dont_include_kthx
 )
-FetchContent_MakeAvailable(glm spdlog imgui tracy)
+FetchContent_Declare(
+        sdl
+        GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+        GIT_TAG        release-3.4.0
+        GIT_SHALLOW    true
+        GIT_PROGRESS   true
+)
+FetchContent_MakeAvailable(glm spdlog imgui tracy sdl)
 
 add_library(imgui STATIC
         "${imgui_SOURCE_DIR}/imconfig.h"
@@ -145,6 +154,8 @@ add_library(imgui STATIC
         "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.h"
         "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp"
         "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3_loader.h"
+        "${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.h"
+        "${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp"
         "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp"
         "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.h")
 
@@ -158,7 +169,7 @@ endif()
 
 target_include_directories(tracy PUBLIC "${tracy_SOURCE_DIR}/public")
 
-target_link_libraries(Flibbert PUBLIC glm imgui spdlog tracy)
+target_link_libraries(Flibbert PUBLIC glm imgui spdlog tracy SDL3::SDL3)
 
 # Platform-specific stuffs
 if (APPLE)

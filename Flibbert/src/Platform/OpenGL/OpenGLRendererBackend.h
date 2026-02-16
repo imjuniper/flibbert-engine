@@ -6,6 +6,8 @@
 	#include <glad.h>
 #endif
 
+struct SDL_GLContextState;
+
 namespace Flibbert
 {
 	class Window;
@@ -39,6 +41,8 @@ namespace Flibbert
 
 	private:
 		DelegateHandle m_WindowResizedDelegate;
+
+		SDL_GLContextState* m_GlContext;
 
 #if FBT_PROFILING_ENABLED
 		GLuint m_TracyTexture[4];

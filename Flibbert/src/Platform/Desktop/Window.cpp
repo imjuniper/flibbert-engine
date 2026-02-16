@@ -2,16 +2,11 @@
 
 #include "Flibbert/Input/Input.h"
 
-#ifdef FBT_DEBUG
-	#define RGFW_DEBUG
-#endif
-#define RGFW_OPENGL
-#define RGFW_IMPLEMENTATION
-#define RGFW_IMGUI_IMPLEMENTATION
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wc++11-narrowing"
-#include <rgfw/imgui_impl_rgfw.h> // Also includes RGFW.h
-#pragma clang diagnostic pop
+#include "SDL3/SDL_events.h"
+#include "SDL3/SDL_init.h"
+#include "SDL3/SDL_mouse.h"
+#include "SDL3/SDL_video.h"
+#include "backends/imgui_impl_sdl3.h"
 
 namespace Flibbert
 {
@@ -19,12 +14,23 @@ namespace Flibbert
 	{
 		ZoneScoped;
 
-		m_WindowHandle = RGFW_createWindow(props.Title.c_str(),
-		                                   0, 0, props.Width, props.Height,
-		                                   RGFW_windowCenter);
+		SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
-		m_Position = {std::max(m_WindowHandle->x, 0), std::max(m_WindowHandle->y, 0)};
-		m_Size = {std::max(m_WindowHandle->w, 0), std::max(m_WindowHandle->h, 0)};
+		constexpr SDL_WindowFlags flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
+
+		m_WindowHandle = SDL_CreateWindow(props.Title.c_str(), props.Width, props.Height, flags);
+		FBT_CORE_INFO("Created window {0}", fmt::ptr(m_WindowHandle));
+
+		int x, y;
+		if (SDL_GetWindowPosition(m_WindowHandle, &x, &y)) {
+			m_Position = {std::max(x, 0), std::max(y, 0)};
+		}
+
+		int w, h;
+		if (SDL_GetWindowSize(m_WindowHandle, &w, &h)) {
+			m_Size = {std::max(w, 0), std::max(h, 0)};
+		}
+
 		m_AspectRatio = static_cast<float>(m_Size.x) / m_Size.y;
 
 		Input::Get().OnSetCursorMode.BindDynamic(this, Window::OnSetCursorMode);
@@ -34,99 +40,92 @@ namespace Flibbert
 	{
 		ZoneScoped;
 
-		RGFW_window_close(m_WindowHandle);
+		if (m_WindowHandle && SDL_WasInit(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
+			SDL_DestroyWindow(m_WindowHandle);
+		}
+
+		SDL_QuitSubSystem(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
+		SDL_Quit();
 	}
 
 	void Window::InitImGui()
 	{
 		ZoneScoped;
 
-		ImGui_ImplRgfw_InitForOpenGL(GetNativeWindow(), true);
+		ImGui_ImplSDL3_InitForOpenGL(GetNativeWindow(), SDL_GL_GetCurrentContext());
 	}
 
 	void Window::BeginImGuiFrame()
 	{
 		ZoneScoped;
 
-		ImGui_ImplRgfw_NewFrame();
+		ImGui_ImplSDL3_NewFrame();
 	}
 
 	void Window::ShutdownImGui()
 	{
 		ZoneScoped;
 
-		ImGui_ImplRgfw_Shutdown();
+		ImGui_ImplSDL3_Shutdown();
 	}
 
 	void Window::ProcessEvents()
 	{
 		ZoneScoped;
 
-		RGFW_event event;
-		while (RGFW_window_checkEvent(m_WindowHandle, &event)) {
+		SDL_Event event;
+		while (SDL_PollEvent(&event)) {
+			ImGui_ImplSDL3_ProcessEvent(&event);
 			switch (event.type) {
-				case RGFW_quit: {
+				case SDL_EVENT_QUIT: {
 					OnWindowClosed.Broadcast(*this);
 					break;
 				}
-				case RGFW_windowMoved: {
-					m_Position = {std::max(m_WindowHandle->x, 0),
-						      std::max(m_WindowHandle->y, 0)};
+				case SDL_EVENT_WINDOW_MOVED: {
+					int x, y;
+					if (SDL_GetWindowPosition(m_WindowHandle, &x, &y)) {
+						m_Position = {std::max(x, 0), std::max(y, 0)};
+					}
 					OnWindowMoved.Broadcast(*this, m_Position);
 					break;
 				}
-				case RGFW_windowResized: {
+				case SDL_EVENT_WINDOW_RESIZED: {
 					// @todo implement smooth resize
-					// https://github.com/ColleagueRiley/RGFW/blob/main/examples/smooth-resize/smooth-resize.c?rgh-link-date=2025-06-23T16%3A00%3A55.000Z
-					m_Size = {std::max(m_WindowHandle->w, 0),
-						  std::max(m_WindowHandle->h, 0)};
+					int w, h;
+					if (SDL_GetWindowSize(m_WindowHandle, &w, &h)) {
+						m_Size = {std::max(w, 0), std::max(h, 0)};
+					}
 					m_AspectRatio = static_cast<float>(m_Size.x) / m_Size.y;
 					OnWindowResized.Broadcast(*this, m_Size);
 					break;
 				}
-				case RGFW_keyPressed: {
+				case SDL_EVENT_KEY_UP:
+				case SDL_EVENT_KEY_DOWN: {
 					auto keyEvent = std::make_shared<InputEventKey>();
-					keyEvent->Key = static_cast<Key>(event.key.value);
-					keyEvent->IsPressed = true;
+					keyEvent->Key = static_cast<Key>(event.key.key);
+					keyEvent->IsPressed = event.key.down;
 					Input::Get().ProcessInputEvent(keyEvent);
 					break;
 				}
-				case RGFW_keyReleased: {
-					auto keyEvent = std::make_shared<InputEventKey>();
-					keyEvent->Key = static_cast<Key>(event.key.value);
-					keyEvent->IsPressed = false;
-					Input::Get().ProcessInputEvent(keyEvent);
-					break;
-				}
-				case RGFW_mouseButtonPressed: {
+				case SDL_EVENT_MOUSE_BUTTON_UP:
+				case SDL_EVENT_MOUSE_BUTTON_DOWN: {
 					auto mouseButtonEvent =
 					    std::make_shared<InputEventMouseButton>();
 					mouseButtonEvent->Position =
-					    glm::vec2{event.mouse.x, event.mouse.y};
+					    glm::vec2{event.motion.x, event.motion.y};
 					mouseButtonEvent->Button =
-					    static_cast<MouseButton>(event.button.value);
-					mouseButtonEvent->IsPressed = true;
+					    static_cast<MouseButton>(event.button.button);
+					mouseButtonEvent->IsPressed = event.button.down;
 					Input::Get().ProcessInputEvent(mouseButtonEvent);
 					break;
 				}
-				case RGFW_mouseButtonReleased: {
-					auto mouseButtonEvent =
-					    std::make_shared<InputEventMouseButton>();
-					mouseButtonEvent->Position =
-					    glm::vec2{event.mouse.x, event.mouse.y};
-					mouseButtonEvent->Button =
-					    static_cast<MouseButton>(event.button.value);
-					mouseButtonEvent->IsPressed = false;
-					Input::Get().ProcessInputEvent(mouseButtonEvent);
-					break;
-				}
-				case RGFW_mousePosChanged: {
+				case SDL_EVENT_MOUSE_MOTION: {
 					auto mouseMovementEvent =
 					    std::make_shared<InputEventMouseMovement>();
 					mouseMovementEvent->Position =
-					    glm::vec2{event.mouse.x, event.mouse.y};
+					    glm::vec2{event.motion.x, event.motion.y};
 					mouseMovementEvent->MovementDelta =
-					    glm::vec2{event.mouse.vecX, event.mouse.vecY};
+					    glm::vec2{event.motion.xrel, event.motion.yrel};
 					Input::Get().ProcessInputEvent(mouseMovementEvent);
 					break;
 				}
@@ -141,7 +140,7 @@ namespace Flibbert
 	{
 		ZoneScoped;
 
-		RGFW_window_swapBuffers_OpenGL(m_WindowHandle);
+		SDL_GL_SwapWindow(m_WindowHandle);
 	}
 
 	void Window::SetVSync(const bool enabled)
@@ -149,7 +148,7 @@ namespace Flibbert
 		ZoneScoped;
 
 		m_VSync = enabled;
-		RGFW_window_swapInterval_OpenGL(m_WindowHandle, m_VSync);
+		SDL_GL_SetSwapInterval(static_cast<int>(m_VSync));
 	}
 
 	bool Window::IsVSyncEnabled() const
@@ -173,16 +172,16 @@ namespace Flibbert
 
 		switch (mode) {
 			case CursorMode::Normal:
-				RGFW_window_captureMouse(m_WindowHandle, false);
-				RGFW_window_showMouse(m_WindowHandle, true);
+				SDL_CaptureMouse(false);
+				SDL_ShowCursor();
 				break;
 			case CursorMode::Hidden:
-				RGFW_window_captureMouse(m_WindowHandle, false);
-				RGFW_window_showMouse(m_WindowHandle, false);
+				SDL_CaptureMouse(false);
+				SDL_HideCursor();
 				break;
 			case CursorMode::Locked:
-				RGFW_window_captureMouse(m_WindowHandle, true);
-				RGFW_window_showMouse(m_WindowHandle, false);
+				SDL_CaptureMouse(true);
+				SDL_ShowCursor();
 				break;
 		}
 	}

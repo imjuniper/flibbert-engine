@@ -3,7 +3,7 @@
 #include "Flibbert/Core/Base.h"
 #include "Flibbert/Input/InputEvent.h"
 
-struct RGFW_window;
+struct SDL_Window;
 
 namespace Flibbert
 {
@@ -27,6 +27,9 @@ namespace Flibbert
 	public:
 		explicit Window(const WindowProps& props = WindowProps());
 
+		Window(const Window&) = delete;
+  		Window& operator=(const Window&) = delete;
+
 		~Window();
 
 		void InitImGui();
@@ -43,7 +46,7 @@ namespace Flibbert
 		[[nodiscard]] glm::u32vec2 GetPosition() const;
 		[[nodiscard]] float GetAspectRatio() const { return m_AspectRatio; }
 
-		[[nodiscard]] RGFW_window* GetNativeWindow() const { return m_WindowHandle; }
+		[[nodiscard]] SDL_Window* GetNativeWindow() const { return m_WindowHandle; }
 
 	public:
 		OnWindowResizedDelegate OnWindowResized;
@@ -55,7 +58,7 @@ namespace Flibbert
 
 	private:
 		bool m_VSync = true;
-		RGFW_window* m_WindowHandle = nullptr;
+		SDL_Window* m_WindowHandle = nullptr;
 
 		glm::u32vec2 m_Position{0};
 		glm::u32vec2 m_Size{0};
