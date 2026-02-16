@@ -184,7 +184,7 @@ namespace Flibbert
 				break;
 			case CursorMode::Locked:
 				SDL_CaptureMouse(true);
-				SDL_ShowCursor();
+				SDL_HideCursor();
 				break;
 		}
 	}
