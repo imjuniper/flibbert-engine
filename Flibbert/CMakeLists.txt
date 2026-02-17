@@ -56,33 +56,22 @@ set(LIB_SOURCES
     src/Flibbert/Renderer/VertexArray.cpp
     src/Flibbert/Renderer/VertexArray.h
     src/Modules/InitializeModules.h
-    src/Platform/OS/Desktop/Window.cpp
-    src/Platform/OS/Desktop/Window.h
-    src/Platform/RendererBackend/OpenGL/OpenGLBuffer.cpp
-    src/Platform/RendererBackend/OpenGL/OpenGLBuffer.h
-    src/Platform/RendererBackend/OpenGL/OpenGLFramebuffer.cpp
-    src/Platform/RendererBackend/OpenGL/OpenGLFramebuffer.h
-    src/Platform/RendererBackend/OpenGL/OpenGLRendererBackend.cpp
-    src/Platform/RendererBackend/OpenGL/OpenGLRendererBackend.h
-    src/Platform/RendererBackend/OpenGL/OpenGLShader.cpp
-    src/Platform/RendererBackend/OpenGL/OpenGLShader.h
-    src/Platform/RendererBackend/OpenGL/OpenGLTexture.cpp
-    src/Platform/RendererBackend/OpenGL/OpenGLTexture.h
-    src/Platform/RendererBackend/OpenGL/OpenGLVertexArray.cpp
-    src/Platform/RendererBackend/OpenGL/OpenGLVertexArray.h
-    src/Platform/RendererBackend/Vulkan/VulkanRendererBackend.cpp
-    src/Platform/RendererBackend/Vulkan/VulkanRendererBackend.h)
-
-if(WIN32)
-    list(APPEND LIB_SOURCES src/Platform/OS/Windows/WindowsPlatform.cpp)
-else()
-    if (APPLE)
-        list(APPEND LIB_SOURCES src/Platform/OS/MacOS/MacOSPlatform.cpp)
-    else()
-        list(APPEND LIB_SOURCES src/Platform/OS/Linux/LinuxPlatform.cpp)
-    endif()
-endif()
-
+    src/Platform/Desktop/Window.cpp
+    src/Platform/Desktop/Window.h
+    src/Backends/OpenGL/OpenGLBuffer.cpp
+    src/Backends/OpenGL/OpenGLBuffer.h
+    src/Backends/OpenGL/OpenGLFramebuffer.cpp
+    src/Backends/OpenGL/OpenGLFramebuffer.h
+    src/Backends/OpenGL/OpenGLRendererBackend.cpp
+    src/Backends/OpenGL/OpenGLRendererBackend.h
+    src/Backends/OpenGL/OpenGLShader.cpp
+    src/Backends/OpenGL/OpenGLShader.h
+    src/Backends/OpenGL/OpenGLTexture.cpp
+    src/Backends/OpenGL/OpenGLTexture.h
+    src/Backends/OpenGL/OpenGLVertexArray.cpp
+    src/Backends/OpenGL/OpenGLVertexArray.h
+    src/Backends/Vulkan/VulkanRendererBackend.cpp
+    src/Backends/Vulkan/VulkanRendererBackend.h)
 add_library(Flibbert ${LIB_SOURCES})
 
 target_include_directories(Flibbert
@@ -172,28 +161,40 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(imgui)
 
 add_library(imgui
-        "${imgui_SOURCE_DIR}/imconfig.h"
-        "${imgui_SOURCE_DIR}/imgui.cpp"
-        "${imgui_SOURCE_DIR}/imgui.h"
-        "${imgui_SOURCE_DIR}/imgui_draw.cpp"
-        "${imgui_SOURCE_DIR}/imgui_internal.h"
-        "${imgui_SOURCE_DIR}/imgui_tables.cpp"
-        "${imgui_SOURCE_DIR}/imgui_widgets.cpp"
-        "${imgui_SOURCE_DIR}/imstb_rectpack.h"
-        "${imgui_SOURCE_DIR}/imstb_textedit.h"
-        "${imgui_SOURCE_DIR}/imstb_truetype.h"
-        "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.h"
-        "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp"
-        "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3_loader.h"
-        "${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.h"
-        "${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp"
-        "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp"
-        "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.h")
+    "${imgui_SOURCE_DIR}/imconfig.h"
+    "${imgui_SOURCE_DIR}/imgui.cpp"
+    "${imgui_SOURCE_DIR}/imgui.h"
+    "${imgui_SOURCE_DIR}/imgui_draw.cpp"
+    "${imgui_SOURCE_DIR}/imgui_internal.h"
+    "${imgui_SOURCE_DIR}/imgui_tables.cpp"
+    "${imgui_SOURCE_DIR}/imgui_widgets.cpp"
+    "${imgui_SOURCE_DIR}/imstb_rectpack.h"
+    "${imgui_SOURCE_DIR}/imstb_textedit.h"
+    "${imgui_SOURCE_DIR}/imstb_truetype.h"
+    "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.h"
+    "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp"
+    "${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3_loader.h"
+    "${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.h"
+    "${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp"
+    "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp"
+    "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.h")
 
 target_include_directories(imgui PUBLIC "${sdl_SOURCE_DIR}/include")
 target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
 
 target_link_libraries(Flibbert PUBLIC imgui)
+
+### Platforms ###
+set(PLATFORMS_DIR src/Platform)
+if(WIN32)
+    include(${PLATFORMS_DIR}/Windows/Platform.cmake)
+else()
+    if (APPLE)
+        include(${PLATFORMS_DIR}/MacOS/Platform.cmake)
+    else()
+        include(${PLATFORMS_DIR}/Linux/Platform.cmake)
+    endif()
+endif()
 
 ### Modules ###
 # Automatically include modules & generate an initializer

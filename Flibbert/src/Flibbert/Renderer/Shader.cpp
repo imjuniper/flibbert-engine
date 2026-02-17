@@ -1,7 +1,7 @@
 #include "Flibbert/Renderer/Shader.h"
 
 #include "Flibbert/Renderer/Renderer.h"
-#include "Platform/RendererBackend/OpenGL/OpenGLShader.h"
+#include "Backends/OpenGL/OpenGLShader.h"
 
 #include <fstream>
 #include <regex>

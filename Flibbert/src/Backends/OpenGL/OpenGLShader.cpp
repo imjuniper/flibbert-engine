@@ -1,4 +1,4 @@
-#include "Platform/RendererBackend/OpenGL/OpenGLShader.h"
+#include "Backends/OpenGL/OpenGLShader.h"
 
 #include <glad.h>
 

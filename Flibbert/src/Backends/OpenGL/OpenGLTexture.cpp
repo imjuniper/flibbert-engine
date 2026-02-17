@@ -1,4 +1,4 @@
-#include "Platform/RendererBackend/OpenGL/OpenGLTexture.h"
+#include "Backends/OpenGL/OpenGLTexture.h"
 
 #include <glad.h>
 

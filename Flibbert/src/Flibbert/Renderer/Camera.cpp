@@ -2,7 +2,7 @@
 
 #include "Flibbert/Core/Application.h"
 #include "Flibbert/Input/Input.h"
-#include "Platform/OS/Desktop/Window.h"
+#include "Platform/Desktop/Window.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>

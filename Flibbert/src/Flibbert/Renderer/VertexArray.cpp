@@ -1,7 +1,7 @@
 #include "Flibbert/Renderer/VertexArray.h"
 
 #include "Flibbert/Renderer/Renderer.h"
-#include "Platform/RendererBackend/OpenGL/OpenGLVertexArray.h"
+#include "Backends/OpenGL/OpenGLVertexArray.h"
 
 namespace Flibbert {
 

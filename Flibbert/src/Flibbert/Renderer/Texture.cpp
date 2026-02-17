@@ -1,7 +1,7 @@
 #include "Flibbert/Renderer/Texture.h"
 
 #include "Flibbert/Renderer/Renderer.h"
-#include "Platform/RendererBackend/OpenGL/OpenGLTexture.h"
+#include "Backends/OpenGL/OpenGLTexture.h"
 
 namespace Flibbert {
 

@@ -1,4 +1,4 @@
-#include "Platform/RendererBackend/OpenGL/OpenGLFramebuffer.h"
+#include "Backends/OpenGL/OpenGLFramebuffer.h"
 
 #include <glad.h>
 #include <glm/gtc/type_ptr.hpp>

@@ -4,7 +4,7 @@
 #include "Flibbert/Core/ClassRegistry.h"
 #include "Flibbert/Core/Platform.h"
 #include "Flibbert/Renderer/Renderer.h"
-#include "Platform/OS/Desktop/Window.h"
+#include "Platform/Desktop/Window.h"
 
 #include <imgui.h>
 

@@ -1,4 +1,4 @@
-#include "Platform/OS/Desktop/Window.h"
+#include "Platform/Desktop/Window.h"
 
 #include "Flibbert/Core/Application.h"
 #include "Flibbert/Input/Input.h"

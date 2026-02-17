@@ -1,7 +1,7 @@
 #include "Flibbert/Renderer/Buffer.h"
 
 #include "Flibbert/Renderer/Renderer.h"
-#include "Platform/RendererBackend/OpenGL/OpenGLBuffer.h"
+#include "Backends/OpenGL/OpenGLBuffer.h"
 
 namespace Flibbert {
 

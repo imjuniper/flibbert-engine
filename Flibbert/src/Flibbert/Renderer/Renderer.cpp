@@ -2,8 +2,8 @@
 
 #include "Flibbert/Core/Application.h"
 
-#include "Platform/RendererBackend/OpenGL/OpenGLRendererBackend.h"
-#include "Platform/RendererBackend/Vulkan/VulkanRendererBackend.h"
+#include "Backends/OpenGL/OpenGLRendererBackend.h"
+#include "Backends/Vulkan/VulkanRendererBackend.h"
 
 namespace Flibbert {
 

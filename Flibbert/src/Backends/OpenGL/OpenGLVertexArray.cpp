@@ -1,6 +1,6 @@
-#include "Platform/RendererBackend/OpenGL/OpenGLVertexArray.h"
+#include "Backends/OpenGL/OpenGLVertexArray.h"
 
-#include "Platform/RendererBackend/OpenGL/OpenGLBuffer.h"
+#include "Backends/OpenGL/OpenGLBuffer.h"
 
 #include <glad.h>
 
