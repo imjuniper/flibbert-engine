@@ -8,6 +8,8 @@ project(
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+
 if (APPLE)
     message(FATAL_ERROR "Apple devices are be unsupported because they do not support OpenGL 4.2+. Eventually, Metal support will be added, once I figure out Vulkan too")
 endif ()
@@ -57,7 +59,6 @@ set(LIB_SOURCES
     src/Flibbert/Renderer/Texture.h
     src/Flibbert/Renderer/VertexArray.cpp
     src/Flibbert/Renderer/VertexArray.h
-    src/Modules/InitializeModules.cpp
     src/Modules/InitializeModules.h
     src/Platform/OS/Desktop/Window.cpp
     src/Platform/OS/Desktop/Window.h
@@ -76,13 +77,6 @@ set(LIB_SOURCES
     src/Platform/RendererBackend/Vulkan/VulkanRendererBackend.cpp
     src/Platform/RendererBackend/Vulkan/VulkanRendererBackend.h)
 
-# Modules (WIP)
-list(APPEND LIB_SOURCES
-    src/Modules/Imgui/ImguiModule.cpp
-    src/Modules/Imgui/ImguiModule.h
-    src/Modules/Imgui/ImguiSubsystem.cpp
-    src/Modules/Imgui/ImguiSubsystem.h)
-
 if(WIN32)
     list(APPEND LIB_SOURCES src/Platform/OS/Windows/WindowsPlatform.cpp)
 else()
@@ -93,8 +87,27 @@ else()
     endif()
 endif()
 
-# Project
 add_library(Flibbert ${LIB_SOURCES})
+
+# Generate module initializer
+set(GENERATED_FILE ${CMAKE_CURRENT_BINARY_DIR}/src/Modules/InitializeModules.cpp)
+
+add_custom_command(
+    OUTPUT  ${GENERATED_FILE}
+    COMMAND ${CMAKE_COMMAND}
+            -D MODULES_DIR=${CMAKE_CURRENT_SOURCE_DIR}/src/Modules
+            -D OUTPUT_FILE=${GENERATED_FILE}
+            -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/GenerateModuleInitializer.cmake
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/GenerateModuleInitializer.cmake
+    COMMENT "Generating module initializer..."
+)
+
+add_custom_target(GenerateModuleInitializer DEPENDS ${GENERATED_FILE})
+
+target_sources(Flibbert PRIVATE ${GENERATED_FILE})
+add_dependencies(Flibbert GenerateModuleInitializer)
+
+include(IncludeModules)
 
 target_include_directories(Flibbert
         PUBLIC

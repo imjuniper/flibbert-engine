@@ -4,7 +4,7 @@
 
 #include "Modules/Imgui/ImguiSubsystem.h"
 
-namespace Flibbert::Module::Imgui {
+namespace Flibbert::Modules::Imgui {
 
 void InitializeModule()
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Flibbert::Module::Imgui {
+namespace Flibbert::Modules::Imgui {
 
 void InitializeModule();
 

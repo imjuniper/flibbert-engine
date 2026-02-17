@@ -3,7 +3,7 @@
 #include "Flibbert/Core/ApplicationSubsystem.h"
 #include "Flibbert/Core/ClassRegistry.h"
 
-namespace Flibbert::Module::Imgui {
+namespace Flibbert::Modules::Imgui {
 
 class ImguiSubsystem : public ApplicationSubsystem
 {

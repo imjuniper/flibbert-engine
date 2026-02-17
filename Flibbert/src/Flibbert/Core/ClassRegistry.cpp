@@ -46,7 +46,6 @@ void ClassRegistry::GetChildClasses(std::string_view className, std::vector<cons
 {
 	for (auto it = Classes.begin(); it != Classes.end(); it++) {
 		if (it->second.IsChildOf(className)) {
-			FBT_CORE_INFO("Class {0} child of {1}", it->second.Name, className);
 			classes.push_back(&it->second);
 		}
 	}

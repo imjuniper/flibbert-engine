@@ -2,7 +2,7 @@
 
 #include "Flibbert/Core/Log.h"
 
-namespace Flibbert::Module::Imgui {
+namespace Flibbert::Modules::Imgui {
 
 void ImguiSubsystem::Initialize(Application* application) {
 	Super::Initialize(application);
