@@ -32,7 +32,7 @@ foreach(BUILD_FILE ${MODULE_BUILD_FILES})
     endif()
 endforeach()
 
-set(GENERATED_FILE ${CMAKE_CURRENT_BINARY_DIR}/src/Modules/InitializeModules.cpp)
+set(GENERATED_FILE ${CMAKE_CURRENT_BINARY_DIR}/src/Modules/InitializeModules.gen.cpp)
 
 add_custom_command(
     OUTPUT  ${GENERATED_FILE}
