@@ -1,28 +1,38 @@
 #pragma once
 
-namespace Flibbert
+namespace Flibbert {
+
+class Texture
 {
-	class Texture
+public:
+	virtual ~Texture() = default;
+
+	virtual void Bind(uint32_t slot) const = 0;
+	virtual void Unbind(uint32_t slot) const = 0;
+
+	[[nodiscard]] uint32_t GetWidth() const
 	{
-	public:
-		virtual ~Texture() = default;
+		return m_Width;
+	}
+	[[nodiscard]] uint32_t GetHeight() const
+	{
+		return m_Height;
+	}
+	[[nodiscard]] bool IsLoaded() const
+	{
+		return m_Loaded;
+	}
 
-		virtual void Bind(uint32_t slot) const = 0;
-		virtual void Unbind(uint32_t slot) const = 0;
+	static std::shared_ptr<Texture> Create(std::string_view path);
 
-		[[nodiscard]] uint32_t GetWidth() const { return m_Width; }
-		[[nodiscard]] uint32_t GetHeight() const { return m_Height; }
-		[[nodiscard]] bool IsLoaded() const { return m_Loaded; }
+protected:
+	std::string m_Path;
+	bool m_Loaded = false;
 
-		static std::shared_ptr<Texture> Create(std::string_view path);
+	uint32_t m_Width = 0;
+	uint32_t m_Height = 0;
+	uint32_t m_InternalFormat = 0;
+	uint32_t m_DataFormat = 0;
+};
 
-	protected:
-		std::string m_Path;
-		bool m_Loaded = false;
-
-		uint32_t m_Width = 0;
-		uint32_t m_Height = 0;
-		uint32_t m_InternalFormat = 0;
-		uint32_t m_DataFormat = 0;
-	};
 } // namespace Flibbert

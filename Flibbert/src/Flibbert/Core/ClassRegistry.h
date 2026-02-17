@@ -5,67 +5,69 @@
 
 #include <unordered_map>
 
-namespace Flibbert
+namespace Flibbert {
+
+class ClassRegistry
 {
-	class ClassRegistry
+public:
+	struct ClassInfo
 	{
-	public:
-		struct ClassInfo {
-			std::string Name;
-			std::string Parent;
-			ClassInfo* ParentInfo = nullptr;
-			void* (*FactoryFunc)() = nullptr;
-		};
-
-		template <typename T>
-		static void* ClassFactory()
-		{
-			return new T();
-		}
-
-		// @todo revisit my StringName implementation to use it here instead
-		static std::unordered_map<std::string, ClassInfo> Classes;
-
-		static void AddClass(const std::string& className, const std::string* parentClassName);
-
-		template <typename T>
-		static void RegisterAbstractClass()
-		{
-			static_assert(std::is_same_v<typename T::ThisClass, T>,
-			              "Class not declared properly, please use FBTCLASS.");
-
-			T::InitializeClass();
-
-			FBT_CORE_TRACE("Registered abstract class {0}", T::ClassNamePrivate);
-		}
-
-		template <typename T>
-		static void RegisterClass()
-		{
-			static_assert(std::is_same_v<typename T::ThisClass, T>,
-			              "Class not declared properly, please use FBTCLASS.");
-
-			T::InitializeClass();
-			const auto found = Classes.find(T::ClassNamePrivate);
-			found->second.FactoryFunc = &ClassFactory<T>;
-
-			FBT_CORE_TRACE("Registered class {0}", T::ClassNamePrivate);
-		}
-
-		template <typename T>
-		static T* Create()
-		{
-			static_assert(std::is_same_v<typename T::ThisClass, T>,
-			              "Class not declared properly, please use FBTCLASS.");
-
-			const auto found = Classes.find(T::ClassNamePrivate);
-			FBT_CORE_ENSURE_MSG(found != Classes.end(), "Class not registered!");
-
-			ClassInfo& info = found->second;
-
-			return static_cast<T*>(info.FactoryFunc());
-		}
+		std::string Name;
+		std::string Parent;
+		ClassInfo* ParentInfo = nullptr;
+		void* (*FactoryFunc)() = nullptr;
 	};
+
+	template <typename T>
+	static void* ClassFactory()
+	{
+		return new T();
+	}
+
+	// @todo revisit my StringName implementation to use it here instead
+	static std::unordered_map<std::string, ClassInfo> Classes;
+
+	static void AddClass(const std::string& className, const std::string* parentClassName);
+
+	template <typename T>
+	static void RegisterAbstractClass()
+	{
+		static_assert(std::is_same_v<typename T::ThisClass, T>,
+		              "Class not declared properly, please use FBTCLASS.");
+
+		T::InitializeClass();
+
+		FBT_CORE_TRACE("Registered abstract class {0}", T::ClassNamePrivate);
+	}
+
+	template <typename T>
+	static void RegisterClass()
+	{
+		static_assert(std::is_same_v<typename T::ThisClass, T>,
+		              "Class not declared properly, please use FBTCLASS.");
+
+		T::InitializeClass();
+		const auto found = Classes.find(T::ClassNamePrivate);
+		found->second.FactoryFunc = &ClassFactory<T>;
+
+		FBT_CORE_TRACE("Registered class {0}", T::ClassNamePrivate);
+	}
+
+	template <typename T>
+	static T* Create()
+	{
+		static_assert(std::is_same_v<typename T::ThisClass, T>,
+		              "Class not declared properly, please use FBTCLASS.");
+
+		const auto found = Classes.find(T::ClassNamePrivate);
+		FBT_CORE_ENSURE_MSG(found != Classes.end(), "Class not registered!");
+
+		ClassInfo& info = found->second;
+
+		return static_cast<T*>(info.FactoryFunc());
+	}
+};
+
 } // namespace Flibbert
 
 #define FBTBASECLASS(this_class)                                                                                       \

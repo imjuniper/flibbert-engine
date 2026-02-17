@@ -2,20 +2,21 @@
 
 #include <format>
 
-namespace Flibbert::Assert::Private
+namespace Flibbert::Assert::Private {
+
+std::string GetAssertionMessage(const AssertionInfo& info)
 {
-	std::string GetAssertionMessage(const AssertionInfo& info)
-	{
-		std::string message;
+	std::string message;
 
-		if (info.CustomMessage != nullptr) {
-			message = std::format("Assertion {} failed at {}:{}\n\t{}", info.Condition,
-			                      info.File, info.Line, info.CustomMessage);
-		} else {
-			message = std::format("Assertion {} failed at {}:{}", info.Condition,
-			                      info.File, info.Line);
-		}
-
-		return message;
+	if (info.CustomMessage != nullptr) {
+		message = std::format("Assertion {} failed at {}:{}\n\t{}", info.Condition, info.File, info.Line,
+		                      info.CustomMessage);
 	}
+	else {
+		message = std::format("Assertion {} failed at {}:{}", info.Condition, info.File, info.Line);
+	}
+
+	return message;
+}
+
 } // namespace Flibbert::Assert::Private

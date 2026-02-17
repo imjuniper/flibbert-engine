@@ -4,83 +4,71 @@
 
 #include "Platform/OS/Desktop/Window.h"
 
-namespace Flibbert
+namespace Flibbert {
+
+VulkanRendererBackend::VulkanRendererBackend()
 {
-	VulkanRendererBackend::VulkanRendererBackend()
-	{
-		ZoneScoped;
+	ZoneScoped;
 
-		Window& window = Application::Get().GetWindow();
+	Window& window = Application::Get().GetWindow();
 
-		m_WindowResizedDelegate =
-			window.OnWindowResized.AddDynamic(this, VulkanRendererBackend::OnWindowResized);
+	m_WindowResizedDelegate = window.OnWindowResized.AddDynamic(this, VulkanRendererBackend::OnWindowResized);
 
 #if FBT_PROFILING_ENABLED
-		SetupTracyFrameImageData();
+	SetupTracyFrameImageData();
 #endif
-	}
+}
 
-	VulkanRendererBackend::~VulkanRendererBackend()
-	{
+VulkanRendererBackend::~VulkanRendererBackend()
+{
 #if FBT_PROFILING_ENABLED
-		CleanupTracyFrameImageData();
+	CleanupTracyFrameImageData();
 #endif
-	}
+}
 
-	void VulkanRendererBackend::InitImGui()
-	{
-		ZoneScoped;
-	}
+void VulkanRendererBackend::InitImGui()
+{
+	ZoneScoped;
+}
 
-	void VulkanRendererBackend::BeginImGuiFrame()
-	{
-		ZoneScoped;
-	}
+void VulkanRendererBackend::BeginImGuiFrame()
+{
+	ZoneScoped;
+}
 
-	void VulkanRendererBackend::EndImGuiFrame()
-	{
-		ZoneScoped;
-	}
+void VulkanRendererBackend::EndImGuiFrame()
+{
+	ZoneScoped;
+}
 
-	void VulkanRendererBackend::ShutdownImGui()
-	{
-		ZoneScoped;
-	}
+void VulkanRendererBackend::ShutdownImGui()
+{
+	ZoneScoped;
+}
 
-	void VulkanRendererBackend::SetClearColor(const glm::vec4& color)
-	{
-	}
+void VulkanRendererBackend::SetClearColor(const glm::vec4& color) {}
 
-	void VulkanRendererBackend::Clear()
-	{
-	}
+void VulkanRendererBackend::Clear() {}
 
-	void VulkanRendererBackend::Draw(const std::shared_ptr<VertexArray>& vertexArray,
-	                                 const std::shared_ptr<Shader>& shader) const
-	{
-		ZoneScoped;
-	}
+void VulkanRendererBackend::Draw(const std::shared_ptr<VertexArray>& vertexArray,
+                                 const std::shared_ptr<Shader>& shader) const
+{
+	ZoneScoped;
+}
 
 #if FBT_PROFILING_ENABLED
-	void VulkanRendererBackend::SetupTracyFrameImageData()
-	{
-	}
+void VulkanRendererBackend::SetupTracyFrameImageData() {}
 
-	void VulkanRendererBackend::CleanupTracyFrameImageData()
-	{
-	}
+void VulkanRendererBackend::CleanupTracyFrameImageData() {}
 
-	void VulkanRendererBackend::CaptureTracyFrameImage()
-	{
-	}
+void VulkanRendererBackend::CaptureTracyFrameImage() {}
 
-	void VulkanRendererBackend::CollectTracyGPUTraces()
-	{
-	}
+void VulkanRendererBackend::CollectTracyGPUTraces() {}
 #endif
 
-	void VulkanRendererBackend::OnWindowResized(Window& window, const glm::u32vec2& size)
-	{
-		ZoneScoped;
-	}
+void VulkanRendererBackend::OnWindowResized(Window& window, const glm::u32vec2& size)
+{
+	ZoneScoped;
+}
+
 } // namespace Flibbert

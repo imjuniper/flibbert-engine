@@ -5,24 +5,22 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <imgui.h>
 
-namespace Demo
+namespace Demo {
+
+DemoClearColor::DemoClearColor() : m_Renderer(Flibbert::Renderer::Get()), m_ClearColor{1.0f, 0.0f, 0.0f, 1.0f} {}
+
+void DemoClearColor::OnRender()
 {
-	DemoClearColor::DemoClearColor()
-	    : m_Renderer(Flibbert::Renderer::Get()), m_ClearColor{1.0f, 0.0f, 0.0f, 1.0f}
-	{
-	}
+	ZoneScoped;
 
-	void DemoClearColor::OnRender()
-	{
-		ZoneScoped;
+	m_Renderer.SetClearColor(m_ClearColor);
+}
 
-		m_Renderer.SetClearColor(m_ClearColor);
-	}
+void DemoClearColor::OnImGuiRender()
+{
+	ZoneScoped;
 
-	void DemoClearColor::OnImGuiRender()
-	{
-		ZoneScoped;
+	ImGui::ColorEdit4("Clear Color", glm::value_ptr(m_ClearColor));
+}
 
-		ImGui::ColorEdit4("Clear Color", glm::value_ptr(m_ClearColor));
-	}
 } // namespace Demo

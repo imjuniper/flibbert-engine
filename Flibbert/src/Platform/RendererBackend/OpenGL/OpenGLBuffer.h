@@ -2,43 +2,53 @@
 
 #include "Flibbert/Renderer/Buffer.h"
 
-namespace Flibbert
+namespace Flibbert {
+
+class OpenGLVertexBuffer : public VertexBuffer
 {
-	class OpenGLVertexBuffer : public VertexBuffer
+public:
+	OpenGLVertexBuffer(const void* data, uint32_t size);
+	~OpenGLVertexBuffer() override;
+
+	const uint32_t GetRendererID() const override
 	{
-	public:
-		OpenGLVertexBuffer(const void* data, uint32_t size);
-		~OpenGLVertexBuffer() override;
-
-		const uint32_t GetRendererID() const override { return m_RendererID; };
-
-	private:
-		uint32_t m_RendererID;
+		return m_RendererID;
 	};
 
-	class OpenGLIndexBuffer : public IndexBuffer
+private:
+	uint32_t m_RendererID;
+};
+
+class OpenGLIndexBuffer : public IndexBuffer
+{
+public:
+	OpenGLIndexBuffer(const uint32_t* data, uint32_t count);
+	~OpenGLIndexBuffer() override;
+
+	const uint32_t GetRendererID() const override
 	{
-	public:
-		OpenGLIndexBuffer(const uint32_t* data, uint32_t count);
-		~OpenGLIndexBuffer() override;
-
-		const uint32_t GetRendererID() const override { return m_RendererID; };
-		[[nodiscard]] uint32_t GetCount() const override { return m_Count; }
-
-	private:
-		uint32_t m_RendererID;
-		uint32_t m_Count;
+		return m_RendererID;
 	};
-
-	class OpenGLUniformBuffer : public UniformBuffer
+	[[nodiscard]] uint32_t GetCount() const override
 	{
-	public:
-		OpenGLUniformBuffer(uint32_t size, uint32_t binding);
-		~OpenGLUniformBuffer() override;
+		return m_Count;
+	}
 
-		void SetData(const void* data, uint32_t size, uint32_t offset = 0) override;
+private:
+	uint32_t m_RendererID;
+	uint32_t m_Count;
+};
 
-	private:
-		uint32_t m_RendererID;
-	};
+class OpenGLUniformBuffer : public UniformBuffer
+{
+public:
+	OpenGLUniformBuffer(uint32_t size, uint32_t binding);
+	~OpenGLUniformBuffer() override;
+
+	void SetData(const void* data, uint32_t size, uint32_t offset = 0) override;
+
+private:
+	uint32_t m_RendererID;
+};
+
 } // namespace Flibbert

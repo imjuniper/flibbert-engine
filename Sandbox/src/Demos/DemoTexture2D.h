@@ -4,36 +4,40 @@
 
 #include <Flibbert.h>
 
-namespace Demo
+namespace Demo {
+
+class DemoTexture2D : public Demo
 {
-	class DemoTexture2D : public Demo
+public:
+	DemoTexture2D();
+
+	void OnUpdate(float ts) override;
+	void OnRender() override;
+	void OnImGuiRender() override;
+	void OnInput(const std::shared_ptr<Flibbert::InputEvent>& event) override;
+
+	const char* GetName() const override
 	{
-	public:
-		DemoTexture2D();
+		return Name;
+	}
 
-		void OnUpdate(float ts) override;
-		void OnRender() override;
-		void OnImGuiRender() override;
-		void OnInput(const std::shared_ptr<Flibbert::InputEvent>& event) override;
+public:
+	static constexpr auto Name = "2D Texture";
 
-		const char* GetName() const override { return Name; }
+private:
+	Flibbert::Renderer& m_Renderer;
 
-	public:
-		static constexpr auto Name = "2D Texture";
+	std::shared_ptr<Flibbert::VertexArray> m_VAO;
+	std::shared_ptr<Flibbert::VertexBuffer> m_VertexBuffer;
+	std::shared_ptr<Flibbert::IndexBuffer> m_IndexBuffer;
+	std::shared_ptr<Flibbert::Shader> m_Shader;
+	std::shared_ptr<Flibbert::Texture> m_Texture;
+	std::shared_ptr<Flibbert::UniformBuffer> m_PerFrameBuffer;
+	std::shared_ptr<Flibbert::UniformBuffer> m_PerObjectBuffer;
 
-	private:
-		Flibbert::Renderer& m_Renderer;
+	std::unique_ptr<Flibbert::Camera> m_Camera;
 
-		std::shared_ptr<Flibbert::VertexArray> m_VAO;
-		std::shared_ptr<Flibbert::VertexBuffer> m_VertexBuffer;
-		std::shared_ptr<Flibbert::IndexBuffer> m_IndexBuffer;
-		std::shared_ptr<Flibbert::Shader> m_Shader;
-		std::shared_ptr<Flibbert::Texture> m_Texture;
-		std::shared_ptr<Flibbert::UniformBuffer> m_PerFrameBuffer;
-		std::shared_ptr<Flibbert::UniformBuffer> m_PerObjectBuffer;
+	glm::vec3 m_TranslationA, m_TranslationB;
+};
 
-		std::unique_ptr<Flibbert::Camera> m_Camera;
-
-		glm::vec3 m_TranslationA, m_TranslationB;
-	};
 } // namespace Demo

@@ -4,18 +4,19 @@
 
 #include <string>
 
-namespace Flibbert
+namespace Flibbert {
+
+class OpenGLTexture : public Texture
 {
-	class OpenGLTexture : public Texture
-	{
-	public:
-		explicit OpenGLTexture(std::string_view path);
-		~OpenGLTexture() override;
+public:
+	explicit OpenGLTexture(std::string_view path);
+	~OpenGLTexture() override;
 
-		void Bind(uint32_t slot) const override;
-		void Unbind(uint32_t slot) const override;
+	void Bind(uint32_t slot) const override;
+	void Unbind(uint32_t slot) const override;
 
-	private:
-		uint32_t m_RendererID;
-	};
+private:
+	uint32_t m_RendererID;
+};
+
 } // namespace Flibbert

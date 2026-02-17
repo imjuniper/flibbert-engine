@@ -73,7 +73,6 @@ public:
 		}
 	}
 
-
 	void BeginMainImguiWindow()
 	{
 		// Make the window fill the viewport
@@ -88,11 +87,9 @@ public:
 
 		// Hide the main window borders, background, etc.
 		constexpr ImGuiWindowFlags windowFlags =
-		    ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking |
-		    ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoTitleBar |
-		    ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
-		    ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus |
-		    ImGuiWindowFlags_NoNavFocus;
+		    ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBackground |
+		    ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize |
+		    ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
 
 		static bool mainWindowOpen = true;
 		ImGui::Begin("Sandbox", &mainWindowOpen, windowFlags);
@@ -101,12 +98,10 @@ public:
 
 		// Create the dock space if available
 		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_DockingEnable) {
-			constexpr ImGuiDockNodeFlags dockspaceFlags =
-			    ImGuiDockNodeFlags_PassthruCentralNode |
-			    ImGuiDockNodeFlags_NoDockingOverCentralNode |
-			    ImGuiDockNodeFlags_AutoHideTabBar;
-			ImGui::DockSpace(ImGui::GetID("SandboxDockSpace"), ImVec2(0.0f, 0.0f),
-			                 dockspaceFlags);
+			constexpr ImGuiDockNodeFlags dockspaceFlags = ImGuiDockNodeFlags_PassthruCentralNode |
+			                                              ImGuiDockNodeFlags_NoDockingOverCentralNode |
+			                                              ImGuiDockNodeFlags_AutoHideTabBar;
+			ImGui::DockSpace(ImGui::GetID("SandboxDockSpace"), ImVec2(0.0f, 0.0f), dockspaceFlags);
 		}
 
 		if (ImGui::BeginMenuBar()) {
@@ -128,9 +123,8 @@ public:
 
 			ImGui::Separator();
 
-			const std::string stats =
-			    std::format("{:.2f} FPS ({:.2f} ms)", ImGui::GetIO().Framerate,
-			                1000.0f / ImGui::GetIO().Framerate);
+			const std::string stats = std::format("{:.2f} FPS ({:.2f} ms)", ImGui::GetIO().Framerate,
+			                                      1000.0f / ImGui::GetIO().Framerate);
 			const auto statsSize = ImGui::CalcTextSize(stats.c_str());
 
 			ImGui::SameLine(ImGui::GetWindowWidth() - statsSize.x - 4.0f);
@@ -140,7 +134,10 @@ public:
 		}
 	}
 
-	void EndMainImguiWindow() { ImGui::End(); }
+	void EndMainImguiWindow()
+	{
+		ImGui::End();
+	}
 
 	void OnImguiRender() override
 	{

@@ -3,15 +3,16 @@
 #include "Flibbert/Renderer/Renderer.h"
 #include "Platform/RendererBackend/OpenGL/OpenGLVertexArray.h"
 
-namespace Flibbert
+namespace Flibbert {
+
+std::shared_ptr<VertexArray> VertexArray::Create()
 {
-	std::shared_ptr<VertexArray> VertexArray::Create()
-	{
-		switch (Renderer::GetAPI()) {
-			case Renderer::API::OpenGL:
-				return std::make_shared<OpenGLVertexArray>();
-			default:
-				return nullptr;
-		}
+	switch (Renderer::GetAPI()) {
+	case Renderer::API::OpenGL:
+		return std::make_shared<OpenGLVertexArray>();
+	default:
+		return nullptr;
 	}
+}
+
 } // namespace Flibbert

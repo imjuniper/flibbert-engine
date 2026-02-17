@@ -2,25 +2,29 @@
 
 #include "Demos/Demo.h"
 
-namespace Demo
+namespace Demo {
+
+class DemoClearColor : public Demo
 {
-	class DemoClearColor : public Demo
+public:
+	DemoClearColor();
+
+	void OnUpdate(float ts) override {}
+	void OnRender() override;
+	void OnImGuiRender() override;
+
+	const char* GetName() const override
 	{
-	public:
-		DemoClearColor();
+		return Name;
+	}
 
-		void OnUpdate(float ts) override {}
-		void OnRender() override;
-		void OnImGuiRender() override;
+public:
+	static constexpr auto Name = "Clear Color";
 
-		const char* GetName() const override { return Name; }
+private:
+	Flibbert::Renderer& m_Renderer;
 
-	public:
-		static constexpr auto Name = "Clear Color";
+	glm::vec4 m_ClearColor;
+};
 
-	private:
-		Flibbert::Renderer& m_Renderer;
-
-		glm::vec4 m_ClearColor;
-	};
 } // namespace Demo

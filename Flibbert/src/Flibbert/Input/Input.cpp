@@ -2,76 +2,78 @@
 
 #include "Flibbert/Core/Application.h"
 
-namespace Flibbert
+namespace Flibbert {
+
+Input& Input::Get()
 {
-	Input& Input::Get()
-	{
-		static Input instance;
-		return instance;
-	}
+	static Input instance;
+	return instance;
+}
 
-	void Input::ProcessInputEvent(const std::shared_ptr<InputEvent>& event)
-	{
-		ZoneScoped;
+void Input::ProcessInputEvent(const std::shared_ptr<InputEvent>& event)
+{
+	ZoneScoped;
 
-		auto keyEvent = dynamic_pointer_cast<InputEventKey>(event);
-		if (keyEvent) {
-			if (keyEvent->IsPressed) {
-				m_KeysPressed.insert(keyEvent->Key);
-			} else {
-				m_KeysPressed.erase(keyEvent->Key);
-			}
+	auto keyEvent = dynamic_pointer_cast<InputEventKey>(event);
+	if (keyEvent) {
+		if (keyEvent->IsPressed) {
+			m_KeysPressed.insert(keyEvent->Key);
 		}
-
-		auto mouseButtonEvent = dynamic_pointer_cast<InputEventMouseButton>(event);
-		if (mouseButtonEvent) {
-			m_MousePosition = mouseButtonEvent->Position;
-			if (mouseButtonEvent->IsPressed) {
-				m_MouseButtonMask |= GetMouseButtonAsMask(mouseButtonEvent->Button);
-			} else {
-				m_MouseButtonMask &=
-				    ~GetMouseButtonAsMask(mouseButtonEvent->Button);
-			}
-		}
-
-		auto mouseMovementEvent = dynamic_pointer_cast<InputEventMouseMovement>(event);
-		if (mouseMovementEvent) {
-			m_MousePosition = mouseMovementEvent->Position;
+		else {
+			m_KeysPressed.erase(keyEvent->Key);
 		}
 	}
 
-	bool Input::IsKeyPressed(Key key) const
-	{
-		return m_KeysPressed.contains(key);
+	auto mouseButtonEvent = dynamic_pointer_cast<InputEventMouseButton>(event);
+	if (mouseButtonEvent) {
+		m_MousePosition = mouseButtonEvent->Position;
+		if (mouseButtonEvent->IsPressed) {
+			m_MouseButtonMask |= GetMouseButtonAsMask(mouseButtonEvent->Button);
+		}
+		else {
+			m_MouseButtonMask &= ~GetMouseButtonAsMask(mouseButtonEvent->Button);
+		}
 	}
 
-	bool Input::IsMouseButtonPressed(MouseButton button) const
-	{
-		return m_MouseButtonMask & (1 << static_cast<int>(button));
+	auto mouseMovementEvent = dynamic_pointer_cast<InputEventMouseMovement>(event);
+	if (mouseMovementEvent) {
+		m_MousePosition = mouseMovementEvent->Position;
 	}
+}
 
-	glm::vec2 Input::GetMousePosition() const
-	{
-		return m_MousePosition;
-	}
+bool Input::IsKeyPressed(Key key) const
+{
+	return m_KeysPressed.contains(key);
+}
 
-	CursorMode Input::GetCursorMode() const
-	{
-		return m_CursorMode;
-	}
+bool Input::IsMouseButtonPressed(MouseButton button) const
+{
+	return m_MouseButtonMask & (1 << static_cast<int>(button));
+}
 
-	void Input::SetCursorMode(CursorMode mode)
-	{
-		ZoneScoped;
+glm::vec2 Input::GetMousePosition() const
+{
+	return m_MousePosition;
+}
 
-		if (m_CursorMode == mode) return;
-		m_CursorMode = mode;
-		OnSetCursorMode.ExecuteIfBound(mode);
-	}
+CursorMode Input::GetCursorMode() const
+{
+	return m_CursorMode;
+}
 
-	uint32_t Input::GetMouseButtonAsMask(MouseButton button)
-	{
-		return 1 << static_cast<int>(button);
-	}
+void Input::SetCursorMode(CursorMode mode)
+{
+	ZoneScoped;
+
+	if (m_CursorMode == mode)
+		return;
+	m_CursorMode = mode;
+	OnSetCursorMode.ExecuteIfBound(mode);
+}
+
+uint32_t Input::GetMouseButtonAsMask(MouseButton button)
+{
+	return 1 << static_cast<int>(button);
+}
 
 } // namespace Flibbert
