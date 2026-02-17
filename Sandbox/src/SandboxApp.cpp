@@ -128,7 +128,7 @@ public:
 			const auto statsSize = ImGui::CalcTextSize(stats.c_str());
 
 			ImGui::SameLine(ImGui::GetWindowWidth() - statsSize.x - 4.0f);
-			ImGui::Text(stats.c_str());
+			ImGui::Text("%s", stats.c_str());
 
 			ImGui::EndMenuBar();
 		}
