@@ -7,3 +7,5 @@ Metal resources:
     https://github.com/trojanfoe/metal-cpp-glfw
     https://github.com/o-micron/metal-imgui-example
     https://developer.apple.com/videos/play/wwdc2022/10160/
+    https://stackoverflow.com/questions/54930382/is-the-glm-math-library-compatible-with-apples-metal-shading-language
+    https://metaltutorial.com/Lesson%201%3A%20Hello%20Metal/2.%20Hello%20Triangle/

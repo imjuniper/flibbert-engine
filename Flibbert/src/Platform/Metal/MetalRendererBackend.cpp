@@ -89,7 +89,7 @@ namespace Flibbert
 		s_CommandBuffer->commit();
 		s_CommandBuffer->waitUntilCompleted();
 
-		m_Drawable->release(); // is this necessary?
+		m_Drawable->release(); // is this necessary? probably not if I setup auto-release stuff
 	}
 
 	void MetalRendererBackend::InitImGui()
