@@ -76,6 +76,9 @@ private:                                                                        
 	friend class ::Flibbert::ClassRegistry;                                                                        \
 	static constexpr std::string ClassNamePrivate = #this_class;                                                   \
                                                                                                                        \
+public:                                                                                                                \
+	using ThisClass = this_class;                                                                                  \
+                                                                                                                       \
 	static void InitializeClass()                                                                                  \
 	{                                                                                                              \
 		static bool initialized = false;                                                                       \
@@ -85,9 +88,6 @@ private:                                                                        
 		::Flibbert::ClassRegistry::AddClass(#this_class, nullptr);                                             \
 		initialized = true;                                                                                    \
 	}                                                                                                              \
-                                                                                                                       \
-public:                                                                                                                \
-	using ThisClass = this_class;                                                                                  \
                                                                                                                        \
 	static const std::string& GetClassName()                                                                       \
 	{                                                                                                              \
@@ -102,19 +102,20 @@ private:                                                                        
 	friend class ::Flibbert::ClassRegistry;                                                                        \
 	static constexpr std::string ClassNamePrivate = #this_class;                                                   \
                                                                                                                        \
+public:                                                                                                                \
+	using ThisClass = this_class;                                                                                  \
+	using Super = parent_class;                                                                                    \
+                                                                                                                       \
 	static void InitializeClass()                                                                                  \
 	{                                                                                                              \
 		static bool initialized = false;                                                                       \
 		if (initialized) {                                                                                     \
 			return;                                                                                        \
 		}                                                                                                      \
+		Super::InitializeClass();                                                                              \
 		::Flibbert::ClassRegistry::AddClass(#this_class, &Super::GetClassName());                              \
 		initialized = true;                                                                                    \
 	}                                                                                                              \
-                                                                                                                       \
-public:                                                                                                                \
-	using ThisClass = this_class;                                                                                  \
-	using Super = parent_class;                                                                                    \
                                                                                                                        \
 	static const std::string& GetClassName()                                                                       \
 	{                                                                                                              \

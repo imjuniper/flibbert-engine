@@ -14,9 +14,9 @@ int main(int argc, char** argv)
 {
 	Flibbert::Log::Init();
 
-	Flibbert::ClassRegistry::RegisterAbstractClass<Flibbert::Application>()
+	Flibbert::ClassRegistry::RegisterAbstractClass<Flibbert::Application>();
 
-	    TracyMessageL("Application Initialization");
+	TracyMessageL("Application Initialization");
 	auto app = Flibbert::CreateApplication({argc, argv});
 
 	TracyMessageL("Application Runtime");
