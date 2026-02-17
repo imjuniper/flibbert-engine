@@ -33,6 +33,7 @@ void OpenGLMessageCallback(unsigned source, unsigned type, unsigned id, unsigned
 		case GL_DEBUG_SOURCE_APPLICATION:
 			return "APPLICATION";
 		case GL_DEBUG_SOURCE_OTHER:
+		default:
 			return "OTHER";
 		}
 	}();
@@ -52,6 +53,7 @@ void OpenGLMessageCallback(unsigned source, unsigned type, unsigned id, unsigned
 		case GL_DEBUG_TYPE_MARKER:
 			return "MARKER";
 		case GL_DEBUG_TYPE_OTHER:
+		default:
 			return "OTHER";
 		}
 	}();
