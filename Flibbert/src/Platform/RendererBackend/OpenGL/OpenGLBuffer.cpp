@@ -1,7 +1,10 @@
 #include "Platform/RendererBackend/OpenGL/OpenGLBuffer.h"
 
 #include <glad.h>
-#include <tracy/TracyOpenGL.hpp>
+
+#if FBT_PROFILING_ENABLED
+#include "tracy/TracyOpenGL.hpp"
+#endif
 
 namespace Flibbert {
 

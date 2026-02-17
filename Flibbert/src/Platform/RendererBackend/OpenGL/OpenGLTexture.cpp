@@ -1,7 +1,10 @@
 #include "Platform/RendererBackend/OpenGL/OpenGLTexture.h"
 
 #include <glad.h>
-#include <tracy/TracyOpenGL.hpp>
+
+#if FBT_PROFILING_ENABLED
+#include "tracy/TracyOpenGL.hpp"
+#endif
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>

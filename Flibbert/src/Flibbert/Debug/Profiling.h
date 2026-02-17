@@ -36,6 +36,16 @@ constexpr auto CleanupOutputString(const char (&expr)[N], const char (&remove)[K
 
 #define TracyFunction FBT_FUNC_SIG
 
+#if FBT_PROFILING_ENABLED
 #include "tracy/Tracy.hpp"
-
+#else
 // @todo redefine some macros that map to Tracy macros, but with prefixes for clarity/namespace stuff
+#define ZoneScoped
+#define ZoneNamedN(...)
+#define TracyMessage(...)
+#define TracyMessageL(...)
+#define TracyGpuContext
+#define TracyGpuZone(...)
+#define TracySetProgramName(...)
+#define FrameMark
+#endif

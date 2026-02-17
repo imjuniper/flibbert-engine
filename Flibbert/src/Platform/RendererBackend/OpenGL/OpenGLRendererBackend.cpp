@@ -13,7 +13,9 @@
 #define GLAD_GL_IMPLEMENTATION
 #include <glad.h>
 
-#include <tracy/TracyOpenGL.hpp>
+#if FBT_PROFILING_ENABLED
+#include "tracy/TracyOpenGL.hpp"
+#endif
 
 void OpenGLMessageCallback(unsigned source, unsigned type, unsigned id, unsigned severity, int length,
                            const char* message, const void* userParam)

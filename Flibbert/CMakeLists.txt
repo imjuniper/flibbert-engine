@@ -121,49 +121,59 @@ endmacro()
 option_with_macro(FBT_PROFILING_ENABLED "Enable profiling" OFF)
 option_with_macro(FBT_MODULES_ENABLED "Enable modules" ON)
 
-# Automatically include modules & generate an initializer
-if(FBT_MODULES_ENABLED)
-    include(IncludeModules)
-endif()
+### Libraries ###
+# Core
+FetchContent_Declare(
+    glm
+    GIT_REPOSITORY https://github.com/g-truc/glm.git
+    GIT_TAG        2d4c4b4dd31fde06cfffad7915c2b3006402322f # branch origin/master as of Feb 7 2025
+    GIT_SHALLOW    false
+    GIT_PROGRESS   true
+)
+FetchContent_Declare(
+    spdlog
+    GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG        v1.15.3
+    GIT_SHALLOW    true
+    GIT_PROGRESS   true
+)
+FetchContent_Declare(
+    sdl
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+    GIT_TAG        release-3.4.0
+    GIT_SHALLOW    true
+    GIT_PROGRESS   true
+)
+FetchContent_MakeAvailable(glm spdlog sdl)
+target_link_libraries(Flibbert PUBLIC glm spdlog SDL3::SDL3)
 
-# Libraries
-FetchContent_Declare(
-        glm
-        GIT_REPOSITORY https://github.com/g-truc/glm.git
-        GIT_TAG        2d4c4b4dd31fde06cfffad7915c2b3006402322f # branch origin/master as of Feb 7 2025
-        GIT_SHALLOW    false
-        GIT_PROGRESS   true
-)
-FetchContent_Declare(
-        spdlog
-        GIT_REPOSITORY https://github.com/gabime/spdlog.git
-        GIT_TAG        v1.15.3
-        GIT_SHALLOW    true
-        GIT_PROGRESS   true
-)
-FetchContent_Declare(
-        imgui
-        GIT_REPOSITORY https://github.com/ocornut/imgui.git
-        GIT_TAG        v1.92.0-docking
-        GIT_SHALLOW    true
-        GIT_PROGRESS   true
-)
-FetchContent_Declare(
+# Optional
+if(FBT_PROFILING_ENABLED)
+    FetchContent_Declare(
         tracy
         GIT_REPOSITORY https://github.com/wolfpld/tracy.git
         GIT_TAG        v0.12.2
         GIT_SHALLOW    true
         GIT_PROGRESS   true
         SOURCE_SUBDIR  pls_dont_include_kthx
-)
+    )
+    FetchContent_MakeAvailable(tracy)
+
+    add_library(tracy "${tracy_SOURCE_DIR}/public/TracyClient.cpp")
+    target_compile_definitions(tracy PUBLIC TRACY_ENABLE)
+    target_include_directories(tracy PUBLIC "${tracy_SOURCE_DIR}/public")
+    target_link_libraries(Flibbert PUBLIC tracy)
+endif()
+
+# To be moved to module
 FetchContent_Declare(
-        sdl
-        GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-        GIT_TAG        release-3.4.0
-        GIT_SHALLOW    true
-        GIT_PROGRESS   true
+    imgui
+    GIT_REPOSITORY https://github.com/ocornut/imgui.git
+    GIT_TAG        v1.92.0-docking
+    GIT_SHALLOW    true
+    GIT_PROGRESS   true
 )
-FetchContent_MakeAvailable(glm spdlog imgui tracy sdl)
+FetchContent_MakeAvailable(imgui)
 
 add_library(imgui
         "${imgui_SOURCE_DIR}/imconfig.h"
@@ -187,12 +197,10 @@ add_library(imgui
 target_include_directories(imgui PUBLIC "${sdl_SOURCE_DIR}/include")
 target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
 
-add_library(tracy "${tracy_SOURCE_DIR}/public/TracyClient.cpp")
+target_link_libraries(Flibbert PUBLIC imgui)
 
-if(FBT_PROFILING_ENABLED)
-    target_compile_definitions(tracy PUBLIC TRACY_ENABLE)
+### Modules ###
+# Automatically include modules & generate an initializer
+if(FBT_MODULES_ENABLED)
+    include(IncludeModules)
 endif()
-
-target_include_directories(tracy PUBLIC "${tracy_SOURCE_DIR}/public")
-
-target_link_libraries(Flibbert PUBLIC glm imgui spdlog tracy SDL3::SDL3)
