@@ -1,7 +1,7 @@
 #include "Flibbert/Renderer/Framebuffer.h"
 
 #include "Flibbert/Renderer/Renderer.h"
-#include "Platform/OpenGL/OpenGLFramebuffer.h"
+#include "Platform/RendererBackend/OpenGL/OpenGLFramebuffer.h"
 
 namespace Flibbert {
 	std::shared_ptr<Framebuffer> Framebuffer::Create(const FramebufferSpecification& specification)

@@ -1,4 +1,4 @@
-#include "Platform/OpenGL/OpenGLBuffer.h"
+#include "Platform/RendererBackend/OpenGL/OpenGLBuffer.h"
 
 #include <glad.h>
 #include <tracy/TracyOpenGL.hpp>

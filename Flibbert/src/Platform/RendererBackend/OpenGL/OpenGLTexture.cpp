@@ -1,4 +1,4 @@
-#include "Platform/OpenGL/OpenGLTexture.h"
+#include "Platform/RendererBackend/OpenGL/OpenGLTexture.h"
 
 #include <glad.h>
 #include <tracy/TracyOpenGL.hpp>

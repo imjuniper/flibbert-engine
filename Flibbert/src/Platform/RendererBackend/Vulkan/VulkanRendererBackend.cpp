@@ -1,8 +1,8 @@
-#include "Platform/Vulkan/VulkanRendererBackend.h"
+#include "Platform/RendererBackend/Vulkan/VulkanRendererBackend.h"
 
 #include "Flibbert/Core/Application.h"
 
-#include "Platform/Desktop/Window.h"
+#include "Platform/OS/Desktop/Window.h"
 
 namespace Flibbert
 {

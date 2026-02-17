@@ -56,30 +56,30 @@ set(LIB_SOURCES
     src/Flibbert/Renderer/Texture.h
     src/Flibbert/Renderer/VertexArray.cpp
     src/Flibbert/Renderer/VertexArray.h
-    src/Platform/Desktop/Window.cpp
-    src/Platform/Desktop/Window.h
-    src/Platform/OpenGL/OpenGLBuffer.cpp
-    src/Platform/OpenGL/OpenGLBuffer.h
-    src/Platform/OpenGL/OpenGLFramebuffer.cpp
-    src/Platform/OpenGL/OpenGLFramebuffer.h
-    src/Platform/OpenGL/OpenGLRendererBackend.cpp
-    src/Platform/OpenGL/OpenGLRendererBackend.h
-    src/Platform/OpenGL/OpenGLShader.cpp
-    src/Platform/OpenGL/OpenGLShader.h
-    src/Platform/OpenGL/OpenGLTexture.cpp
-    src/Platform/OpenGL/OpenGLTexture.h
-    src/Platform/OpenGL/OpenGLVertexArray.cpp
-    src/Platform/OpenGL/OpenGLVertexArray.h
-    src/Platform/Vulkan/VulkanRendererBackend.cpp
-    src/Platform/Vulkan/VulkanRendererBackend.h)
+    src/Platform/OS/Desktop/Window.cpp
+    src/Platform/OS/Desktop/Window.h
+    src/Platform/RendererBackend/OpenGL/OpenGLBuffer.cpp
+    src/Platform/RendererBackend/OpenGL/OpenGLBuffer.h
+    src/Platform/RendererBackend/OpenGL/OpenGLFramebuffer.cpp
+    src/Platform/RendererBackend/OpenGL/OpenGLFramebuffer.h
+    src/Platform/RendererBackend/OpenGL/OpenGLRendererBackend.cpp
+    src/Platform/RendererBackend/OpenGL/OpenGLRendererBackend.h
+    src/Platform/RendererBackend/OpenGL/OpenGLShader.cpp
+    src/Platform/RendererBackend/OpenGL/OpenGLShader.h
+    src/Platform/RendererBackend/OpenGL/OpenGLTexture.cpp
+    src/Platform/RendererBackend/OpenGL/OpenGLTexture.h
+    src/Platform/RendererBackend/OpenGL/OpenGLVertexArray.cpp
+    src/Platform/RendererBackend/OpenGL/OpenGLVertexArray.h
+    src/Platform/RendererBackend/Vulkan/VulkanRendererBackend.cpp
+    src/Platform/RendererBackend/Vulkan/VulkanRendererBackend.h)
 
 if(WIN32)
-    list(APPEND LIB_SOURCES src/Platform/Windows/WindowsPlatform.cpp)
+    list(APPEND LIB_SOURCES src/Platform/OS/Windows/WindowsPlatform.cpp)
 else()
     if (APPLE)
-        list(APPEND LIB_SOURCES src/Platform/MacOS/MacOSPlatform.cpp)
+        list(APPEND LIB_SOURCES src/Platform/OS/MacOS/MacOSPlatform.cpp)
     else()
-        list(APPEND LIB_SOURCES src/Platform/Linux/LinuxPlatform.cpp)
+        list(APPEND LIB_SOURCES src/Platform/OS/Linux/LinuxPlatform.cpp)
     endif()
 endif()
 
@@ -176,6 +176,7 @@ add_library(imgui STATIC
         "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.cpp"
         "${imgui_SOURCE_DIR}/misc/cpp/imgui_stdlib.h")
 
+target_include_directories(imgui PUBLIC "${sdl_SOURCE_DIR}/include")
 target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
 
 add_library(tracy STATIC "${tracy_SOURCE_DIR}/public/TracyClient.cpp")

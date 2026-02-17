@@ -1,6 +1,6 @@
 #include "Demos/DemoMeshGeneration.h"
 
-#include "Platform/Desktop/Window.h"
+#include "Platform/OS/Desktop/Window.h"
 
 #include <glad.h>
 #include <glm/gtc/type_ptr.hpp>

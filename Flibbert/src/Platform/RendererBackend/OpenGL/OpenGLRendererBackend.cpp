@@ -1,11 +1,11 @@
-#include "Platform/OpenGL/OpenGLRendererBackend.h"
+#include "Platform/RendererBackend/OpenGL/OpenGLRendererBackend.h"
 
 #include "Flibbert/Core/Application.h"
 
-#include "Platform/Desktop/Window.h"
-#include "Platform/OpenGL/OpenGLBuffer.h"
-#include "Platform/OpenGL/OpenGLShader.h"
-#include "Platform/OpenGL/OpenGLVertexArray.h"
+#include "Platform/OS/Desktop/Window.h"
+#include "Platform/RendererBackend/OpenGL/OpenGLBuffer.h"
+#include "Platform/RendererBackend/OpenGL/OpenGLShader.h"
+#include "Platform/RendererBackend/OpenGL/OpenGLVertexArray.h"
 #include "SDL3/SDL_video.h"
 
 #include <backends/imgui_impl_opengl3.h>
