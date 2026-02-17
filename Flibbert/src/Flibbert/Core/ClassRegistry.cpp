@@ -3,9 +3,9 @@
 
 namespace Flibbert {
 
-std::unordered_map<std::string, ClassRegistry::ClassInfo> ClassRegistry::Classes;
+std::unordered_map<std::string_view, ClassRegistry::ClassInfo> ClassRegistry::Classes;
 
-void ClassRegistry::AddClass(const std::string& className, const std::string* parentClassName)
+void ClassRegistry::AddClass(std::string_view className)
 {
 	if (Classes.contains(className)) {
 		FBT_CORE_WARN("Tried to register class {0} more than once!", className);
@@ -15,15 +15,19 @@ void ClassRegistry::AddClass(const std::string& className, const std::string* pa
 	auto [it, inserted] = Classes.emplace(className, ClassInfo{className});
 	FBT_CORE_ENSURE_MSG(inserted,
 	                    "Failed to register class!"); // @todo figure out how to pass params in that func
+}
 
-	if (parentClassName != nullptr) {
-		const auto foundParent = Classes.find(*parentClassName);
-		FBT_CORE_ENSURE_MSG(foundParent != Classes.end(), "Parent class not registered!");
+void ClassRegistry::AddClass(std::string_view className, std::string_view parentClassName)
+{
+	const auto foundParent = Classes.find(parentClassName);
+	FBT_CORE_ENSURE_MSG(foundParent != Classes.end(), "Parent class not registered!");
 
-		ClassInfo* info = &it->second;
-		info->Parent = *parentClassName;
-		info->ParentInfo = &foundParent->second;
-	}
+	AddClass(className);
+
+	const auto found = Classes.find(className);
+	ClassInfo& info = found->second;
+	info.Parent = parentClassName;
+	info.ParentInfo = &foundParent->second;
 }
 
 } // namespace Flibbert

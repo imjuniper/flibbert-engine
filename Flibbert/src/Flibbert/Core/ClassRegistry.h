@@ -12,8 +12,8 @@ class ClassRegistry
 public:
 	struct ClassInfo
 	{
-		std::string Name;
-		std::string Parent;
+		std::string_view Name;
+		std::string_view Parent;
 		ClassInfo* ParentInfo = nullptr;
 		void* (*FactoryFunc)() = nullptr;
 	};
@@ -25,9 +25,10 @@ public:
 	}
 
 	// @todo revisit my StringName implementation to use it here instead
-	static std::unordered_map<std::string, ClassInfo> Classes;
+	static std::unordered_map<std::string_view, ClassInfo> Classes;
 
-	static void AddClass(const std::string& className, const std::string* parentClassName);
+	static void AddClass(std::string_view className);
+	static void AddClass(std::string_view className, std::string_view parentClassName);
 
 	template <typename T>
 	static void RegisterAbstractClass()
@@ -74,7 +75,7 @@ public:
                                                                                                                        \
 private:                                                                                                               \
 	friend class ::Flibbert::ClassRegistry;                                                                        \
-	static constexpr std::string ClassNamePrivate = #this_class;                                                   \
+	static constexpr std::string_view ClassNamePrivate = #this_class;                                              \
                                                                                                                        \
 public:                                                                                                                \
 	using ThisClass = this_class;                                                                                  \
@@ -85,11 +86,11 @@ public:                                                                         
 		if (initialized) {                                                                                     \
 			return;                                                                                        \
 		}                                                                                                      \
-		::Flibbert::ClassRegistry::AddClass(#this_class, nullptr);                                             \
+		::Flibbert::ClassRegistry::AddClass(ClassNamePrivate);                                                 \
 		initialized = true;                                                                                    \
 	}                                                                                                              \
                                                                                                                        \
-	static const std::string& GetClassName()                                                                       \
+	static const std::string_view& GetClassName()                                                                  \
 	{                                                                                                              \
 		return ClassNamePrivate;                                                                               \
 	}                                                                                                              \
@@ -100,7 +101,7 @@ private:
                                                                                                                        \
 private:                                                                                                               \
 	friend class ::Flibbert::ClassRegistry;                                                                        \
-	static constexpr std::string ClassNamePrivate = #this_class;                                                   \
+	static constexpr std::string_view ClassNamePrivate = #this_class;                                              \
                                                                                                                        \
 public:                                                                                                                \
 	using ThisClass = this_class;                                                                                  \
@@ -113,11 +114,11 @@ public:                                                                         
 			return;                                                                                        \
 		}                                                                                                      \
 		Super::InitializeClass();                                                                              \
-		::Flibbert::ClassRegistry::AddClass(#this_class, &Super::GetClassName());                              \
+		::Flibbert::ClassRegistry::AddClass(ClassNamePrivate, Super::GetClassName());                          \
 		initialized = true;                                                                                    \
 	}                                                                                                              \
                                                                                                                        \
-	static const std::string& GetClassName()                                                                       \
+	static const std::string_view& GetClassName()                                                                  \
 	{                                                                                                              \
 		return ClassNamePrivate;                                                                               \
 	}                                                                                                              \
