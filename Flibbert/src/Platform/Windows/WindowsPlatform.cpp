@@ -1,5 +1,7 @@
 #include "Flibbert/Core/Platform.h"
 
+#include "Flibbert/Debug/Profiling.h"
+
 #include <filesystem>
 
 #include <Windows.h>
