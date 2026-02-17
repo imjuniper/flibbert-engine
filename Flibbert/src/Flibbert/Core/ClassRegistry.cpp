@@ -5,7 +5,7 @@ namespace Flibbert
 {
 	std::unordered_map<std::string, ClassRegistry::ClassInfo> ClassRegistry::Classes;
 
-	void ClassRegistry::AddClass(const std::string& className, std::string* parentClassName)
+	void ClassRegistry::AddClass(const std::string& className, const std::string* parentClassName)
 	{
 		if (Classes.contains(className)) {
 			FBT_CORE_WARN("Tried to register class {0} more than once!", className);

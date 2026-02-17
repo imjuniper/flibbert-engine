@@ -26,7 +26,7 @@ namespace Flibbert
 		// @todo revisit my StringName implementation to use it here instead
 		static std::unordered_map<std::string, ClassInfo> Classes;
 
-		static void AddClass(const std::string& className, std::string* parentClassName);
+		static void AddClass(const std::string& className, const std::string* parentClassName);
 
 		template <typename T>
 		static void RegisterAbstractClass()
@@ -87,7 +87,7 @@ private:                                                                        
 public:                                                                                                                \
 	using ThisClass = this_class;                                                                                  \
                                                                                                                        \
-	static std::string GetClassName()                                                                       \
+	static const std::string& GetClassName()                                                                       \
 	{                                                                                                              \
 		return ClassNamePrivate;                                                                               \
 	}                                                                                                              \
@@ -95,12 +95,11 @@ public:                                                                         
 private:
 
 #define FBTCLASS(this_class, parent_class)                                                                             \
-	FBTBASECLASS(this_class)                                                                                       \
-                                                                                                                       \
-public:                                                                                                                \
-	using Super = parent_class;                                                                                    \
                                                                                                                        \
 private:                                                                                                               \
+	friend class ::Flibbert::ClassRegistry;                                                                        \
+	static constexpr std::string ClassNamePrivate = #this_class;                                                   \
+                                                                                                                       \
 	static void InitializeClass()                                                                                  \
 	{                                                                                                              \
 		static bool initialized = false;                                                                       \
@@ -109,6 +108,15 @@ private:                                                                        
 		}                                                                                                      \
 		::Flibbert::ClassRegistry::AddClass(#this_class, &Super::GetClassName());                              \
 		initialized = true;                                                                                    \
+	}                                                                                                              \
+                                                                                                                       \
+public:                                                                                                                \
+	using ThisClass = this_class;                                                                                  \
+	using Super = parent_class;                                                                                    \
+                                                                                                                       \
+	static const std::string& GetClassName()                                                                       \
+	{                                                                                                              \
+		return ClassNamePrivate;                                                                               \
 	}                                                                                                              \
                                                                                                                        \
 private:
