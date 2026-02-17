@@ -1,9 +1,21 @@
 #include "Flibbert/Core/ClassRegistry.h"
 #include "Flibbert/Core/AssertionMacros.h"
+#include "Flibbert/Core/Log.h"
 
 namespace Flibbert {
 
 std::unordered_map<std::string_view, ClassRegistry::ClassInfo> ClassRegistry::Classes;
+
+bool ClassRegistry::ClassInfo::IsChildOf(std::string_view className)
+{
+	if (Parent == className) {
+		return true;
+	}
+	if (ParentInfo != nullptr) {
+		return ParentInfo->IsChildOf(className);
+	}
+	return false;
+}
 
 void ClassRegistry::AddClass(std::string_view className)
 {
@@ -28,6 +40,16 @@ void ClassRegistry::AddClass(std::string_view className, std::string_view parent
 	ClassInfo& info = found->second;
 	info.Parent = parentClassName;
 	info.ParentInfo = &foundParent->second;
+}
+
+void ClassRegistry::GetChildClasses(std::string_view className, std::vector<const ClassInfo*>& classes)
+{
+	for (auto it = Classes.begin(); it != Classes.end(); it++) {
+		if (it->second.IsChildOf(className)) {
+			FBT_CORE_INFO("Class {0} child of {1}", it->second.Name, className);
+			classes.push_back(&it->second);
+		}
+	}
 }
 
 } // namespace Flibbert

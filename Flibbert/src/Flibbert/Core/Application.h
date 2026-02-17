@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Flibbert/Core/ApplicationSubsystem.h"
 #include "Flibbert/Core/Base.h"
 #include "Flibbert/Core/ClassRegistry.h"
 
@@ -32,13 +33,26 @@ struct ApplicationInfo
 
 class Application
 {
-	FBTBASECLASS(Application)
-
 public:
 	explicit Application(const ApplicationInfo& info);
 	virtual ~Application();
 
 	static Application& Get();
+
+	void InitializeSubsystems();
+	void ShutdownSubsystems();
+
+	template <typename T>
+	std::shared_ptr<T> GetSubsystem()
+	{
+		for (auto subsystem : m_Subsystems) {
+			if (subsystem->IsA<T>()) {
+				return subsystem;
+			}
+		}
+
+		return nullptr;
+	}
 
 	void Run();
 	void Close();
@@ -63,6 +77,8 @@ private:
 
 	double m_FrameTime = 0.0;
 	double m_LastFrameTime = 0.0;
+
+	std::vector<std::shared_ptr<ApplicationSubsystem>> m_Subsystems;
 
 private:
 	static Application* s_Instance;

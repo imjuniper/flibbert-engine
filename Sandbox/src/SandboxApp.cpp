@@ -35,7 +35,7 @@ public:
 
 		Flibbert::ClassRegistry::RegisterClass<TestClass>();
 
-		TestClass* testobj = Flibbert::ClassRegistry::Create<TestClass>();
+		auto testobj = Flibbert::ClassRegistry::Create<TestClass>();
 
 		FBT_INFO("Created {0} from registry!", testobj->GetClassName());
 

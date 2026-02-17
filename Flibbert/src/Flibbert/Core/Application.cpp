@@ -1,5 +1,7 @@
 #include "Flibbert/Core/Application.h"
 
+#include "Flibbert/Core/ApplicationSubsystem.h"
+#include "Flibbert/Core/ClassRegistry.h"
 #include "Flibbert/Core/Platform.h"
 #include "Flibbert/Renderer/Renderer.h"
 #include "Platform/OS/Desktop/Window.h"
@@ -7,6 +9,8 @@
 #include <imgui.h>
 
 #include <filesystem>
+#include <memory>
+#include <vector>
 
 namespace Flibbert {
 
@@ -29,6 +33,8 @@ Application::Application(const ApplicationInfo& info)
 	if (Platform::GetExecutablePath(executablePath)) {
 		std::filesystem::current_path(executablePath.parent_path());
 	}
+
+	InitializeSubsystems();
 
 	{
 		ZoneNamedN(ZoneWindowInit, "Window Initialization", true);
@@ -66,12 +72,34 @@ Application::~Application()
 	m_Window->ShutdownImGui();
 	ImGui::DestroyContext();
 
+	ShutdownSubsystems();
+
 	s_Instance = nullptr;
 }
 
 Application& Application::Get()
 {
 	return *s_Instance;
+}
+
+void Application::InitializeSubsystems()
+{
+	std::vector<const ClassRegistry::ClassInfo*> subsystemClasses;
+	ClassRegistry::GetChildClasses<ApplicationSubsystem>(subsystemClasses);
+
+	for (auto subsystemClass : subsystemClasses) {
+		auto subsystem = ClassRegistry::Create<ApplicationSubsystem>(subsystemClass);
+		m_Subsystems.push_back(subsystem);
+		subsystem->Initialize(this);
+	}
+}
+
+void Application::ShutdownSubsystems()
+{
+	for (auto& subsystem : m_Subsystems) {
+		subsystem->Shutdown();
+	}
+	m_Subsystems.clear();
 }
 
 void Application::Run()

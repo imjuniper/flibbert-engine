@@ -17,6 +17,7 @@ set(LIB_SOURCES
     src/Flibbert.h
     src/Flibbert/Core/Application.cpp
     src/Flibbert/Core/Application.h
+    src/Flibbert/Core/ApplicationSubsystem.h
     src/Flibbert/Core/AssertionMacros.cpp
     src/Flibbert/Core/AssertionMacros.h
     src/Flibbert/Core/Base.h
@@ -56,6 +57,8 @@ set(LIB_SOURCES
     src/Flibbert/Renderer/Texture.h
     src/Flibbert/Renderer/VertexArray.cpp
     src/Flibbert/Renderer/VertexArray.h
+    src/Modules/InitializeModules.cpp
+    src/Modules/InitializeModules.h
     src/Platform/OS/Desktop/Window.cpp
     src/Platform/OS/Desktop/Window.h
     src/Platform/RendererBackend/OpenGL/OpenGLBuffer.cpp
@@ -72,6 +75,13 @@ set(LIB_SOURCES
     src/Platform/RendererBackend/OpenGL/OpenGLVertexArray.h
     src/Platform/RendererBackend/Vulkan/VulkanRendererBackend.cpp
     src/Platform/RendererBackend/Vulkan/VulkanRendererBackend.h)
+
+# Modules (WIP)
+list(APPEND LIB_SOURCES
+    src/Modules/Imgui/ImguiModule.cpp
+    src/Modules/Imgui/ImguiModule.h
+    src/Modules/Imgui/ImguiSubsystem.cpp
+    src/Modules/Imgui/ImguiSubsystem.h)
 
 if(WIN32)
     list(APPEND LIB_SOURCES src/Platform/OS/Windows/WindowsPlatform.cpp)

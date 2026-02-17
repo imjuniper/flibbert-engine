@@ -3,6 +3,8 @@
 #include "Flibbert/Core/Base.h"
 #include "Flibbert/Core/Log.h"
 
+#include <memory>
+#include <string_view>
 #include <unordered_map>
 
 namespace Flibbert {
@@ -16,6 +18,8 @@ public:
 		std::string_view Parent;
 		ClassInfo* ParentInfo = nullptr;
 		void* (*FactoryFunc)() = nullptr;
+
+		bool IsChildOf(std::string_view className);
 	};
 
 	template <typename T>
@@ -29,6 +33,14 @@ public:
 
 	static void AddClass(std::string_view className);
 	static void AddClass(std::string_view className, std::string_view parentClassName);
+
+	template <typename T>
+	static void GetChildClasses(std::vector<const ClassInfo*>& classes)
+	{
+		return GetChildClasses(T::ClassNamePrivate, classes);
+	}
+
+	static void GetChildClasses(std::string_view className, std::vector<const ClassInfo*>& classes);
 
 	template <typename T>
 	static void RegisterAbstractClass()
@@ -55,17 +67,21 @@ public:
 	}
 
 	template <typename T>
-	static T* Create()
+	static std::shared_ptr<T> Create()
 	{
 		static_assert(std::is_same_v<typename T::ThisClass, T>,
 		              "Class not declared properly, please use FBTCLASS.");
 
-		const auto found = Classes.find(T::ClassNamePrivate);
-		FBT_CORE_ENSURE_MSG(found != Classes.end(), "Class not registered!");
+		return std::make_shared<T>();
+	}
 
-		ClassInfo& info = found->second;
+	template <typename T>
+	static std::shared_ptr<T> Create(const ClassInfo* info)
+	{
+		static_assert(std::is_same_v<typename T::ThisClass, T>,
+		              "Class not declared properly, please use FBTCLASS.");
 
-		return static_cast<T*>(info.FactoryFunc());
+		return std::shared_ptr<T>(static_cast<T*>(info->FactoryFunc()));
 	}
 };
 
@@ -95,6 +111,18 @@ public:                                                                         
 		return ClassNamePrivate;                                                                               \
 	}                                                                                                              \
                                                                                                                        \
+	template <typename T>                                                                                          \
+	bool IsChildOf()                                                                                               \
+	{                                                                                                              \
+		return std::is_base_of_v<T, ThisClass>;                                                                \
+	}                                                                                                              \
+                                                                                                                       \
+	template <typename T>                                                                                          \
+	bool IsA()                                                                                                     \
+	{                                                                                                              \
+		return std::is_same_v<T, ThisClass>;                                                                   \
+	}                                                                                                              \
+                                                                                                                       \
 private:
 
 #define FBTCLASS(this_class, parent_class)                                                                             \
@@ -121,6 +149,18 @@ public:                                                                         
 	static const std::string_view& GetClassName()                                                                  \
 	{                                                                                                              \
 		return ClassNamePrivate;                                                                               \
+	}                                                                                                              \
+                                                                                                                       \
+	template <typename T>                                                                                          \
+	bool IsChildOf()                                                                                               \
+	{                                                                                                              \
+		return std::is_base_of_v<T, ThisClass>;                                                                \
+	}                                                                                                              \
+                                                                                                                       \
+	template <typename T>                                                                                          \
+	bool IsA()                                                                                                     \
+	{                                                                                                              \
+		return std::is_same_v<T, ThisClass>;                                                                   \
 	}                                                                                                              \
                                                                                                                        \
 private:

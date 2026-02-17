@@ -41,13 +41,3 @@ using std::uintptr_t;
 using std::intmax_t;
 using std::uintmax_t;
 // clang-format on
-
-namespace Flibbert::Utils {
-
-template <typename T, typename O>
-bool DerivesFrom(O* Object)
-{
-	return std::is_base_of_v<T, O>;
-}
-
-} // namespace Flibbert::Utils
