@@ -165,7 +165,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(glm spdlog imgui tracy sdl)
 
-add_library(imgui STATIC
+add_library(imgui
         "${imgui_SOURCE_DIR}/imconfig.h"
         "${imgui_SOURCE_DIR}/imgui.cpp"
         "${imgui_SOURCE_DIR}/imgui.h"
@@ -187,7 +187,7 @@ add_library(imgui STATIC
 target_include_directories(imgui PUBLIC "${sdl_SOURCE_DIR}/include")
 target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
 
-add_library(tracy STATIC "${tracy_SOURCE_DIR}/public/TracyClient.cpp")
+add_library(tracy "${tracy_SOURCE_DIR}/public/TracyClient.cpp")
 
 if(FBT_PROFILING_ENABLED)
     target_compile_definitions(tracy PUBLIC TRACY_ENABLE)
