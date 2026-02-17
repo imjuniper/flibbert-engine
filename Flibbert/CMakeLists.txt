@@ -89,26 +89,6 @@ endif()
 
 add_library(Flibbert ${LIB_SOURCES})
 
-# Generate module initializer
-set(GENERATED_FILE ${CMAKE_CURRENT_BINARY_DIR}/src/Modules/InitializeModules.cpp)
-
-add_custom_command(
-    OUTPUT  ${GENERATED_FILE}
-    COMMAND ${CMAKE_COMMAND}
-            -D MODULES_DIR=${CMAKE_CURRENT_SOURCE_DIR}/src/Modules
-            -D OUTPUT_FILE=${GENERATED_FILE}
-            -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/GenerateModuleInitializer.cmake
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/cmake/GenerateModuleInitializer.cmake
-    COMMENT "Generating module initializer..."
-)
-
-add_custom_target(GenerateModuleInitializer DEPENDS ${GENERATED_FILE})
-
-target_sources(Flibbert PRIVATE ${GENERATED_FILE})
-add_dependencies(Flibbert GenerateModuleInitializer)
-
-include(IncludeModules)
-
 target_include_directories(Flibbert
         PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}/src"
@@ -128,7 +108,7 @@ set_target_properties(Flibbert
         LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
 )
 
-macro(set_option option help value)
+macro(option_with_macro option help value)
     option(${option} ${help} ${value})
     if(${option})
         message(STATUS "Flibbert: ${option} -> ON")
@@ -138,8 +118,13 @@ macro(set_option option help value)
     endif()
 endmacro()
 
-set_option(FBT_PROFILING_ENABLED "Enable profiling" OFF)
-set(SDL_X11 OFF)
+option_with_macro(FBT_PROFILING_ENABLED "Enable profiling" OFF)
+option_with_macro(FBT_MODULES_ENABLED "Enable modules" ON)
+
+# Automatically include modules & generate an initializer
+if(FBT_MODULES_ENABLED)
+    include(IncludeModules)
+endif()
 
 # Libraries
 FetchContent_Declare(

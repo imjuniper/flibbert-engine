@@ -1,15 +1,11 @@
-# Collect all module subdirectories
-file(GLOB MODULE_DIRS RELATIVE ${MODULES_DIR} ${MODULES_DIR}/*)
+# Requires ENABLED_MODULES & OUTPUT_FILE
 
 set(MODULE_INCLUDES "")
 set(MODULE_CALLS "")
 
-foreach(MODULE_NAME ${MODULE_DIRS})
-    set(MODULE_PATH ${MODULES_DIR}/${MODULE_NAME})
-    if(IS_DIRECTORY ${MODULE_PATH} AND EXISTS ${MODULE_PATH}/Module.cmake)
-        string(APPEND MODULE_INCLUDES "#include \"Modules/${MODULE_NAME}/${MODULE_NAME}Module.h\"\n")
-        string(APPEND MODULE_CALLS "\t${MODULE_NAME}::InitializeModule();\n")
-    endif()
+foreach(MODULE_NAME ${ENABLED_MODULES})
+    string(APPEND MODULE_INCLUDES "#include \"Modules/${MODULE_NAME}/${MODULE_NAME}Module.h\"\n")
+    string(APPEND MODULE_CALLS "\t${MODULE_NAME}::InitializeModule();\n")
 endforeach()
 
 set(OUTPUT_CONTENT
