@@ -10,10 +10,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-if (APPLE)
-    message(FATAL_ERROR "Apple devices are be unsupported because they do not support OpenGL 4.2+. Eventually, Metal support will be added, once I figure out Vulkan too")
-endif ()
-
 set(LIB_SOURCES
     src/fbtpch.h
     src/Flibbert.h
