@@ -27,6 +27,7 @@ target_include_directories(Sandbox PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
 set_target_properties(Sandbox
         PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Sandbox"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Sandbox"
         VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Sandbox"
 )
 
