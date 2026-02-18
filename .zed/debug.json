@@ -1,20 +1,14 @@
 [
 	{
 		"label": "Debug Sandbox (Local)",
-		"build": {
-			"command": "cmake --build --preset debug-local",
-			"cwd": "$ZED_WORKTREE_ROOT",
-		},
+		"build": "Build Sandbox Debug (Local)",
 		"program": "$ZED_WORKTREE_ROOT/Binaries/Debug/Sandbox",
 		"request": "launch",
 		"adapter": "CodeLLDB",
 	},
 	{
-		"label": "Debug Sandbox (Shared)",
-		"build": {
-			"command": "cmake --build --preset debug",
-			"cwd": "$ZED_WORKTREE_ROOT",
-		},
+		"label": "Debug Sandbox",
+		"build": "Build Sandbox Debug",
 		"program": "$ZED_WORKTREE_ROOT/Binaries/Debug/Sandbox",
 		"request": "launch",
 		"adapter": "CodeLLDB",
