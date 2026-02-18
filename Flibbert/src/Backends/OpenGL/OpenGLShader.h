@@ -21,9 +21,6 @@ public:
 	void Bind() const override;
 	void Unbind() const override;
 
-	// Set uniforms
-	[[deprecated]] void SetUniform1i(std::string_view name, int value) override;
-
 	void BindUniformBuffer(std::string_view name, uint32_t binding) override;
 
 private:

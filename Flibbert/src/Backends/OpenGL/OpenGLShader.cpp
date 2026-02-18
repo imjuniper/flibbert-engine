@@ -88,18 +88,6 @@ void OpenGLShader::Unbind() const
 	glUseProgram(0);
 }
 
-void OpenGLShader::SetUniform1i(std::string_view name, const int value)
-{
-	ZoneScoped;
-
-	if (!m_Uniforms.contains(name.data())) {
-		FBT_CORE_WARN("Uniform {} doesn't exist", name);
-		return;
-	}
-
-	glProgramUniform1i(m_RendererID, m_Uniforms[name.data()].Location, value);
-}
-
 void OpenGLShader::BindUniformBuffer(std::string_view name, uint32_t binding)
 {
 	ZoneScoped;

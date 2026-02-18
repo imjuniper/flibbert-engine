@@ -51,7 +51,7 @@ DemoCamera3D::DemoCamera3D() : m_Renderer(Flibbert::Renderer::Get()), m_Translat
 	m_Shader->Bind();
 
 	m_Texture = Flibbert::ITexture::Create("assets/textures/neko.png");
-	m_Shader->SetUniform1i("u_Texture", 0);
+	m_Texture->Bind(0);
 	m_Shader->BindUniformBuffer("PerFrameData", 0);
 	m_Shader->BindUniformBuffer("PerObjectData", 1);
 

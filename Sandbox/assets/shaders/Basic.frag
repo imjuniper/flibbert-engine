@@ -1,7 +1,7 @@
 #version 460 core
 
 // Uniform buffers
-uniform sampler2D u_Texture; // @todo get rid of this
+layout(binding = 0) uniform sampler2D u_Texture; // @todo get rid of this
 
 // Inputs
 in VertexData

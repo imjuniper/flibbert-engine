@@ -12,9 +12,6 @@ public:
 	virtual void Bind() const = 0;
 	virtual void Unbind() const = 0;
 
-	[[deprecated("Will be removed and replaced with another way to bind textures")]]
-	virtual void SetUniform1i(std::string_view name, int value) = 0;
-
 	virtual void BindUniformBuffer(std::string_view name, uint32_t binding) = 0;
 
 	[[nodiscard]] virtual const std::string& GetName() const
