@@ -1,16 +1,25 @@
 cmake_minimum_required(VERSION 3.31)
 include(FetchContent)
-project(
-        Flibbert
-        VERSION 0.1.0
-        LANGUAGES CXX)
+project(Flibbert
+    VERSION 0.1.0
+    LANGUAGES CXX)
 
+set(CMAKE_COLOR_DIAGNOSTICS ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/.clangd.in
+    ${CMAKE_SOURCE_DIR}/.clangd
+    @ONLY
+)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
-set(LIB_SOURCES
+option(BUILD_SHARED_LIBS "Build as shared libraries" FALSE)
+
+add_library(Flibbert
     src/fbtpch.h
     src/Flibbert.h
     src/Flibbert/Core/Application.cpp
@@ -72,12 +81,13 @@ set(LIB_SOURCES
     src/Backends/OpenGL/OpenGLVertexArray.h
     src/Backends/Vulkan/VulkanRendererBackend.cpp
     src/Backends/Vulkan/VulkanRendererBackend.h)
-add_library(Flibbert ${LIB_SOURCES})
+
+target_compile_features(Flibbert PUBLIC cxx_std_20)
 
 target_include_directories(Flibbert
-        PUBLIC
-        "${CMAKE_CURRENT_SOURCE_DIR}/src"
-        "${CMAKE_CURRENT_SOURCE_DIR}/vendor")
+    PUBLIC
+    "${CMAKE_CURRENT_SOURCE_DIR}/src"
+    "${CMAKE_CURRENT_SOURCE_DIR}/vendor")
 
 target_precompile_headers(Flibbert PRIVATE src/fbtpch.h)
 
@@ -85,13 +95,6 @@ if (MSVC)
     # Needed to support __VA_OPTS__(x) among other things
     target_compile_options(Flibbert PUBLIC /Zc:preprocessor)
 endif()
-
-# Binaries output folder
-set_target_properties(Flibbert
-        PROPERTIES
-        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
-        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Binaries/$<CONFIG>/Flibbert"
-)
 
 macro(option_with_macro option help value)
     option(${option} ${help} ${value})
