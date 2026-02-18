@@ -71,6 +71,7 @@ add_library(Flibbert
     src/Backends/OpenGL/OpenGLBuffer.h
     src/Backends/OpenGL/OpenGLFramebuffer.cpp
     src/Backends/OpenGL/OpenGLFramebuffer.h
+    src/Backends/OpenGL/OpenGLProfiling.h
     src/Backends/OpenGL/OpenGLRendererBackend.cpp
     src/Backends/OpenGL/OpenGLRendererBackend.h
     src/Backends/OpenGL/OpenGLShader.cpp

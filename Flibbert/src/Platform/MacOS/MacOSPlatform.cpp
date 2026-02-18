@@ -1,7 +1,5 @@
 #include "Flibbert/Core/Platform.h"
 
-#include "Flibbert/Debug/Profiling.h"
-
 #include <filesystem>
 
 #include <mach-o/dyld.h>
@@ -10,7 +8,7 @@ namespace Flibbert {
 
 bool Platform::GetExecutablePath(std::filesystem::path& executablePath)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 #if defined(PATH_MAX) && PATH_MAX != 0
 	constexpr uint32_t initialSize = PATH_MAX;

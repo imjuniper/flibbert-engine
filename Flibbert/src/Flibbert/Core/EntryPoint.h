@@ -13,13 +13,13 @@ int main(int argc, char** argv)
 {
 	Flibbert::Log::Init();
 
-	TracyMessageL("Application Initialization");
+	FBT_PROFILE_MESSAGE("Application Initialization");
 	auto app = Flibbert::CreateApplication({argc, argv});
 
-	TracyMessageL("Application Runtime");
+	FBT_PROFILE_MESSAGE("Application Runtime");
 	app->Run();
 
-	TracyMessageL("Application Shutdown");
+	FBT_PROFILE_MESSAGE("Application Shutdown");
 	delete app;
 }
 

@@ -8,7 +8,7 @@ namespace Demo {
 
 DemoCamera3D::DemoCamera3D() : m_Renderer(Flibbert::Renderer::Get()), m_TranslationA(-10, 5, 0), m_TranslationB(0, 0, 0)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	m_CameraModePerspective = std::make_shared<Flibbert::CameraModePerspective>();
 	m_CameraModePerspective->VerticalFOV = 45.0f;
@@ -64,14 +64,14 @@ DemoCamera3D::DemoCamera3D() : m_Renderer(Flibbert::Renderer::Get()), m_Translat
 
 void DemoCamera3D::OnUpdate(float ts)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	m_Camera->OnUpdate(ts);
 }
 
 void DemoCamera3D::OnRender()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	const PerFrameUniformData perFrameBuffer{m_Camera->GetViewMatrix(), m_Camera->GetProjectionMatrix(),
 	                                         m_Camera->GetPosition()};
@@ -96,7 +96,7 @@ void DemoCamera3D::OnRender()
 
 void DemoCamera3D::OnImGuiRender()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	if (ImGui::Checkbox("Orthographic Mode", &m_UsingOrthographicMode)) {
 		if (m_UsingOrthographicMode) {
@@ -112,7 +112,7 @@ void DemoCamera3D::OnImGuiRender()
 
 void DemoCamera3D::OnInput(const std::shared_ptr<Flibbert::InputEvent>& event)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	m_Camera->OnInput(event);
 }

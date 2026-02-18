@@ -8,21 +8,21 @@ namespace Flibbert {
 
 VulkanRendererBackend::VulkanRendererBackend()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	Window& window = Application::Get().GetWindow();
 
 	m_WindowResizedDelegate = window.OnWindowResized.AddDynamic(this, VulkanRendererBackend::OnWindowResized);
 
 #if FBT_PROFILING_ENABLED
-	SetupTracyFrameImageData();
+	SetupProfilerFrameImageData();
 #endif
 }
 
 VulkanRendererBackend::~VulkanRendererBackend()
 {
 #if FBT_PROFILING_ENABLED
-	CleanupTracyFrameImageData();
+	CleanupProfilerFrameImageData();
 #endif
 }
 
@@ -33,22 +33,22 @@ void VulkanRendererBackend::Clear() {}
 void VulkanRendererBackend::Submit(const std::shared_ptr<IVertexArray>& vertexArray,
                                  const std::shared_ptr<IShader>& shader) const
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 }
 
 #if FBT_PROFILING_ENABLED
-void VulkanRendererBackend::SetupTracyFrameImageData() {}
+void VulkanRendererBackend::SetupProfilerFrameImageData() {}
 
-void VulkanRendererBackend::CleanupTracyFrameImageData() {}
+void VulkanRendererBackend::CleanupProfilerFrameImageData() {}
 
-void VulkanRendererBackend::CaptureTracyFrameImage() {}
+void VulkanRendererBackend::CaptureProfilerFrameImage() {}
 
-void VulkanRendererBackend::CollectTracyGPUTraces() {}
+void VulkanRendererBackend::CollectProfilerGPUTraces() {}
 #endif
 
 void VulkanRendererBackend::OnWindowResized(Window& window, const glm::u32vec2& size)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 }
 
 } // namespace Flibbert

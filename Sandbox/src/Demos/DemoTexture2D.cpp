@@ -8,7 +8,7 @@ namespace Demo {
 DemoTexture2D::DemoTexture2D()
     : m_Renderer(Flibbert::Renderer::Get()), m_TranslationA(100, 100, 0), m_TranslationB(300, 100, 0)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	auto cameraMode = std::make_shared<Flibbert::CameraModeOrthographic>();
 	cameraMode->Size = 540.0f;
@@ -60,14 +60,14 @@ DemoTexture2D::DemoTexture2D()
 
 void DemoTexture2D::OnUpdate(float ts)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	m_Camera->OnUpdate(ts);
 }
 
 void DemoTexture2D::OnRender()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	const PerFrameUniformData perFrameBuffer{m_Camera->GetViewMatrix(), m_Camera->GetProjectionMatrix(),
 	                                         m_Camera->GetPosition()};
@@ -92,7 +92,7 @@ void DemoTexture2D::OnRender()
 
 void DemoTexture2D::OnImGuiRender()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	ImGui::SliderFloat3("Translation A", glm::value_ptr(m_TranslationA), 0.0f, 960.0f);
 	ImGui::SliderFloat3("Translation B", glm::value_ptr(m_TranslationB), 0.0f, 960.0f);
@@ -100,7 +100,7 @@ void DemoTexture2D::OnImGuiRender()
 
 void DemoTexture2D::OnInput(const std::shared_ptr<Flibbert::InputEvent>& event)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	m_Camera->OnInput(event);
 }

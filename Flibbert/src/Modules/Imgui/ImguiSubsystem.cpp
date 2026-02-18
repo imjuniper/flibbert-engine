@@ -1,7 +1,6 @@
 #include "ImguiSubsystem.h"
 
 #include "Flibbert/Core/Application.h"
-#include "Flibbert/Debug/Profiling.h"
 
 #include "SDL3/SDL_events.h"
 #include "backends/imgui_impl_opengl3.h"
@@ -70,7 +69,7 @@ void ImguiSubsystem::Initialize(Application* application)
 {
 	Super::Initialize(application);
 
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -93,7 +92,7 @@ void ImguiSubsystem::Initialize(Application* application)
 
 void ImguiSubsystem::OnUpdate(double ts)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	ImguiPlatformBackendData* bd = GetPlatformBackendData();
 	ImGuiIO& io = ImGui::GetIO();
@@ -112,19 +111,19 @@ void ImguiSubsystem::OnUpdate(double ts)
 
 	ImGui_ImplOpenGL3_NewFrame();
 	{
-		ZoneNamedN(ImGuiNewFrame, "ImGui::NewFrame()", true);
+		FBT_PROFILE_SCOPE("ImGui::NewFrame()");
 		ImGui::NewFrame();
 	}
 }
 
 void ImguiSubsystem::OnPostRender()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	OnImguiRender.Broadcast();
 
 	{
-		ZoneNamedN(ImGuiRender, "ImGui::Render()", true);
+		FBT_PROFILE_SCOPE("ImGui::Render()");
 		ImGui::Render();
 	}
 
@@ -134,7 +133,7 @@ void ImguiSubsystem::OnPostRender()
 
 void ImguiSubsystem::Shutdown()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	ImGuiIO& io = ImGui::GetIO();
 

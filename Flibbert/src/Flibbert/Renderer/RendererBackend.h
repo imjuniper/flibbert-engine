@@ -35,8 +35,8 @@ protected:
 	                    const std::shared_ptr<IShader>& shader) const = 0;
 
 #if FBT_PROFILING_ENABLED
-	virtual void CaptureTracyFrameImage() = 0;
-	virtual void CollectTracyGPUTraces() = 0;
+	virtual void CaptureProfilerFrameImage() = 0;
+	virtual void CollectProfilerGPUTraces() = 0;
 #endif
 
 protected:

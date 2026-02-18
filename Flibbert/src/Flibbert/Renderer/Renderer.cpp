@@ -25,41 +25,41 @@ Renderer::Renderer()
 
 glm::vec4 Renderer::GetClearColor() const
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	return m_Backend->GetClearColor();
 }
 
 void Renderer::SetClearColor(glm::vec4 color) const
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	return m_Backend->SetClearColor(color);
 }
 
 void Renderer::Clear() const
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	return m_Backend->Clear();
 }
 
 void Renderer::Submit(const std::shared_ptr<IVertexArray>& vertexArray, const std::shared_ptr<IShader>& shader) const
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	return m_Backend->Submit(vertexArray, shader);
 }
 
 #if FBT_PROFILING_ENABLED
-void Renderer::CaptureTracyFrameImage()
+void Renderer::CaptureProfilerFrameImage()
 {
-	return m_Backend->CaptureTracyFrameImage();
+	return m_Backend->CaptureProfilerFrameImage();
 }
 
-void Renderer::CollectTracyGPUTraces()
+void Renderer::CollectProfilerGPUTraces()
 {
-	return m_Backend->CollectTracyGPUTraces();
+	return m_Backend->CollectProfilerGPUTraces();
 }
 #endif
 

@@ -26,14 +26,14 @@ Application* Application::s_Instance = nullptr;
 
 Application::Application(const ApplicationInfo& info)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	if (!FBT_CORE_ENSURE_MSG(s_Instance == nullptr, "Application already exists!")) {
 		return;
 	}
 	s_Instance = this;
 
-	TracySetProgramName(info.Name.c_str());
+	FBT_PROFILE_SET_PROGRAM_NAME(info.Name.c_str());
 
 	// Set the working directory to be the folder containing the exe by default,
 	// eventually add an option to replace it
@@ -46,7 +46,7 @@ Application::Application(const ApplicationInfo& info)
 	Flibbert::Modules::InitializeModules();
 
 	{
-		ZoneNamedN(ZoneWindowInit, "Window Initialization", true);
+		FBT_PROFILE_SCOPE("Window Initialization");
 		WindowProps props;
 		props.Title = info.Name;
 		m_Window = std::make_unique<Window>(props);
@@ -54,7 +54,7 @@ Application::Application(const ApplicationInfo& info)
 	}
 
 	{
-		ZoneNamedN(ZoneRendererInit, "Renderer Initialization", true);
+		FBT_PROFILE_SCOPE("Renderer Initialization");
 		m_Renderer = std::make_unique<Renderer>();
 	}
 
@@ -65,7 +65,7 @@ Application::Application(const ApplicationInfo& info)
 
 Application::~Application()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	ShutdownSubsystems();
 
@@ -99,7 +99,7 @@ void Application::ShutdownSubsystems()
 
 void Application::Run()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	m_LastFrameTime = Platform::GetTime() - (1.0 / 60);
 
@@ -111,7 +111,7 @@ void Application::Run()
 		m_LastFrameTime = time;
 
 		{
-			ZoneNamedN(OnUpdateFrame, "OnUpdate", true);
+			FBT_PROFILE_SCOPE("OnUpdate");
 
 			OnUpdate(m_FrameTime);
 			for (auto subsystem : m_Subsystems) {
@@ -122,7 +122,7 @@ void Application::Run()
 		m_Renderer->Clear();
 
 		{
-			ZoneNamedN(OnRenderFrame, "OnRender", true);
+			FBT_PROFILE_SCOPE("OnRender");
 
 			OnRender();
 			for (auto subsystem : m_Subsystems) {
@@ -131,7 +131,7 @@ void Application::Run()
 		}
 
 		{
-			ZoneNamedN(OnPostRenderFrame, "OnPostRender", true);
+			FBT_PROFILE_SCOPE("OnPostRender");
 
 			for (auto subsystem : m_Subsystems) {
 				subsystem->OnPostRender();
@@ -139,13 +139,13 @@ void Application::Run()
 		}
 
 #if FBT_PROFILING_ENABLED
-		m_Renderer->CaptureTracyFrameImage();
+		m_Renderer->CaptureProfilerFrameImage();
 #endif
 
 		m_Window->Present();
-		FrameMark;
+		FBT_PROFILE_FRAME();
 #if FBT_PROFILING_ENABLED
-		m_Renderer->CollectTracyGPUTraces();
+		m_Renderer->CollectProfilerGPUTraces();
 #endif
 	}
 }

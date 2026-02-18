@@ -7,21 +7,21 @@ namespace Flibbert {
 
 OpenGLFramebuffer::OpenGLFramebuffer(const FramebufferSpecification& specification) : m_Specification(specification)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	Invalidate();
 }
 
 OpenGLFramebuffer::~OpenGLFramebuffer()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	glDeleteFramebuffers(1, &m_RendererID);
 }
 
 void OpenGLFramebuffer::Bind()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 	glViewport(0, 0, m_Specification.Width, m_Specification.Height);
@@ -29,14 +29,14 @@ void OpenGLFramebuffer::Bind()
 
 void OpenGLFramebuffer::Unbind()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void OpenGLFramebuffer::Resize(uint32_t width, uint32_t height)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	if (width <= 0 || height <= 0) {
 		FBT_CORE_WARN("Tried to resize a framebuffer to an invalid size: {0}x{0}", width, height);
@@ -51,7 +51,7 @@ void OpenGLFramebuffer::Resize(uint32_t width, uint32_t height)
 
 void OpenGLFramebuffer::Clear()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	// @todo figure out an API for this
 	static constexpr glm::vec4 clearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -63,7 +63,7 @@ void OpenGLFramebuffer::Clear()
 
 void OpenGLFramebuffer::Invalidate()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	// Create the framebuffer and its textures/render buffers
 	if (m_RendererID == 0) {

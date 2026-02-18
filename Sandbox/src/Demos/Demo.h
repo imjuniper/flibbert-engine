@@ -1,8 +1,7 @@
 #pragma once
 
+#include "Flibbert.h"
 #include "Flibbert/Debug/Profiling.h"
-
-#include <Flibbert.h>
 
 #include <functional>
 #include <iostream>

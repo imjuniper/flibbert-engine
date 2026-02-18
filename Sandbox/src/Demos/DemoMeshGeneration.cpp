@@ -11,7 +11,7 @@ namespace Demo {
 DemoMeshGeneration::DemoMeshGeneration()
     : m_Window(Flibbert::Application::Get().GetWindow()), m_Renderer(Flibbert::Renderer::Get())
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	m_EnableVSync = m_Window.IsVSyncEnabled();
 
@@ -35,7 +35,7 @@ DemoMeshGeneration::DemoMeshGeneration()
 
 void DemoMeshGeneration::OnUpdate(float ts)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	m_Camera->OnUpdate(ts);
 
@@ -49,14 +49,14 @@ void DemoMeshGeneration::OnUpdate(float ts)
 
 void DemoMeshGeneration::OnRender()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	m_Renderer.Submit(m_VAO, m_Shader);
 }
 
 void DemoMeshGeneration::OnImGuiRender()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	const auto position = m_Camera->GetPosition();
 	ImGui::Text("Camera Position: %.1f, %.1f, %.1f", position.x, position.y, position.z);
@@ -146,20 +146,20 @@ void DemoMeshGeneration::OnImGuiRender()
 
 void DemoMeshGeneration::OnInput(const std::shared_ptr<Flibbert::InputEvent>& event)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	m_Camera->OnInput(event);
 }
 
 void DemoMeshGeneration::GenerateMesh()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	const float halfLength = (m_SideLength - 1) / 2.0f;
 
 	std::vector<float> vertices;
 	{
-		ZoneNamedN(ZoneVertices, "Generate vertices", true);
+		FBT_PROFILE_SCOPE("Generate vertices");
 
 		for (uint32_t x = 0; x < m_SideLength; ++x) {
 			for (uint32_t z = 0; z < m_SideLength; ++z) {
@@ -175,11 +175,11 @@ void DemoMeshGeneration::GenerateMesh()
 	auto message = std::format("Generated {:d} vertices", vertices.size() / 3);
 
 	FBT_INFO(message);
-	TracyMessage(message.data(), message.size());
+	FBT_PROFILE_MESSAGE(message.c_str());
 
 	std::vector<uint32_t> indices;
 	{
-		ZoneNamedN(ZoneTriangles, "Generate triangles", true);
+		FBT_PROFILE_SCOPE("Generate triangles");
 
 		for (uint32_t row = 0; row < m_SideLength * m_SideLength - m_SideLength; row += m_SideLength) {
 			for (uint32_t i = 0; i < m_SideLength - 1; ++i) {
@@ -201,7 +201,7 @@ void DemoMeshGeneration::GenerateMesh()
 	message = std::format("Generated {:d} triangles", indices.size() / 3);
 
 	FBT_INFO(message);
-	TracyMessage(message.data(), message.size());
+	FBT_PROFILE_MESSAGE(message.c_str());
 
 	m_VertexBuffer = Flibbert::IVertexBuffer::Create(vertices.data(), vertices.size() * sizeof(float));
 	Flibbert::BufferLayout layout = {

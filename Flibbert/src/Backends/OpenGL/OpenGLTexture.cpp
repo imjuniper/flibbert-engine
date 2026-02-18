@@ -2,10 +2,6 @@
 
 #include <glad.h>
 
-#if FBT_PROFILING_ENABLED
-	#include "tracy/TracyOpenGL.hpp"
-#endif
-
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.h>
 
@@ -13,13 +9,13 @@ namespace Flibbert {
 
 OpenGLTexture::OpenGLTexture(std::string_view path) : m_RendererID(0)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	stbi_set_flip_vertically_on_load(1);
 	int width, height, channels;
 	void* data = nullptr;
 	{
-		ZoneNamedN(ZoneStbImageLoad, "stbi_load(...)", true);
+		FBT_PROFILE_SCOPE("stbi_load(...)");
 		data = stbi_load(path.data(), &width, &height, &channels, 0);
 	}
 	if (data == nullptr)
@@ -41,8 +37,6 @@ OpenGLTexture::OpenGLTexture(std::string_view path) : m_RendererID(0)
 	m_InternalFormat = internalFormat;
 	m_DataFormat = dataFormat;
 
-	TracyGpuZone("OpenGLTexture");
-
 	glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 
 	glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
@@ -61,14 +55,14 @@ OpenGLTexture::OpenGLTexture(std::string_view path) : m_RendererID(0)
 
 OpenGLTexture::~OpenGLTexture()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	glDeleteTextures(1, &m_RendererID);
 }
 
 void OpenGLTexture::MakeResident()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	if (!m_Resident) {
 		glMakeTextureHandleResidentARB(m_BindlessHandle);
@@ -78,7 +72,7 @@ void OpenGLTexture::MakeResident()
 
 void OpenGLTexture::MakeNonResident()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	if (m_Resident) {
 		glMakeTextureHandleNonResidentARB(m_BindlessHandle);

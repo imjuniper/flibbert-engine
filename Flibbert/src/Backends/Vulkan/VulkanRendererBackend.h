@@ -19,10 +19,10 @@ public:
 	          const std::shared_ptr<IShader>& shader) const override;
 
 #if FBT_PROFILING_ENABLED
-	void SetupTracyFrameImageData();
-	void CleanupTracyFrameImageData();
-	void CaptureTracyFrameImage() override;
-	void CollectTracyGPUTraces() override;
+	void SetupProfilerFrameImageData();
+	void CleanupProfilerFrameImageData();
+	void CaptureProfilerFrameImage() override;
+	void CollectProfilerGPUTraces() override;
 #endif
 
 private:

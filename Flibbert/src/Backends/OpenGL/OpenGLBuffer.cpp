@@ -2,10 +2,6 @@
 
 #include <glad.h>
 
-#if FBT_PROFILING_ENABLED
-#include "tracy/TracyOpenGL.hpp"
-#endif
-
 namespace Flibbert {
 
 ///////////////////////////////////////////////////////////////////////
@@ -14,7 +10,7 @@ namespace Flibbert {
 
 OpenGLVertexBuffer::OpenGLVertexBuffer(const void* data, uint32_t size) : m_RendererID(0)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	glCreateBuffers(1, &m_RendererID);
 	constexpr GLbitfield bufferFlags = 0;
@@ -23,7 +19,7 @@ OpenGLVertexBuffer::OpenGLVertexBuffer(const void* data, uint32_t size) : m_Rend
 
 OpenGLVertexBuffer::~OpenGLVertexBuffer()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	glDeleteBuffers(1, &m_RendererID);
 }
@@ -34,7 +30,7 @@ OpenGLVertexBuffer::~OpenGLVertexBuffer()
 
 OpenGLIndexBuffer::OpenGLIndexBuffer(const uint32_t* data, const uint32_t count) : m_RendererID(0), m_Count(count)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	glCreateBuffers(1, &m_RendererID);
 	constexpr GLbitfield bufferFlags = 0;
@@ -43,7 +39,7 @@ OpenGLIndexBuffer::OpenGLIndexBuffer(const uint32_t* data, const uint32_t count)
 
 OpenGLIndexBuffer::~OpenGLIndexBuffer()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	glDeleteBuffers(1, &m_RendererID);
 }
@@ -54,7 +50,7 @@ OpenGLIndexBuffer::~OpenGLIndexBuffer()
 
 OpenGLUniformBuffer::OpenGLUniformBuffer(const uint32_t size, const uint32_t binding) : m_RendererID(0)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	glCreateBuffers(1, &m_RendererID);
 	glNamedBufferStorage(m_RendererID, size, nullptr, GL_DYNAMIC_STORAGE_BIT);
@@ -64,15 +60,14 @@ OpenGLUniformBuffer::OpenGLUniformBuffer(const uint32_t size, const uint32_t bin
 
 OpenGLUniformBuffer::~OpenGLUniformBuffer()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	glDeleteBuffers(1, &m_RendererID);
 }
 
 void OpenGLUniformBuffer::SetData(const void* data, const uint32_t size, const uint32_t offset)
 {
-	ZoneScoped;
-	TracyGpuZone("OpenGLUniformBuffer::SetData");
+	FBT_PROFILE_FUNCTION();
 
 	glNamedBufferSubData(m_RendererID, offset, size, data);
 }

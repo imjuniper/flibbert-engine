@@ -21,7 +21,7 @@ private:
 public:
 	explicit Sandbox(const Flibbert::ApplicationInfo& info) : Application(info)
 	{
-		ZoneScoped;
+		FBT_PROFILE_FUNCTION();
 
 		if (auto imguiSS = GetSubsystem<Flibbert::Modules::Imgui::ImguiSubsystem>()) {
 			(void)imguiSS->OnImguiRender.AddDynamic(this, Sandbox::OnImguiRender);
@@ -37,7 +37,7 @@ public:
 	template <typename TDemo>
 	void RegisterDemo()
 	{
-		ZoneScoped;
+		FBT_PROFILE_FUNCTION();
 
 		FBT_INFO("Registering demo {}", TDemo::Name);
 		m_Demos.emplace_back(TDemo::Name, []() { return std::make_unique<TDemo>(); });
@@ -45,7 +45,7 @@ public:
 
 	void OnUpdate(const double ts) override
 	{
-		ZoneScoped;
+		FBT_PROFILE_FUNCTION();
 
 		if (m_CurrentDemo) {
 			m_CurrentDemo->OnUpdate(ts);
@@ -54,7 +54,7 @@ public:
 
 	void OnRender() override
 	{
-		ZoneScoped;
+		FBT_PROFILE_FUNCTION();
 
 		if (m_CurrentDemo) {
 			m_CurrentDemo->OnRender();
@@ -129,7 +129,7 @@ public:
 
 	void OnImguiRender()
 	{
-		ZoneScoped;
+		FBT_PROFILE_FUNCTION();
 
 		BeginMainImguiWindow();
 
@@ -144,7 +144,7 @@ public:
 
 	void OnInput(const std::shared_ptr<Flibbert::InputEvent>& event) override
 	{
-		ZoneScoped;
+		FBT_PROFILE_FUNCTION();
 
 		if (m_CurrentDemo) {
 			m_CurrentDemo->OnInput(event);

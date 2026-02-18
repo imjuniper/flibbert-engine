@@ -28,10 +28,10 @@ public:
 	            const std::shared_ptr<IShader>& shader) const override;
 
 #if FBT_PROFILING_ENABLED
-	void SetupTracyFrameImageData();
-	void CleanupTracyFrameImageData();
-	void CaptureTracyFrameImage() override;
-	void CollectTracyGPUTraces() override;
+	void SetupProfilerFrameImageData();
+	void CleanupProfilerFrameImageData();
+	void CaptureProfilerFrameImage() override;
+	void CollectProfilerGPUTraces() override;
 #endif
 
 private:
@@ -43,12 +43,12 @@ private:
 	SDL_GLContextState* m_GlContext;
 
 #if FBT_PROFILING_ENABLED
-	GLuint m_TracyTexture[4];
-	GLuint m_TracyFramebuffer[4];
-	GLuint m_TracyPBO[4];
-	GLsync m_TracyFence[4];
-	int m_TracyIdx = 0;
-	std::vector<int> m_TracyQueue;
+	GLuint m_ProfilerTexture[4];
+	GLuint m_ProfilerFramebuffer[4];
+	GLuint m_ProfilerPBO[4];
+	GLsync m_ProfilerFence[4];
+	int m_ProfilerIdx = 0;
+	std::vector<int> m_ProfilerQueue;
 #endif
 };
 

@@ -12,7 +12,7 @@ namespace Flibbert {
 
 Window::Window(const WindowProps& props)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	SDL_InitSubSystem(SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
@@ -37,7 +37,7 @@ Window::Window(const WindowProps& props)
 
 Window::~Window()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	if (m_WindowHandle && SDL_WasInit(SDL_INIT_VIDEO | SDL_INIT_EVENTS)) {
 		SDL_DestroyWindow(m_WindowHandle);
@@ -49,7 +49,7 @@ Window::~Window()
 
 void Window::ProcessEvents()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
@@ -114,14 +114,14 @@ void Window::ProcessEvents()
 
 void Window::Present()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	SDL_GL_SwapWindow(m_WindowHandle);
 }
 
 void Window::SetVSync(const bool enabled)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	m_VSync = enabled;
 	SDL_GL_SetSwapInterval(static_cast<int>(m_VSync));
@@ -144,7 +144,7 @@ glm::u32vec2 Window::GetPosition() const
 
 void Window::OnSetCursorMode(CursorMode mode)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	switch (mode) {
 	case CursorMode::Normal:

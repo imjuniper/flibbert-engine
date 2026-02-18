@@ -1,51 +1,29 @@
 #pragma once
 
-#include "Flibbert/Core/Base.h"
-
-namespace Flibbert::ProfilingUtils {
-
-template <size_t N>
-struct ChangeResult
-{
-	char Data[N];
-};
-
-// @todo figure out how to use this for tracy
-template <size_t N, size_t K>
-constexpr auto CleanupOutputString(const char (&expr)[N], const char (&remove)[K])
-{
-	ChangeResult<N> result = {};
-
-	size_t srcIndex = 0;
-	size_t dstIndex = 0;
-	while (srcIndex < N) {
-		size_t matchIndex = 0;
-		while (matchIndex < K - 1 && srcIndex + matchIndex < N - 1 &&
-		       expr[srcIndex + matchIndex] == remove[matchIndex])
-			matchIndex++;
-		if (matchIndex == K - 1)
-			srcIndex += matchIndex;
-		result.Data[dstIndex++] = expr[srcIndex] == '"' ? '\'' : expr[srcIndex];
-		srcIndex++;
-	}
-
-	return result.Data;
-}
-
-} // namespace Flibbert::ProfilingUtils
-
-#define TracyFunction FBT_FUNC_SIG
-
 #if FBT_PROFILING_ENABLED
-#include "tracy/Tracy.hpp"
+	#include "Flibbert/Core/Base.h"
+	#define TracyFunction FBT_FUNC_SIG
+
+	#include "tracy/Tracy.hpp"
+
+	#define FBT_PROFILE_SET_PROGRAM_NAME(name) TracySetProgramName(name)
+
+	// Profile a scope with an explicit name
+	#define FBT_PROFILE_SCOPE(name) ZoneScopedN(name)
+
+	// Profile the current function — uses FBT_FUNC_SIG as the zone name
+	#define FBT_PROFILE_FUNCTION() ZoneScoped
+
+	// Mark the end of a frame — call once per main loop iteration
+	#define FBT_PROFILE_FRAME() FrameMark
+
+	// Mark a named instant event (e.g. "Cache miss", "Asset loaded")
+	#define FBT_PROFILE_MESSAGE(msg) TracyMessage(msg, strlen(msg))
 #else
-// @todo redefine some macros that map to Tracy macros, but with prefixes for clarity/namespace stuff
-#define ZoneScoped
-#define ZoneNamedN(...)
-#define TracyMessage(...)
-#define TracyMessageL(...)
-#define TracyGpuContext
-#define TracyGpuZone(...)
-#define TracySetProgramName(...)
-#define FrameMark
+	#define FBT_PROFILE_SET_PROGRAM_NAME(name)
+
+	#define FBT_PROFILE_SCOPE(name)
+	#define FBT_PROFILE_FUNCTION()
+	#define FBT_PROFILE_FRAME()
+	#define FBT_PROFILE_MESSAGE(msg)
 #endif

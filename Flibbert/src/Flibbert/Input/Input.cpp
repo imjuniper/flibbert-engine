@@ -12,7 +12,7 @@ Input& Input::Get()
 
 void Input::ProcessInputEvent(const std::shared_ptr<InputEvent>& event)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	auto keyEvent = dynamic_pointer_cast<InputEventKey>(event);
 	if (keyEvent) {
@@ -63,7 +63,7 @@ CursorMode Input::GetCursorMode() const
 
 void Input::SetCursorMode(CursorMode mode)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	if (m_CursorMode == mode)
 		return;

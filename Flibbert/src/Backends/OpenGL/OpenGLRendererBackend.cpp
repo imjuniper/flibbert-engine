@@ -1,5 +1,6 @@
 #include "Backends/OpenGL/OpenGLRendererBackend.h"
 
+#include "Backends/OpenGL/OpenGLProfiling.h"
 #include "Flibbert/Core/Application.h"
 
 #include "Backends/OpenGL/OpenGLBuffer.h"
@@ -10,10 +11,6 @@
 
 #define GLAD_GL_IMPLEMENTATION
 #include <glad.h>
-
-#if FBT_PROFILING_ENABLED
-	#include "tracy/TracyOpenGL.hpp"
-#endif
 
 void OpenGLMessageCallback(unsigned source, unsigned type, unsigned id, unsigned severity, int length,
                            const char* message, const void* userParam)
@@ -80,12 +77,12 @@ namespace Flibbert {
 
 OpenGLRendererBackend::OpenGLRendererBackend()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	Window& window = Application::Get().GetWindow();
 
 	{
-		ZoneNamedN(ZoneGLContextInit, "OpenGL Context Initialization", true);
+		FBT_PROFILE_SCOPE("OpenGL Context Initialization");
 
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
 		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
@@ -97,7 +94,7 @@ OpenGLRendererBackend::OpenGLRendererBackend()
 		int status = gladLoadGL(SDL_GL_GetProcAddress);
 		FBT_CORE_ENSURE(status);
 
-		TracyGpuContext;
+		FBT_PROFILE_GPU_INIT();
 
 		FBT_CORE_INFO("OpenGL Info:");
 		FBT_CORE_INFO("\tVendor: {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
@@ -122,21 +119,20 @@ OpenGLRendererBackend::OpenGLRendererBackend()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 #if FBT_PROFILING_ENABLED
-	SetupTracyFrameImageData();
+	SetupProfilerFrameImageData();
 #endif
 }
 
 OpenGLRendererBackend::~OpenGLRendererBackend()
 {
 #if FBT_PROFILING_ENABLED
-	CleanupTracyFrameImageData();
+	CleanupProfilerFrameImageData();
 #endif
 }
 
 void OpenGLRendererBackend::SetClearColor(const glm::vec4& color)
 {
-	ZoneScoped;
-	TracyGpuZone("OpenGLRendererBackend::SetClearColor");
+	FBT_PROFILE_FUNCTION();
 
 	IRendererBackend::SetClearColor(color);
 	glClearColor(color.r, color.g, color.b, color.a);
@@ -144,17 +140,16 @@ void OpenGLRendererBackend::SetClearColor(const glm::vec4& color)
 
 void OpenGLRendererBackend::Clear()
 {
-	ZoneScoped;
-	TracyGpuZone("OpenGLRendererBackend::Clear");
+	FBT_PROFILE_FUNCTION();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void OpenGLRendererBackend::Submit(const std::shared_ptr<IVertexArray>& vertexArray,
-                                 const std::shared_ptr<IShader>& shader) const
+                                   const std::shared_ptr<IShader>& shader) const
 {
-	ZoneScoped;
-	TracyGpuZone("OpenGLRendererBackend::Draw");
+	FBT_PROFILE_FUNCTION();
+	FBT_PROFILE_GPU_SCOPE("OpenGLRendererBackend::Draw");
 
 	vertexArray->Bind();
 	shader->Bind();
@@ -163,77 +158,76 @@ void OpenGLRendererBackend::Submit(const std::shared_ptr<IVertexArray>& vertexAr
 }
 
 #if FBT_PROFILING_ENABLED
-void OpenGLRendererBackend::SetupTracyFrameImageData()
+void OpenGLRendererBackend::SetupProfilerFrameImageData()
 {
-	glGenTextures(4, m_TracyTexture);
-	glGenFramebuffers(4, m_TracyFramebuffer);
-	glGenBuffers(4, m_TracyPBO);
+	glGenTextures(4, m_ProfilerTexture);
+	glGenFramebuffers(4, m_ProfilerFramebuffer);
+	glGenBuffers(4, m_ProfilerPBO);
 	for (int i = 0; i < 4; i++) {
-		glBindTexture(GL_TEXTURE_2D, m_TracyTexture[i]);
+		glBindTexture(GL_TEXTURE_2D, m_ProfilerTexture[i]);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 320, 180, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-		glBindFramebuffer(GL_FRAMEBUFFER, m_TracyFramebuffer[i]);
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TracyTexture[i], 0);
-		glBindBuffer(GL_PIXEL_PACK_BUFFER, m_TracyPBO[i]);
+		glBindFramebuffer(GL_FRAMEBUFFER, m_ProfilerFramebuffer[i]);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ProfilerTexture[i], 0);
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, m_ProfilerPBO[i]);
 		glBufferData(GL_PIXEL_PACK_BUFFER, 320 * 180 * 4, nullptr, GL_STREAM_READ);
 	}
 }
 
-void OpenGLRendererBackend::CleanupTracyFrameImageData()
+void OpenGLRendererBackend::CleanupProfilerFrameImageData()
 {
-	glDeleteBuffers(4, m_TracyPBO);
-	glDeleteFramebuffers(4, m_TracyFramebuffer);
-	glDeleteTextures(4, m_TracyTexture);
+	glDeleteBuffers(4, m_ProfilerPBO);
+	glDeleteFramebuffers(4, m_ProfilerFramebuffer);
+	glDeleteTextures(4, m_ProfilerTexture);
 }
 
-void OpenGLRendererBackend::CaptureTracyFrameImage()
+void OpenGLRendererBackend::CaptureProfilerFrameImage()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
-	assert(m_TracyQueue.empty() || m_TracyQueue.front() != m_TracyIdx);
+	assert(m_ProfilerQueue.empty() || m_ProfilerQueue.front() != m_ProfilerIdx);
 
 	const auto windowSize = Application::Get().GetWindow().GetSize();
 	constexpr auto captureSize = glm::uvec2(320, 180);
 
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_TracyFramebuffer[m_TracyIdx]);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_ProfilerFramebuffer[m_ProfilerIdx]);
 	glBlitFramebuffer(0, 0, windowSize.x, windowSize.y, 0, 0, captureSize.x, captureSize.y, GL_COLOR_BUFFER_BIT,
 	                  GL_LINEAR);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_TracyFramebuffer[m_TracyIdx]);
-	glBindBuffer(GL_PIXEL_PACK_BUFFER, m_TracyPBO[m_TracyIdx]);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, m_ProfilerFramebuffer[m_ProfilerIdx]);
+	glBindBuffer(GL_PIXEL_PACK_BUFFER, m_ProfilerPBO[m_ProfilerIdx]);
 	glReadPixels(0, 0, captureSize.x, captureSize.y, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
 	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-	m_TracyFence[m_TracyIdx] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
-	m_TracyQueue.emplace_back(m_TracyIdx);
-	m_TracyIdx = (m_TracyIdx + 1) % 4;
+	m_ProfilerFence[m_ProfilerIdx] = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+	m_ProfilerQueue.emplace_back(m_ProfilerIdx);
+	m_ProfilerIdx = (m_ProfilerIdx + 1) % 4;
 
 	// Quarter resolution captures
-	while (!m_TracyQueue.empty()) {
-		const auto i = m_TracyQueue.front();
-		if (glClientWaitSync(m_TracyFence[i], 0, 0) == GL_TIMEOUT_EXPIRED)
+	while (!m_ProfilerQueue.empty()) {
+		const auto i = m_ProfilerQueue.front();
+		if (glClientWaitSync(m_ProfilerFence[i], 0, 0) == GL_TIMEOUT_EXPIRED)
 			break;
 
-		glDeleteSync(m_TracyFence[i]);
-		glBindBuffer(GL_PIXEL_PACK_BUFFER, m_TracyPBO[i]);
+		glDeleteSync(m_ProfilerFence[i]);
+		glBindBuffer(GL_PIXEL_PACK_BUFFER, m_ProfilerPBO[i]);
 		auto capture =
 		    glMapBufferRange(GL_PIXEL_PACK_BUFFER, 0, captureSize.x * captureSize.y * 4, GL_MAP_READ_BIT);
-		FrameImage(capture, captureSize.x, captureSize.y, m_TracyQueue.size(), true);
+		FBT_PROFILE_GPU_IMAGE(capture, captureSize.x, captureSize.y, m_ProfilerQueue.size(), true);
 		glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-		m_TracyQueue.erase(m_TracyQueue.begin());
+		m_ProfilerQueue.erase(m_ProfilerQueue.begin());
 	}
 }
 
-void OpenGLRendererBackend::CollectTracyGPUTraces()
+void OpenGLRendererBackend::CollectProfilerGPUTraces()
 {
-	TracyGpuCollect;
+	FBT_PROFILE_GPU_COLLECT();
 }
 #endif
 
 void OpenGLRendererBackend::OnWindowResized(Window& window, const glm::u32vec2& size)
 {
-	ZoneScoped;
-	TracyGpuZone("OpenGLRendererBackend::OnWindowResized");
+	FBT_PROFILE_FUNCTION();
 
 	glViewport(0, 0, size.x, size.y);
 }

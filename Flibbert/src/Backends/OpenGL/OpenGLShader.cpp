@@ -7,7 +7,7 @@ namespace Flibbert {
 OpenGLShader::OpenGLShader(std::string_view vertexShaderFilepath, std::string_view fragmentShaderFilepath)
     : m_VertexShaderFilePath(vertexShaderFilepath), m_FragmentShaderFilePath(fragmentShaderFilepath), m_RendererID(0)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	const auto vertexShader = LoadAndPreprocessShader(m_VertexShaderFilePath);
 	const auto fragmentShader = LoadAndPreprocessShader(m_FragmentShaderFilePath);
@@ -20,14 +20,14 @@ OpenGLShader::OpenGLShader(std::string_view vertexShaderFilepath, std::string_vi
 
 OpenGLShader::~OpenGLShader()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	glDeleteProgram(m_RendererID);
 }
 
 uint32_t OpenGLShader::CompileShader(uint32_t type, const std::string& source)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	// @todo migrate to SPIR-V here, so code can be reused for Vulkan and maybe DXIL? aka HLSL -> SPIR-V &
 	// DXIL
@@ -57,7 +57,7 @@ uint32_t OpenGLShader::CompileShader(uint32_t type, const std::string& source)
 
 uint32_t OpenGLShader::CreateShader(const std::string& vertexShader, const std::string& fragmentShader)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	uint32_t program = glCreateProgram();
 	uint32_t vs = CompileShader(GL_VERTEX_SHADER, vertexShader);
@@ -76,21 +76,21 @@ uint32_t OpenGLShader::CreateShader(const std::string& vertexShader, const std::
 
 void OpenGLShader::Bind() const
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	glUseProgram(m_RendererID);
 }
 
 void OpenGLShader::Unbind() const
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	glUseProgram(0);
 }
 
 void OpenGLShader::BindUniformBuffer(std::string_view name, uint32_t binding)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	uint32_t blockIndex = glGetUniformBlockIndex(m_RendererID, name.data());
 	glUniformBlockBinding(m_RendererID, blockIndex, binding);

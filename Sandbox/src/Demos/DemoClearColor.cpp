@@ -11,14 +11,14 @@ DemoClearColor::DemoClearColor() : m_Renderer(Flibbert::Renderer::Get()), m_Clea
 
 void DemoClearColor::OnRender()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	m_Renderer.SetClearColor(m_ClearColor);
 }
 
 void DemoClearColor::OnImGuiRender()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	ImGui::ColorEdit4("Clear Color", glm::value_ptr(m_ClearColor));
 }

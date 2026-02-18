@@ -35,7 +35,7 @@ std::shared_ptr<IShader> IShader::Create(std::string_view name, std::string_view
 // @todo add a "pragma once" for includes. will need to keep the state of what files have been included.
 std::string IShader::LoadAndPreprocessShader(const std::filesystem::path& filepath)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	std::filesystem::path currentDir = std::filesystem::current_path();
 	if (filepath.has_parent_path()) {

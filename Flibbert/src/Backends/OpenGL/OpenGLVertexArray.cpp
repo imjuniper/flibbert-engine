@@ -8,35 +8,35 @@ namespace Flibbert {
 
 OpenGLVertexArray::OpenGLVertexArray() : m_RendererID(0)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	glCreateVertexArrays(1, &m_RendererID);
 }
 
 OpenGLVertexArray::~OpenGLVertexArray()
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	glDeleteVertexArrays(1, &m_RendererID);
 }
 
 void OpenGLVertexArray::Bind() const
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	glBindVertexArray(m_RendererID);
 }
 
 void OpenGLVertexArray::Unbind() const
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	glBindVertexArray(0);
 }
 
 void OpenGLVertexArray::AddVertexBuffer(std::shared_ptr<IVertexBuffer> vertexBuffer)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	m_VertexBuffers.push_back(vertexBuffer);
 	const auto vboIndex = m_VertexBuffers.size() - 1;
@@ -111,7 +111,7 @@ const std::shared_ptr<IIndexBuffer>& OpenGLVertexArray::GetIndexBuffer() const
 
 void OpenGLVertexArray::SetIndexBuffer(std::shared_ptr<IIndexBuffer> indexBuffer)
 {
-	ZoneScoped;
+	FBT_PROFILE_FUNCTION();
 
 	m_IndexBuffer = indexBuffer;
 

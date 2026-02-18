@@ -32,8 +32,8 @@ public:
 	void Submit(const std::shared_ptr<IVertexArray>& vertexArray, const std::shared_ptr<IShader>& shader) const;
 
 #if FBT_PROFILING_ENABLED
-	void CaptureTracyFrameImage();
-	void CollectTracyGPUTraces();
+	void CaptureProfilerFrameImage();
+	void CollectProfilerGPUTraces();
 #endif
 
 private:
