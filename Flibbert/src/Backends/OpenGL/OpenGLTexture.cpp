@@ -3,7 +3,7 @@
 #include <glad.h>
 
 #if FBT_PROFILING_ENABLED
-#include "tracy/TracyOpenGL.hpp"
+	#include "tracy/TracyOpenGL.hpp"
 #endif
 
 #define STB_IMAGE_IMPLEMENTATION
@@ -54,6 +54,8 @@ OpenGLTexture::OpenGLTexture(std::string_view path) : m_RendererID(0)
 	glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
+	m_BindlessHandle = glGetTextureHandleARB(m_RendererID);
+
 	stbi_image_free(data);
 }
 
@@ -64,18 +66,24 @@ OpenGLTexture::~OpenGLTexture()
 	glDeleteTextures(1, &m_RendererID);
 }
 
-void OpenGLTexture::Bind(uint32_t slot) const
+void OpenGLTexture::MakeResident()
 {
 	ZoneScoped;
 
-	glBindTextureUnit(slot, m_RendererID);
+	if (!m_Resident) {
+		glMakeTextureHandleResidentARB(m_BindlessHandle);
+		m_Resident = true;
+	}
 }
 
-void OpenGLTexture::Unbind(uint32_t slot) const
+void OpenGLTexture::MakeNonResident()
 {
 	ZoneScoped;
 
-	glBindTextureUnit(slot, 0);
+	if (m_Resident) {
+		glMakeTextureHandleNonResidentARB(m_BindlessHandle);
+		m_Resident = false;
+	}
 }
 
 } // namespace Flibbert

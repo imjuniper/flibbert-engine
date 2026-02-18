@@ -7,8 +7,12 @@ class ITexture
 public:
 	virtual ~ITexture() = default;
 
-	virtual void Bind(uint32_t slot) const = 0;
-	virtual void Unbind(uint32_t slot) const = 0;
+	virtual void MakeResident() = 0;
+	virtual void MakeNonResident() = 0;
+
+	[[nodiscard]] uint64_t GetHandle() const {
+		return m_BindlessHandle;
+	}
 
 	[[nodiscard]] uint32_t GetWidth() const
 	{
@@ -33,6 +37,7 @@ protected:
 	uint32_t m_Height = 0;
 	uint32_t m_InternalFormat = 0;
 	uint32_t m_DataFormat = 0;
+	uint64_t m_BindlessHandle = 0;
 };
 
 } // namespace Flibbert

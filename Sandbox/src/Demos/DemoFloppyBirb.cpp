@@ -43,7 +43,6 @@ Birb::Birb()
 	m_VAO->SetIndexBuffer(m_IndexBuffer);
 
 	m_Shader = Flibbert::IShader::Create("assets/shaders/DemoBirb/Birb.vert", "assets/shaders/DemoBirb/Birb.frag");
-	m_Shader->Bind();
 	m_Shader->BindUniformBuffer("PerFrameData", 0);
 	m_Shader->BindUniformBuffer("PerObjectData", 1);
 }
@@ -108,7 +107,6 @@ Pipe::Pipe()
 	m_VAO->SetIndexBuffer(m_IndexBuffer);
 
 	m_Shader = Flibbert::IShader::Create("assets/shaders/DemoBirb/Pipe.vert", "assets/shaders/DemoBirb/Pipe.frag");
-	m_Shader->Bind();
 	m_Shader->BindUniformBuffer("PerFrameData", 0);
 	m_Shader->BindUniformBuffer("PerObjectData", 1);
 }

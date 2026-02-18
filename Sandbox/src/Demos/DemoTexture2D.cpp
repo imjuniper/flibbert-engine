@@ -45,14 +45,17 @@ DemoTexture2D::DemoTexture2D()
 	m_VAO->SetIndexBuffer(m_IndexBuffer);
 
 	m_Shader = Flibbert::IShader::Create("assets/shaders/Basic.vert", "assets/shaders/Basic.frag");
-	m_Shader->Bind();
-	m_Texture = Flibbert::ITexture::Create("assets/textures/neko.png");
-	m_Texture->Bind(0);
 	m_Shader->BindUniformBuffer("PerFrameData", 0);
 	m_Shader->BindUniformBuffer("PerObjectData", 1);
+	m_Shader->BindUniformBuffer("BasicData", 2);
 
 	m_PerFrameBuffer = Flibbert::IUniformBuffer::Create(sizeof(PerFrameUniformData), 0);
 	m_PerObjectBuffer = Flibbert::IUniformBuffer::Create(sizeof(PerObjectUniformData), 1);
+	m_BasicDataBuffer = Flibbert::IUniformBuffer::Create(sizeof(BasicUniformData), 2);
+
+	m_Texture = Flibbert::ITexture::Create("assets/textures/neko.png");
+	const BasicUniformData basicData{m_Texture->GetHandle()};
+	m_BasicDataBuffer->SetData(&basicData, sizeof(BasicUniformData));
 }
 
 void DemoTexture2D::OnUpdate(float ts)
@@ -66,11 +69,11 @@ void DemoTexture2D::OnRender()
 {
 	ZoneScoped;
 
-	m_Texture->Bind(0);
-
 	const PerFrameUniformData perFrameBuffer{m_Camera->GetViewMatrix(), m_Camera->GetProjectionMatrix(),
 	                                         m_Camera->GetPosition()};
 	m_PerFrameBuffer->SetData(&perFrameBuffer, sizeof(PerFrameUniformData));
+
+	m_Texture->MakeResident();
 
 	{
 		const PerObjectUniformData buffer{glm::translate(glm::mat4(1.0f), m_TranslationA)};
@@ -83,6 +86,8 @@ void DemoTexture2D::OnRender()
 		m_PerObjectBuffer->SetData(&buffer, sizeof(PerObjectUniformData));
 		m_Renderer.Submit(m_VAO, m_Shader);
 	}
+
+	m_Texture->MakeNonResident();
 }
 
 void DemoTexture2D::OnImGuiRender()

@@ -80,8 +80,6 @@ void DemoMeshGeneration::OnImGuiRender()
 
 	if (ImGui::Button("Reload shaders")) {
 		m_Shader = Flibbert::IShader::Create("assets/shaders/MeshGen.vert", "assets/shaders/MeshGen.frag");
-		m_Shader->Bind();
-
 		m_Shader->BindUniformBuffer("Matrices", 0);
 		m_Shader->BindUniformBuffer("UniformBufferObject", 1);
 	}

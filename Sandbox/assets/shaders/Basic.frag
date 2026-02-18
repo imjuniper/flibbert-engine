@@ -1,7 +1,10 @@
 #version 460 core
+#extension GL_ARB_bindless_texture : require
 
 // Uniform buffers
-layout(binding = 0) uniform sampler2D u_Texture; // @todo get rid of this
+layout(std140) uniform BasicData {
+    sampler2D u_Texture;
+};
 
 // Inputs
 in VertexData
@@ -12,7 +15,7 @@ in VertexData
 // Outputs
 layout(location = 0) out vec4 frag_color;
 
-void main(){
+void main() {
     vec4 texColor = texture(u_Texture, vertexData.TexCoord);
     if (gl_FrontFacing)
         frag_color = texColor;

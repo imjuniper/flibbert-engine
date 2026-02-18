@@ -25,6 +25,11 @@ struct PerObjectUniformData
 	// Probably also material properties?
 };
 
+struct BasicUniformData
+{
+	uint64_t Texture;
+};
+
 class Demo
 {
 public:

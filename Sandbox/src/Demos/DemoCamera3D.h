@@ -34,6 +34,7 @@ private:
 	std::shared_ptr<Flibbert::ITexture> m_Texture;
 	std::shared_ptr<Flibbert::IUniformBuffer> m_PerFrameBuffer;
 	std::shared_ptr<Flibbert::IUniformBuffer> m_PerObjectBuffer;
+	std::shared_ptr<Flibbert::IUniformBuffer> m_BasicDataBuffer;
 
 	std::unique_ptr<Flibbert::Camera> m_Camera;
 

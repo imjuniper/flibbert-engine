@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdint>
-#include <type_traits>
 
 // Brings cstdint types into global scope. Better than having to deal with std::[type]
 // clang-format off
