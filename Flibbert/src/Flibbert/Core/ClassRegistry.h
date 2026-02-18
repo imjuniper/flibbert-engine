@@ -117,6 +117,7 @@ public:                                                                         
 		return std::is_base_of_v<T, ThisClass>;                                                                \
 	}                                                                                                              \
                                                                                                                        \
+	/* This doesn't do what I expect */                                                                            \
 	template <typename T>                                                                                          \
 	bool IsA()                                                                                                     \
 	{                                                                                                              \
@@ -157,6 +158,7 @@ public:                                                                         
 		return std::is_base_of_v<T, ThisClass>;                                                                \
 	}                                                                                                              \
                                                                                                                        \
+	/* This doesn't do what I expect */                                                                            \
 	template <typename T>                                                                                          \
 	bool IsA()                                                                                                     \
 	{                                                                                                              \
