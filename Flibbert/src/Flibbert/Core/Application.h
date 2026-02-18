@@ -2,15 +2,14 @@
 
 #include "Flibbert/Core/ApplicationSubsystem.h"
 #include "Flibbert/Core/Base.h"
-#include "Flibbert/Core/ClassRegistry.h"
+#include "Flibbert/Renderer/Renderer.h"
+#include "Platform/Desktop/Window.h"
 
 #include <memory>
 #include <string>
 
 namespace Flibbert {
 
-class Renderer;
-class Window;
 struct InputEvent;
 
 struct LaunchArguments
