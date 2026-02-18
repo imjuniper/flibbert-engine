@@ -2,7 +2,3 @@ CompileFlags:
   CompilationDatabase: @CMAKE_BINARY_DIR@
   Add:
     - -std=c++@CMAKE_CXX_STANDARD@
-
-Diagnostics:
-  ClangTidy:
-    Enable: true
