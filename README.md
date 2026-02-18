@@ -6,7 +6,7 @@ Flibbert is basically a small framework/engine that I'm working on to learn game
 
 - A system that supports OpenGL 4.6
 - [CMake 3.31+](https://cmake.org/)
-- A C++ compiler supporting C++20 (Clang and MSVC have been tested)
+- A C++ compiler supporting C++23 (Clang has been tested)
 
 ## Current features
 
@@ -28,7 +28,7 @@ cmake --build --preset [your-build-preset]
 
 ### Running
 
-Once built, you can run `Sandbox.exe` in the `Binaries/{CONFIG}/Sandbox` folder. The `assets` folder is a symlink to `{PROJECT_DIR}/Sandbox/src/assets` so that they are available from the working directory.
+Once built, you can run the `Sandbox[.exe]` executable in the `Binaries/{CONFIG}` folder. The `assets` folder is a symlink to `{PROJECT_DIR}/Sandbox/src/assets` so that they are available from the working directory.
 
 ### Packaging
 
