@@ -14,33 +14,51 @@ class ClassRegistry
 public:
 	struct ClassInfo
 	{
+		uint32_t ClassID;
+		uint64_t ClassMask;
 		std::string_view Name;
 		std::string_view Parent;
 		ClassInfo* ParentInfo = nullptr;
 		void* (*FactoryFunc)() = nullptr;
 
-		bool IsChildOf(std::string_view className);
+		bool IsA(const ClassInfo* classInfo) const;
 	};
 
+private:
+	static uint32_t s_NextClassInfoID;
+
+	// @todo revisit my StringName implementation to use it here instead
+	static std::unordered_map<std::string_view, ClassInfo> s_Classes;
+
+	static void GetChildClasses(const ClassInfo* classInfo, std::vector<const ClassInfo*>& classes);
+
+public:
 	template <typename T>
 	static void* ClassFactory()
 	{
 		return new T();
 	}
 
-	// @todo revisit my StringName implementation to use it here instead
-	static std::unordered_map<std::string_view, ClassInfo> Classes;
-
-	static void AddClass(std::string_view className);
-	static void AddClass(std::string_view className, std::string_view parentClassName);
+	static ClassInfo* AddClass(std::string_view className);
+	static ClassInfo* AddClass(std::string_view className, std::string_view parentClassName);
 
 	template <typename T>
 	static void GetChildClasses(std::vector<const ClassInfo*>& classes)
 	{
-		return GetChildClasses(T::ClassNamePrivate, classes);
+		static_assert(std::is_same_v<typename T::ThisClass, T>,
+		              "Class not declared properly, please use FBTCLASS.");
+
+		return GetChildClasses(T::StaticClass(), classes);
 	}
 
-	static void GetChildClasses(std::string_view className, std::vector<const ClassInfo*>& classes);
+	template <typename T>
+	static void InitializeClass()
+	{
+		static_assert(std::is_same_v<typename T::ThisClass, T>,
+		              "Class not declared properly, please use FBTCLASS.");
+
+		T::InitializeClass();
+	}
 
 	template <typename T>
 	static void RegisterAbstractClass()
@@ -60,7 +78,7 @@ public:
 		              "Class not declared properly, please use FBTCLASS.");
 
 		T::InitializeClass();
-		const auto found = Classes.find(T::ClassNamePrivate);
+		const auto found = s_Classes.find(T::ClassNamePrivate);
 		found->second.FactoryFunc = &ClassFactory<T>;
 
 		FBT_CORE_TRACE("Registered class {0}", T::ClassNamePrivate);
@@ -87,14 +105,17 @@ public:
 
 } // namespace Flibbert
 
-#define FBTBASECLASS(this_class)                                                                                       \
+#define FBT_CLASS_BODY_IMPL(this_class)                                                                                \
                                                                                                                        \
 private:                                                                                                               \
-	friend class ::Flibbert::ClassRegistry;                                                                        \
 	static constexpr std::string_view ClassNamePrivate = #this_class;                                              \
+	inline static const ::Flibbert::ClassRegistry::ClassInfo* ClassInfoPrivate = nullptr;                          \
                                                                                                                        \
-public:                                                                                                                \
-	using ThisClass = this_class;                                                                                  \
+	friend class ::Flibbert::ClassRegistry;                                                                        \
+	using ThisClass = this_class;
+
+#define FBTBASECLASS(this_class)                                                                                       \
+	FBT_CLASS_BODY_IMPL(this_class)                                                                                \
                                                                                                                        \
 	static void InitializeClass()                                                                                  \
 	{                                                                                                              \
@@ -102,38 +123,40 @@ public:                                                                         
 		if (initialized) {                                                                                     \
 			return;                                                                                        \
 		}                                                                                                      \
-		::Flibbert::ClassRegistry::AddClass(ClassNamePrivate);                                                 \
+		ClassInfoPrivate = ::Flibbert::ClassRegistry::AddClass(ClassNamePrivate);                              \
 		initialized = true;                                                                                    \
 	}                                                                                                              \
                                                                                                                        \
+	bool IsA(const ::Flibbert::ClassRegistry::ClassInfo* otherClass)                                               \
+	{                                                                                                              \
+		return GetClass()->IsA(otherClass);                                                                    \
+	}                                                                                                              \
+                                                                                                                       \
+public:                                                                                                                \
 	static const std::string_view& GetClassName()                                                                  \
 	{                                                                                                              \
 		return ClassNamePrivate;                                                                               \
 	}                                                                                                              \
                                                                                                                        \
-	template <typename T>                                                                                          \
-	bool IsChildOf()                                                                                               \
+	static const ::Flibbert::ClassRegistry::ClassInfo* StaticClass()                                               \
 	{                                                                                                              \
-		return std::is_base_of_v<T, ThisClass>;                                                                \
+		return ClassInfoPrivate;                                                                               \
 	}                                                                                                              \
                                                                                                                        \
-	/* This doesn't do what I expect */                                                                            \
+	virtual const ::Flibbert::ClassRegistry::ClassInfo* GetClass() const                                           \
+	{                                                                                                              \
+		return ClassInfoPrivate;                                                                               \
+	}                                                                                                              \
+                                                                                                                       \
 	template <typename T>                                                                                          \
 	bool IsA()                                                                                                     \
 	{                                                                                                              \
-		return std::is_same_v<T, ThisClass>;                                                                   \
-	}                                                                                                              \
-                                                                                                                       \
-private:
+		IsA(T::StaticClass());                                                                                 \
+	}
 
 #define FBTCLASS(this_class, parent_class)                                                                             \
+	FBT_CLASS_BODY_IMPL(this_class)                                                                                \
                                                                                                                        \
-private:                                                                                                               \
-	friend class ::Flibbert::ClassRegistry;                                                                        \
-	static constexpr std::string_view ClassNamePrivate = #this_class;                                              \
-                                                                                                                       \
-public:                                                                                                                \
-	using ThisClass = this_class;                                                                                  \
 	using Super = parent_class;                                                                                    \
                                                                                                                        \
 	static void InitializeClass()                                                                                  \
@@ -142,27 +165,9 @@ public:                                                                         
 		if (initialized) {                                                                                     \
 			return;                                                                                        \
 		}                                                                                                      \
-		Super::InitializeClass();                                                                              \
-		::Flibbert::ClassRegistry::AddClass(ClassNamePrivate, Super::GetClassName());                          \
+		::Flibbert::ClassRegistry::InitializeClass<Super>();                                                   \
+		ClassInfoPrivate = ::Flibbert::ClassRegistry::AddClass(ClassNamePrivate, Super::GetClassName());       \
 		initialized = true;                                                                                    \
-	}                                                                                                              \
-                                                                                                                       \
-	static const std::string_view& GetClassName()                                                                  \
-	{                                                                                                              \
-		return ClassNamePrivate;                                                                               \
-	}                                                                                                              \
-                                                                                                                       \
-	template <typename T>                                                                                          \
-	bool IsChildOf()                                                                                               \
-	{                                                                                                              \
-		return std::is_base_of_v<T, ThisClass>;                                                                \
-	}                                                                                                              \
-                                                                                                                       \
-	/* This doesn't do what I expect */                                                                            \
-	template <typename T>                                                                                          \
-	bool IsA()                                                                                                     \
-	{                                                                                                              \
-		return std::is_same_v<T, ThisClass>;                                                                   \
 	}                                                                                                              \
                                                                                                                        \
 private:

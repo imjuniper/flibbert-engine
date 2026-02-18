@@ -45,8 +45,8 @@ public:
 	std::shared_ptr<T> GetSubsystem()
 	{
 		for (auto subsystem : m_Subsystems) {
-			if (auto asType = std::static_pointer_cast<T>(subsystem)) {
-				return asType;
+			if (subsystem->GetClass() == T::StaticClass()) {
+				return std::static_pointer_cast<T>(subsystem);
 			}
 		}
 
