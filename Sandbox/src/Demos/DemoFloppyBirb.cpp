@@ -29,20 +29,20 @@ Birb::Birb()
 		};
 	// clang-format on
 
-	m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices, sizeof(vertices));
+	m_VertexBuffer = Flibbert::IVertexBuffer::Create(vertices, sizeof(vertices));
 	Flibbert::BufferLayout layout = {
 	    {Flibbert::ShaderDataType::Float2, "a_Position"},
 	    {Flibbert::ShaderDataType::Float3, "a_Color"},
 	};
 	m_VertexBuffer->SetLayout(layout);
 
-	m_IndexBuffer = Flibbert::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
+	m_IndexBuffer = Flibbert::IIndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 
-	m_VAO = Flibbert::VertexArray::Create();
+	m_VAO = Flibbert::IVertexArray::Create();
 	m_VAO->AddVertexBuffer(m_VertexBuffer);
 	m_VAO->SetIndexBuffer(m_IndexBuffer);
 
-	m_Shader = Flibbert::Shader::Create("assets/shaders/DemoBirb/Birb.vert", "assets/shaders/DemoBirb/Birb.frag");
+	m_Shader = Flibbert::IShader::Create("assets/shaders/DemoBirb/Birb.vert", "assets/shaders/DemoBirb/Birb.frag");
 	m_Shader->Bind();
 	m_Shader->BindUniformBuffer("PerFrameData", 0);
 	m_Shader->BindUniformBuffer("PerObjectData", 1);
@@ -94,20 +94,20 @@ Pipe::Pipe()
 		};
 	// clang-format on
 
-	m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices, sizeof(vertices));
+	m_VertexBuffer = Flibbert::IVertexBuffer::Create(vertices, sizeof(vertices));
 	Flibbert::BufferLayout layout = {
 	    {Flibbert::ShaderDataType::Float2, "a_Position"},
 	    {Flibbert::ShaderDataType::Float3, "a_Color"},
 	};
 	m_VertexBuffer->SetLayout(layout);
 
-	m_IndexBuffer = Flibbert::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
+	m_IndexBuffer = Flibbert::IIndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 
-	m_VAO = Flibbert::VertexArray::Create();
+	m_VAO = Flibbert::IVertexArray::Create();
 	m_VAO->AddVertexBuffer(m_VertexBuffer);
 	m_VAO->SetIndexBuffer(m_IndexBuffer);
 
-	m_Shader = Flibbert::Shader::Create("assets/shaders/DemoBirb/Pipe.vert", "assets/shaders/DemoBirb/Pipe.frag");
+	m_Shader = Flibbert::IShader::Create("assets/shaders/DemoBirb/Pipe.vert", "assets/shaders/DemoBirb/Pipe.frag");
 	m_Shader->Bind();
 	m_Shader->BindUniformBuffer("PerFrameData", 0);
 	m_Shader->BindUniformBuffer("PerObjectData", 1);
@@ -125,8 +125,8 @@ DemoFloppyBirb::DemoFloppyBirb() : m_Renderer(Flibbert::Renderer::Get())
 	cameraMode->FarClip = 1.0f;
 	m_Camera = std::make_unique<Flibbert::Camera>(cameraMode);
 
-	m_PerFrameBuffer = Flibbert::UniformBuffer::Create(sizeof(PerFrameUniformData), 0);
-	m_PerObjectBuffer = Flibbert::UniformBuffer::Create(sizeof(PerObjectUniformData), 1);
+	m_PerFrameBuffer = Flibbert::IUniformBuffer::Create(sizeof(PerFrameUniformData), 0);
+	m_PerObjectBuffer = Flibbert::IUniformBuffer::Create(sizeof(PerObjectUniformData), 1);
 }
 
 void DemoFloppyBirb::OnUpdate(float ts)
@@ -147,21 +147,21 @@ void DemoFloppyBirb::OnRender()
 	{
 		const PerObjectUniformData buffer{glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position, 0))};
 		m_PerObjectBuffer->SetData(&buffer, sizeof(PerObjectUniformData));
-		m_Renderer.Draw(m_Pipe.m_VAO, m_Pipe.m_Shader);
+		m_Renderer.Submit(m_Pipe.m_VAO, m_Pipe.m_Shader);
 	}
 
 	{
 		const PerObjectUniformData buffer{
 		    glm::translate(glm::mat4(1.0f), glm::vec3(m_Pipe.m_Position.x + 250.0f, m_Pipe.m_Position.y, 0))};
 		m_PerObjectBuffer->SetData(&buffer, sizeof(PerObjectUniformData));
-		m_Renderer.Draw(m_Pipe.m_VAO, m_Pipe.m_Shader);
+		m_Renderer.Submit(m_Pipe.m_VAO, m_Pipe.m_Shader);
 	}
 
 	// Bird
 	{
 		const PerObjectUniformData buffer{glm::translate(glm::mat4(1.0f), glm::vec3(m_Birb.m_Position, 0))};
 		m_PerObjectBuffer->SetData(&buffer, sizeof(PerObjectUniformData));
-		m_Renderer.Draw(m_Birb.m_VAO, m_Birb.m_Shader);
+		m_Renderer.Submit(m_Birb.m_VAO, m_Birb.m_Shader);
 	}
 }
 

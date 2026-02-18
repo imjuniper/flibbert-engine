@@ -29,8 +29,8 @@ DemoMeshGeneration::DemoMeshGeneration()
 	GenerateMesh();
 
 	// Setup uniform buffers
-	m_PerFrameBuffer = Flibbert::UniformBuffer::Create(sizeof(PerFrameUniformData), 0);
-	m_MeshGenUniformBuffer = Flibbert::UniformBuffer::Create(sizeof(MeshGenUniformBuffer), 1);
+	m_PerFrameBuffer = Flibbert::IUniformBuffer::Create(sizeof(PerFrameUniformData), 0);
+	m_MeshGenUniformBuffer = Flibbert::IUniformBuffer::Create(sizeof(MeshGenUniformBuffer), 1);
 }
 
 void DemoMeshGeneration::OnUpdate(float ts)
@@ -51,7 +51,7 @@ void DemoMeshGeneration::OnRender()
 {
 	ZoneScoped;
 
-	m_Renderer.Draw(m_VAO, m_Shader);
+	m_Renderer.Submit(m_VAO, m_Shader);
 }
 
 void DemoMeshGeneration::OnImGuiRender()
@@ -79,7 +79,7 @@ void DemoMeshGeneration::OnImGuiRender()
 	}
 
 	if (ImGui::Button("Reload shaders")) {
-		m_Shader = Flibbert::Shader::Create("assets/shaders/MeshGen.vert", "assets/shaders/MeshGen.frag");
+		m_Shader = Flibbert::IShader::Create("assets/shaders/MeshGen.vert", "assets/shaders/MeshGen.frag");
 		m_Shader->Bind();
 
 		m_Shader->BindUniformBuffer("Matrices", 0);
@@ -205,19 +205,19 @@ void DemoMeshGeneration::GenerateMesh()
 	FBT_INFO(message);
 	TracyMessage(message.data(), message.size());
 
-	m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices.data(), vertices.size() * sizeof(float));
+	m_VertexBuffer = Flibbert::IVertexBuffer::Create(vertices.data(), vertices.size() * sizeof(float));
 	Flibbert::BufferLayout layout = {
 	    {Flibbert::ShaderDataType::Float3, "a_Position"},
 	};
 	m_VertexBuffer->SetLayout(layout);
 
-	m_IndexBuffer = Flibbert::IndexBuffer::Create(indices.data(), indices.size());
+	m_IndexBuffer = Flibbert::IIndexBuffer::Create(indices.data(), indices.size());
 
-	m_VAO = Flibbert::VertexArray::Create();
+	m_VAO = Flibbert::IVertexArray::Create();
 	m_VAO->AddVertexBuffer(m_VertexBuffer);
 	m_VAO->SetIndexBuffer(m_IndexBuffer);
 
-	m_Shader = Flibbert::Shader::Create("assets/shaders/MeshGen.vert", "assets/shaders/MeshGen.frag");
+	m_Shader = Flibbert::IShader::Create("assets/shaders/MeshGen.vert", "assets/shaders/MeshGen.frag");
 	m_Shader->BindUniformBuffer("PerFrameData", 0);
 	m_Shader->BindUniformBuffer("MeshGenData", 1);
 

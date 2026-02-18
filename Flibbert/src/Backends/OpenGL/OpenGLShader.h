@@ -12,7 +12,7 @@ struct OpenGLUniformInfo
 	int32_t Size;
 };
 
-class OpenGLShader : public Shader
+class OpenGLShader : public IShader
 {
 public:
 	OpenGLShader(std::string_view vertexShaderFilepath, std::string_view fragmentShaderFilepath);

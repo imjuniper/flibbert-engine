@@ -16,11 +16,11 @@ public:
 	virtual void OnInput(const std::shared_ptr<Flibbert::InputEvent>& event) {}
 
 public:
-	std::shared_ptr<Flibbert::VertexArray> m_VAO;
-	std::shared_ptr<Flibbert::VertexBuffer> m_VertexBuffer;
-	std::shared_ptr<Flibbert::IndexBuffer> m_IndexBuffer;
-	std::shared_ptr<Flibbert::Shader> m_Shader;
-	std::shared_ptr<Flibbert::Texture> m_Texture;
+	std::shared_ptr<Flibbert::IVertexArray> m_VAO;
+	std::shared_ptr<Flibbert::IVertexBuffer> m_VertexBuffer;
+	std::shared_ptr<Flibbert::IIndexBuffer> m_IndexBuffer;
+	std::shared_ptr<Flibbert::IShader> m_Shader;
+	std::shared_ptr<Flibbert::ITexture> m_Texture;
 
 	glm::vec2 m_Position;
 	glm::vec2 m_Size;
@@ -69,8 +69,8 @@ public:
 
 private:
 	Flibbert::Renderer& m_Renderer;
-	std::shared_ptr<Flibbert::UniformBuffer> m_PerFrameBuffer;
-	std::shared_ptr<Flibbert::UniformBuffer> m_PerObjectBuffer;
+	std::shared_ptr<Flibbert::IUniformBuffer> m_PerFrameBuffer;
+	std::shared_ptr<Flibbert::IUniformBuffer> m_PerObjectBuffer;
 
 	std::unique_ptr<Flibbert::Camera> m_Camera;
 

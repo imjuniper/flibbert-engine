@@ -6,7 +6,7 @@
 
 namespace Flibbert {
 
-class OpenGLFramebuffer : public Framebuffer
+class OpenGLFramebuffer : public IFramebuffer
 {
 public:
 	OpenGLFramebuffer(const FramebufferSpecification& specification);

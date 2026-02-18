@@ -31,28 +31,28 @@ DemoTexture2D::DemoTexture2D()
 		};
 	// clang-format on
 
-	m_VertexBuffer = Flibbert::VertexBuffer::Create(vertices, sizeof(vertices));
+	m_VertexBuffer = Flibbert::IVertexBuffer::Create(vertices, sizeof(vertices));
 	Flibbert::BufferLayout layout = {
 	    {Flibbert::ShaderDataType::Float3, "a_Position"},
 	    {Flibbert::ShaderDataType::Float2, "a_TexCoord"},
 	};
 	m_VertexBuffer->SetLayout(layout);
 
-	m_IndexBuffer = Flibbert::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
+	m_IndexBuffer = Flibbert::IIndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 
-	m_VAO = Flibbert::VertexArray::Create();
+	m_VAO = Flibbert::IVertexArray::Create();
 	m_VAO->AddVertexBuffer(m_VertexBuffer);
 	m_VAO->SetIndexBuffer(m_IndexBuffer);
 
-	m_Shader = Flibbert::Shader::Create("assets/shaders/Basic.vert", "assets/shaders/Basic.frag");
+	m_Shader = Flibbert::IShader::Create("assets/shaders/Basic.vert", "assets/shaders/Basic.frag");
 	m_Shader->Bind();
-	m_Texture = Flibbert::Texture::Create("assets/textures/neko.png");
+	m_Texture = Flibbert::ITexture::Create("assets/textures/neko.png");
 	m_Shader->SetUniform1i("u_Texture", 0);
 	m_Shader->BindUniformBuffer("PerFrameData", 0);
 	m_Shader->BindUniformBuffer("PerObjectData", 1);
 
-	m_PerFrameBuffer = Flibbert::UniformBuffer::Create(sizeof(PerFrameUniformData), 0);
-	m_PerObjectBuffer = Flibbert::UniformBuffer::Create(sizeof(PerObjectUniformData), 1);
+	m_PerFrameBuffer = Flibbert::IUniformBuffer::Create(sizeof(PerFrameUniformData), 0);
+	m_PerObjectBuffer = Flibbert::IUniformBuffer::Create(sizeof(PerObjectUniformData), 1);
 }
 
 void DemoTexture2D::OnUpdate(float ts)
@@ -75,13 +75,13 @@ void DemoTexture2D::OnRender()
 	{
 		const PerObjectUniformData buffer{glm::translate(glm::mat4(1.0f), m_TranslationA)};
 		m_PerObjectBuffer->SetData(&buffer, sizeof(PerObjectUniformData));
-		m_Renderer.Draw(m_VAO, m_Shader);
+		m_Renderer.Submit(m_VAO, m_Shader);
 	}
 
 	{
 		const PerObjectUniformData buffer{glm::translate(glm::mat4(1.0f), m_TranslationB)};
 		m_PerObjectBuffer->SetData(&buffer, sizeof(PerObjectUniformData));
-		m_Renderer.Draw(m_VAO, m_Shader);
+		m_Renderer.Submit(m_VAO, m_Shader);
 	}
 }
 

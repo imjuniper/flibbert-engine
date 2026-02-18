@@ -5,7 +5,7 @@
 
 namespace Flibbert {
 
-std::shared_ptr<Texture> Texture::Create(std::string_view path)
+std::shared_ptr<ITexture> ITexture::Create(std::string_view path)
 {
 	switch (Renderer::GetAPI()) {
 	case Renderer::API::OpenGL:

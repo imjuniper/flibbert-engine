@@ -4,9 +4,9 @@
 
 namespace Flibbert {
 
-class IndexBuffer;
-class Shader;
-class VertexArray;
+class IIndexBuffer;
+class IShader;
+class IVertexArray;
 
 class Renderer
 {
@@ -29,7 +29,7 @@ public:
 	void SetClearColor(glm::vec4 color) const;
 	void Clear() const;
 
-	void Draw(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader) const;
+	void Submit(const std::shared_ptr<IVertexArray>& vertexArray, const std::shared_ptr<IShader>& shader) const;
 
 #if FBT_PROFILING_ENABLED
 	void CaptureTracyFrameImage();
@@ -37,7 +37,7 @@ public:
 #endif
 
 private:
-	std::unique_ptr<RendererBackend> m_Backend;
+	std::unique_ptr<IRendererBackend> m_Backend;
 
 public:
 	static Renderer& Get();

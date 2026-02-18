@@ -129,7 +129,7 @@ void Application::Run()
 		m_Renderer->CaptureTracyFrameImage();
 #endif
 
-		m_Window->SwapBuffers();
+		m_Window->Present();
 		FrameMark;
 #if FBT_PROFILING_ENABLED
 		m_Renderer->CollectTracyGPUTraces();

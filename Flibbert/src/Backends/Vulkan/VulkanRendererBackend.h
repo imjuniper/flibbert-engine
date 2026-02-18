@@ -6,7 +6,7 @@ namespace Flibbert {
 
 class Window;
 
-class VulkanRendererBackend : public RendererBackend
+class VulkanRendererBackend : public IRendererBackend
 {
 public:
 	VulkanRendererBackend();
@@ -15,8 +15,8 @@ public:
 	void SetClearColor(const glm::vec4& color) override;
 	void Clear() override;
 
-	void Draw(const std::shared_ptr<VertexArray>& vertexArray,
-	          const std::shared_ptr<Shader>& shader) const override;
+	void Submit(const std::shared_ptr<IVertexArray>& vertexArray,
+	          const std::shared_ptr<IShader>& shader) const override;
 
 #if FBT_PROFILING_ENABLED
 	void SetupTracyFrameImageData();

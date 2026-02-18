@@ -5,7 +5,7 @@
 
 namespace Flibbert {
 
-std::shared_ptr<VertexBuffer> VertexBuffer::Create(const float* vertices, const uint32_t size)
+std::shared_ptr<IVertexBuffer> IVertexBuffer::Create(const float* vertices, const uint32_t size)
 {
 	switch (Renderer::GetAPI()) {
 	case Renderer::API::OpenGL:
@@ -15,7 +15,7 @@ std::shared_ptr<VertexBuffer> VertexBuffer::Create(const float* vertices, const 
 	}
 }
 
-std::shared_ptr<IndexBuffer> IndexBuffer::Create(const uint32_t* indices, const uint32_t size)
+std::shared_ptr<IIndexBuffer> IIndexBuffer::Create(const uint32_t* indices, const uint32_t size)
 {
 	switch (Renderer::GetAPI()) {
 	case Renderer::API::OpenGL:
@@ -25,7 +25,7 @@ std::shared_ptr<IndexBuffer> IndexBuffer::Create(const uint32_t* indices, const 
 	}
 }
 
-std::shared_ptr<UniformBuffer> UniformBuffer::Create(uint32_t size, uint32_t binding)
+std::shared_ptr<IUniformBuffer> IUniformBuffer::Create(uint32_t size, uint32_t binding)
 {
 	switch (Renderer::GetAPI()) {
 	case Renderer::API::OpenGL:

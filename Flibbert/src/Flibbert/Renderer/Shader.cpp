@@ -9,7 +9,7 @@
 
 namespace Flibbert {
 
-std::shared_ptr<Shader> Shader::Create(std::string_view vertexPath, std::string_view fragmentPath)
+std::shared_ptr<IShader> IShader::Create(std::string_view vertexPath, std::string_view fragmentPath)
 {
 	switch (Renderer::GetAPI()) {
 	case Renderer::API::OpenGL:
@@ -19,7 +19,7 @@ std::shared_ptr<Shader> Shader::Create(std::string_view vertexPath, std::string_
 	}
 }
 
-std::shared_ptr<Shader> Shader::Create(std::string_view name, std::string_view vertexSrc, std::string_view fragmentSrc)
+std::shared_ptr<IShader> IShader::Create(std::string_view name, std::string_view vertexSrc, std::string_view fragmentSrc)
 {
 	switch (Renderer::GetAPI()) {
 	case Renderer::API::OpenGL:
@@ -33,7 +33,7 @@ std::shared_ptr<Shader> Shader::Create(std::string_view name, std::string_view v
 }
 
 // @todo add a "pragma once" for includes. will need to keep the state of what files have been included.
-std::string Shader::LoadAndPreprocessShader(const std::filesystem::path& filepath)
+std::string IShader::LoadAndPreprocessShader(const std::filesystem::path& filepath)
 {
 	ZoneScoped;
 

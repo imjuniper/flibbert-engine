@@ -139,10 +139,10 @@ private:
 	uint32_t m_Stride = 0;
 };
 
-class VertexBuffer
+class IVertexBuffer
 {
 public:
-	virtual ~VertexBuffer() = default;
+	virtual ~IVertexBuffer() = default;
 
 	virtual const uint32_t GetRendererID() const = 0;
 	virtual const BufferLayout& GetLayout() const
@@ -154,30 +154,30 @@ public:
 		m_Layout = layout;
 	};
 
-	static std::shared_ptr<VertexBuffer> Create(const float* vertices, uint32_t size);
+	static std::shared_ptr<IVertexBuffer> Create(const float* vertices, uint32_t size);
 
 protected:
 	BufferLayout m_Layout;
 };
 
-class IndexBuffer
+class IIndexBuffer
 {
 public:
-	virtual ~IndexBuffer() = default;
+	virtual ~IIndexBuffer() = default;
 
 	virtual const uint32_t GetRendererID() const = 0;
 	virtual uint32_t GetCount() const = 0;
 
-	static std::shared_ptr<IndexBuffer> Create(const uint32_t* indices, uint32_t size);
+	static std::shared_ptr<IIndexBuffer> Create(const uint32_t* indices, uint32_t size);
 };
 
-class UniformBuffer
+class IUniformBuffer
 {
 public:
-	virtual ~UniformBuffer() = default;
+	virtual ~IUniformBuffer() = default;
 	virtual void SetData(const void* data, uint32_t size, uint32_t offset = 0) = 0;
 
-	static std::shared_ptr<UniformBuffer> Create(uint32_t size, uint32_t binding);
+	static std::shared_ptr<IUniformBuffer> Create(uint32_t size, uint32_t binding);
 };
 
 } // namespace Flibbert

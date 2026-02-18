@@ -3,19 +3,19 @@
 namespace Flibbert {
 
 class Renderer;
-class IndexBuffer;
-class Shader;
-class VertexArray;
+class IIndexBuffer;
+class IShader;
+class IVertexArray;
 
-class RendererBackend
+class IRendererBackend
 {
 	friend Renderer;
 
 public:
-	virtual ~RendererBackend() = default;
+	virtual ~IRendererBackend() = default;
 
 protected:
-	RendererBackend() = default;
+	IRendererBackend() = default;
 
 	[[nodiscard]] virtual glm::vec4 GetClearColor() const
 	{
@@ -27,8 +27,8 @@ protected:
 	}
 	virtual void Clear() = 0;
 
-	virtual void Draw(const std::shared_ptr<VertexArray>& vertexArray,
-	                  const std::shared_ptr<Shader>& shader) const = 0;
+	virtual void Submit(const std::shared_ptr<IVertexArray>& vertexArray,
+	                  const std::shared_ptr<IShader>& shader) const = 0;
 
 #if FBT_PROFILING_ENABLED
 	virtual void CaptureTracyFrameImage() = 0;

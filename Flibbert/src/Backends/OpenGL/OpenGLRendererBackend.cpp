@@ -138,7 +138,7 @@ void OpenGLRendererBackend::SetClearColor(const glm::vec4& color)
 	ZoneScoped;
 	TracyGpuZone("OpenGLRendererBackend::SetClearColor");
 
-	RendererBackend::SetClearColor(color);
+	IRendererBackend::SetClearColor(color);
 	glClearColor(color.r, color.g, color.b, color.a);
 }
 
@@ -150,8 +150,8 @@ void OpenGLRendererBackend::Clear()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void OpenGLRendererBackend::Draw(const std::shared_ptr<VertexArray>& vertexArray,
-                                 const std::shared_ptr<Shader>& shader) const
+void OpenGLRendererBackend::Submit(const std::shared_ptr<IVertexArray>& vertexArray,
+                                 const std::shared_ptr<IShader>& shader) const
 {
 	ZoneScoped;
 	TracyGpuZone("OpenGLRendererBackend::Draw");

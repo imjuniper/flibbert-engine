@@ -34,7 +34,7 @@ void OpenGLVertexArray::Unbind() const
 	glBindVertexArray(0);
 }
 
-void OpenGLVertexArray::AddVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer)
+void OpenGLVertexArray::AddVertexBuffer(std::shared_ptr<IVertexBuffer> vertexBuffer)
 {
 	ZoneScoped;
 
@@ -99,17 +99,17 @@ void OpenGLVertexArray::AddVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuff
 	}
 }
 
-const std::vector<std::shared_ptr<VertexBuffer>>& OpenGLVertexArray::GetVertexBuffers() const
+const std::vector<std::shared_ptr<IVertexBuffer>>& OpenGLVertexArray::GetVertexBuffers() const
 {
 	return m_VertexBuffers;
 }
 
-const std::shared_ptr<IndexBuffer>& OpenGLVertexArray::GetIndexBuffer() const
+const std::shared_ptr<IIndexBuffer>& OpenGLVertexArray::GetIndexBuffer() const
 {
 	return m_IndexBuffer;
 }
 
-void OpenGLVertexArray::SetIndexBuffer(std::shared_ptr<IndexBuffer> indexBuffer)
+void OpenGLVertexArray::SetIndexBuffer(std::shared_ptr<IIndexBuffer> indexBuffer)
 {
 	ZoneScoped;
 

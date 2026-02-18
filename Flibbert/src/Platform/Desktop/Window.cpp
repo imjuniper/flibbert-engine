@@ -112,7 +112,7 @@ void Window::ProcessEvents()
 	}
 }
 
-void Window::SwapBuffers()
+void Window::Present()
 {
 	ZoneScoped;
 

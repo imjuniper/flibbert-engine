@@ -5,7 +5,7 @@
 
 namespace Flibbert {
 
-std::shared_ptr<VertexArray> VertexArray::Create()
+std::shared_ptr<IVertexArray> IVertexArray::Create()
 {
 	switch (Renderer::GetAPI()) {
 	case Renderer::API::OpenGL:

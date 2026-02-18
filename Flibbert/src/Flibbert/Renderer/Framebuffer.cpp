@@ -5,7 +5,7 @@
 
 namespace Flibbert {
 
-std::shared_ptr<Framebuffer> Framebuffer::Create(const FramebufferSpecification& specification)
+std::shared_ptr<IFramebuffer> IFramebuffer::Create(const FramebufferSpecification& specification)
 {
 	switch (Renderer::GetAPI()) {
 	case Renderer::API::OpenGL:

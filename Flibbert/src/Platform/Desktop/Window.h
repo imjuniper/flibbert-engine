@@ -36,7 +36,7 @@ public:
 	~Window();
 
 	void ProcessEvents();
-	void SwapBuffers();
+	void Present();
 
 	void SetVSync(bool enabled);
 	bool IsVSyncEnabled() const;

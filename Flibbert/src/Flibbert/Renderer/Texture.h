@@ -2,10 +2,10 @@
 
 namespace Flibbert {
 
-class Texture
+class ITexture
 {
 public:
-	virtual ~Texture() = default;
+	virtual ~ITexture() = default;
 
 	virtual void Bind(uint32_t slot) const = 0;
 	virtual void Unbind(uint32_t slot) const = 0;
@@ -23,7 +23,7 @@ public:
 		return m_Loaded;
 	}
 
-	static std::shared_ptr<Texture> Create(std::string_view path);
+	static std::shared_ptr<ITexture> Create(std::string_view path);
 
 protected:
 	std::string m_Path;

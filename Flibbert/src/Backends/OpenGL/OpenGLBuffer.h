@@ -4,7 +4,7 @@
 
 namespace Flibbert {
 
-class OpenGLVertexBuffer : public VertexBuffer
+class OpenGLVertexBuffer : public IVertexBuffer
 {
 public:
 	OpenGLVertexBuffer(const void* data, uint32_t size);
@@ -19,7 +19,7 @@ private:
 	uint32_t m_RendererID;
 };
 
-class OpenGLIndexBuffer : public IndexBuffer
+class OpenGLIndexBuffer : public IIndexBuffer
 {
 public:
 	OpenGLIndexBuffer(const uint32_t* data, uint32_t count);
@@ -39,7 +39,7 @@ private:
 	uint32_t m_Count;
 };
 
-class OpenGLUniformBuffer : public UniformBuffer
+class OpenGLUniformBuffer : public IUniformBuffer
 {
 public:
 	OpenGLUniformBuffer(uint32_t size, uint32_t binding);

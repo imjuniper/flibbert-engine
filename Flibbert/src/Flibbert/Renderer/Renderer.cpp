@@ -44,11 +44,11 @@ void Renderer::Clear() const
 	return m_Backend->Clear();
 }
 
-void Renderer::Draw(const std::shared_ptr<VertexArray>& vertexArray, const std::shared_ptr<Shader>& shader) const
+void Renderer::Submit(const std::shared_ptr<IVertexArray>& vertexArray, const std::shared_ptr<IShader>& shader) const
 {
 	ZoneScoped;
 
-	return m_Backend->Draw(vertexArray, shader);
+	return m_Backend->Submit(vertexArray, shader);
 }
 
 #if FBT_PROFILING_ENABLED

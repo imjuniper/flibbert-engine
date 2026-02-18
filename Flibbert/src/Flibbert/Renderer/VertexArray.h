@@ -2,24 +2,24 @@
 
 namespace Flibbert {
 
-class VertexBuffer;
-class IndexBuffer;
+class IVertexBuffer;
+class IIndexBuffer;
 
-class VertexArray
+class IVertexArray
 {
 public:
-	virtual ~VertexArray() = default;
+	virtual ~IVertexArray() = default;
 
-	static std::shared_ptr<VertexArray> Create();
+	static std::shared_ptr<IVertexArray> Create();
 
 	virtual void Bind() const = 0;
 	virtual void Unbind() const = 0;
 
-	virtual void AddVertexBuffer(std::shared_ptr<VertexBuffer> vertexBuffer) = 0;
-	virtual void SetIndexBuffer(std::shared_ptr<IndexBuffer> indexBuffer) = 0;
+	virtual void AddVertexBuffer(std::shared_ptr<IVertexBuffer> vertexBuffer) = 0;
+	virtual void SetIndexBuffer(std::shared_ptr<IIndexBuffer> indexBuffer) = 0;
 
-	virtual const std::vector<std::shared_ptr<VertexBuffer>>& GetVertexBuffers() const = 0;
-	virtual const std::shared_ptr<IndexBuffer>& GetIndexBuffer() const = 0;
+	virtual const std::vector<std::shared_ptr<IVertexBuffer>>& GetVertexBuffers() const = 0;
+	virtual const std::shared_ptr<IIndexBuffer>& GetIndexBuffer() const = 0;
 };
 
 } // namespace Flibbert

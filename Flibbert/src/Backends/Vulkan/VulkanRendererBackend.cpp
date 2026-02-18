@@ -30,8 +30,8 @@ void VulkanRendererBackend::SetClearColor(const glm::vec4& color) {}
 
 void VulkanRendererBackend::Clear() {}
 
-void VulkanRendererBackend::Draw(const std::shared_ptr<VertexArray>& vertexArray,
-                                 const std::shared_ptr<Shader>& shader) const
+void VulkanRendererBackend::Submit(const std::shared_ptr<IVertexArray>& vertexArray,
+                                 const std::shared_ptr<IShader>& shader) const
 {
 	ZoneScoped;
 }

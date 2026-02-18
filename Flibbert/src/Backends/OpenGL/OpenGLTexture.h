@@ -6,7 +6,7 @@
 
 namespace Flibbert {
 
-class OpenGLTexture : public Texture
+class OpenGLTexture : public ITexture
 {
 public:
 	explicit OpenGLTexture(std::string_view path);

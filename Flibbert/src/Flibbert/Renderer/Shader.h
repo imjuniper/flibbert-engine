@@ -4,10 +4,10 @@
 
 namespace Flibbert {
 
-class Shader
+class IShader
 {
 public:
-	virtual ~Shader() = default;
+	virtual ~IShader() = default;
 
 	virtual void Bind() const = 0;
 	virtual void Unbind() const = 0;
@@ -22,8 +22,8 @@ public:
 		return m_Name;
 	}
 
-	static std::shared_ptr<Shader> Create(std::string_view vertexPath, std::string_view fragmentPath);
-	static std::shared_ptr<Shader> Create(std::string_view name, std::string_view vertexSrc,
+	static std::shared_ptr<IShader> Create(std::string_view vertexPath, std::string_view fragmentPath);
+	static std::shared_ptr<IShader> Create(std::string_view name, std::string_view vertexSrc,
 	                                      std::string_view fragmentSrc);
 
 	static std::string LoadAndPreprocessShader(const std::filesystem::path& filepath);
