@@ -6,7 +6,7 @@ Flibbert is basically a small framework/engine that I'm working on to learn game
 
 - A system that supports OpenGL 4.6
 - [CMake 3.31+](https://cmake.org/)
-- A C++ compiler supporting C++23 (Clang has been tested)
+- A C++ compiler supporting C++23 (Clang & MSVC have been tested)
 
 ## Current features
 
