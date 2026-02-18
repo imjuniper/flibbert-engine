@@ -19,7 +19,7 @@ static void RegisterTypes()
 {
 	ClassRegistry::RegisterAbstractClass<IRendererBackend>();
 	// @todo make this dynamic like modules
-	ClassRegistry::RegisterAbstractClass<OpenGLRendererBackend>();
+	ClassRegistry::RegisterClass<OpenGLRendererBackend>();
 }
 
 Application* Application::s_Instance = nullptr;
