@@ -2,19 +2,17 @@
 
 #include "Flibbert/Core/Application.h"
 
-#include "Platform/Desktop/Window.h"
 #include "Backends/OpenGL/OpenGLBuffer.h"
 #include "Backends/OpenGL/OpenGLShader.h"
 #include "Backends/OpenGL/OpenGLVertexArray.h"
+#include "Platform/Desktop/Window.h"
 #include "SDL3/SDL_video.h"
-
-#include <backends/imgui_impl_opengl3.h>
 
 #define GLAD_GL_IMPLEMENTATION
 #include <glad.h>
 
 #if FBT_PROFILING_ENABLED
-#include "tracy/TracyOpenGL.hpp"
+	#include "tracy/TracyOpenGL.hpp"
 #endif
 
 void OpenGLMessageCallback(unsigned source, unsigned type, unsigned id, unsigned severity, int length,
@@ -133,35 +131,6 @@ OpenGLRendererBackend::~OpenGLRendererBackend()
 #if FBT_PROFILING_ENABLED
 	CleanupTracyFrameImageData();
 #endif
-}
-
-void OpenGLRendererBackend::InitImGui()
-{
-	ZoneScoped;
-
-	ImGui_ImplOpenGL3_Init("#version 460");
-}
-
-void OpenGLRendererBackend::BeginImGuiFrame()
-{
-	ZoneScoped;
-
-	ImGui_ImplOpenGL3_NewFrame();
-}
-
-void OpenGLRendererBackend::EndImGuiFrame()
-{
-	ZoneScoped;
-
-	ImDrawData* DrawData = ImGui::GetDrawData();
-	ImGui_ImplOpenGL3_RenderDrawData(DrawData);
-}
-
-void OpenGLRendererBackend::ShutdownImGui()
-{
-	ZoneScoped;
-
-	ImGui_ImplOpenGL3_Shutdown();
 }
 
 void OpenGLRendererBackend::SetClearColor(const glm::vec4& color)

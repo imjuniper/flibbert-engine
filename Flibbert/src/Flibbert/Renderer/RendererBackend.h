@@ -17,11 +17,6 @@ public:
 protected:
 	RendererBackend() = default;
 
-	virtual void InitImGui() = 0;
-	virtual void BeginImGuiFrame() = 0;
-	virtual void EndImGuiFrame() = 0;
-	virtual void ShutdownImGui() = 0;
-
 	[[nodiscard]] virtual glm::vec4 GetClearColor() const
 	{
 		return m_clearColor;

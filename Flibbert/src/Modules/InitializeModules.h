@@ -8,4 +8,4 @@ void InitializeModules();
 inline void InitializeModules() {}
 #endif
 
-}
+} // namespace Flibbert::Modules

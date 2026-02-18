@@ -7,7 +7,6 @@
 #include "SDL3/SDL_init.h"
 #include "SDL3/SDL_mouse.h"
 #include "SDL3/SDL_video.h"
-#include "backends/imgui_impl_sdl3.h"
 
 namespace Flibbert {
 
@@ -48,34 +47,14 @@ Window::~Window()
 	SDL_Quit();
 }
 
-void Window::InitImGui()
-{
-	ZoneScoped;
-
-	ImGui_ImplSDL3_InitForOpenGL(GetNativeWindow(), SDL_GL_GetCurrentContext());
-}
-
-void Window::BeginImGuiFrame()
-{
-	ZoneScoped;
-
-	ImGui_ImplSDL3_NewFrame();
-}
-
-void Window::ShutdownImGui()
-{
-	ZoneScoped;
-
-	ImGui_ImplSDL3_Shutdown();
-}
-
 void Window::ProcessEvents()
 {
 	ZoneScoped;
 
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
-		ImGui_ImplSDL3_ProcessEvent(&event);
+		OnPreprocessEvent.Broadcast(event);
+
 		switch (event.type) {
 		case SDL_EVENT_QUIT: {
 			OnWindowClosed.Broadcast(*this);

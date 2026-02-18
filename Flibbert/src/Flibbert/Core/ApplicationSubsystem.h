@@ -19,9 +19,18 @@ public:
 		m_Application = application;
 	}
 
+	virtual void OnUpdate(double ts) {}
+	virtual void OnRender() {}
+	virtual void OnPostRender() {}
+
 	virtual void Shutdown() {}
 
-protected:
+	[[nodiscard]] Application* GetApplication() const
+	{
+		return m_Application;
+	}
+
+private:
 	// @todo make this weak ptr?
 	Application* m_Application;
 };

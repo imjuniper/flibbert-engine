@@ -26,26 +26,6 @@ VulkanRendererBackend::~VulkanRendererBackend()
 #endif
 }
 
-void VulkanRendererBackend::InitImGui()
-{
-	ZoneScoped;
-}
-
-void VulkanRendererBackend::BeginImGuiFrame()
-{
-	ZoneScoped;
-}
-
-void VulkanRendererBackend::EndImGuiFrame()
-{
-	ZoneScoped;
-}
-
-void VulkanRendererBackend::ShutdownImGui()
-{
-	ZoneScoped;
-}
-
 void VulkanRendererBackend::SetClearColor(const glm::vec4& color) {}
 
 void VulkanRendererBackend::Clear() {}

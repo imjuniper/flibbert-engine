@@ -23,34 +23,6 @@ Renderer::Renderer()
 	}
 }
 
-void Renderer::InitImGui() const
-{
-	ZoneScoped;
-
-	m_Backend->InitImGui();
-}
-
-void Renderer::BeginImGuiFrame() const
-{
-	ZoneScoped;
-
-	m_Backend->BeginImGuiFrame();
-}
-
-void Renderer::EndImGuiFrame() const
-{
-	ZoneScoped;
-
-	m_Backend->EndImGuiFrame();
-}
-
-void Renderer::ShutdownImGui() const
-{
-	ZoneScoped;
-
-	m_Backend->ShutdownImGui();
-}
-
 glm::vec4 Renderer::GetClearColor() const
 {
 	ZoneScoped;

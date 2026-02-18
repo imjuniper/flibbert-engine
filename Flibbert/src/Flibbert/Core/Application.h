@@ -64,7 +64,6 @@ public:
 private:
 	virtual void OnUpdate(double ts) = 0;
 	virtual void OnRender() = 0;
-	virtual void OnImguiRender() = 0;
 	virtual void OnInput(const std::shared_ptr<InputEvent>& event) = 0;
 
 	void HandleWindowClosed(Window& window);

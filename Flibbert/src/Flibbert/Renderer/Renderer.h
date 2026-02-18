@@ -25,11 +25,6 @@ public:
 	Renderer();
 	~Renderer() = default;
 
-	void InitImGui() const;
-	void BeginImGuiFrame() const;
-	void EndImGuiFrame() const;
-	void ShutdownImGui() const;
-
 	[[nodiscard]] glm::vec4 GetClearColor() const;
 	void SetClearColor(glm::vec4 color) const;
 	void Clear() const;

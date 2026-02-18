@@ -6,8 +6,6 @@
 #include "Flibbert/Renderer/Renderer.h"
 #include "Platform/Desktop/Window.h"
 
-#include <imgui.h>
-
 #include <filesystem>
 #include <memory>
 #include <vector>
@@ -34,8 +32,6 @@ Application::Application(const ApplicationInfo& info)
 		std::filesystem::current_path(executablePath.parent_path());
 	}
 
-	InitializeSubsystems();
-
 	{
 		ZoneNamedN(ZoneWindowInit, "Window Initialization", true);
 		WindowProps props;
@@ -49,17 +45,7 @@ Application::Application(const ApplicationInfo& info)
 		m_Renderer = std::make_unique<Renderer>();
 	}
 
-	{
-		ZoneNamedN(ZoneImguiInit, "ImGui Initialization", true);
-		IMGUI_CHECKVERSION();
-		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO();
-		io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-		m_Window->InitImGui();
-		m_Renderer->InitImGui();
-		ImGui::StyleColorsDark();
-	}
+	InitializeSubsystems();
 
 	m_Running = true;
 }
@@ -67,10 +53,6 @@ Application::Application(const ApplicationInfo& info)
 Application::~Application()
 {
 	ZoneScoped;
-
-	m_Renderer->ShutdownImGui();
-	m_Window->ShutdownImGui();
-	ImGui::DestroyContext();
 
 	ShutdownSubsystems();
 
@@ -117,31 +99,28 @@ void Application::Run()
 			ZoneNamedN(OnUpdateFrame, "OnUpdate", true);
 
 			OnUpdate(m_FrameTime);
+			for (auto subsystem : m_Subsystems) {
+				subsystem->OnUpdate(m_FrameTime);
+			}
 		}
 
-		{
-			ZoneNamedN(OnUpdateFrame, "OnRender", true);
+		m_Renderer->Clear();
 
-			m_Renderer->Clear();
+		{
+			ZoneNamedN(OnRenderFrame, "OnRender", true);
+
 			OnRender();
+			for (auto subsystem : m_Subsystems) {
+				subsystem->OnRender();
+			}
 		}
 
 		{
-			ZoneNamedN(ImGuiFrame, "ImGuiFrame", true);
-			m_Window->BeginImGuiFrame();
-			m_Renderer->BeginImGuiFrame();
-			{
-				ZoneNamedN(ImGuiNewFrame, "ImGui::NewFrame()", true);
-				ImGui::NewFrame();
-			}
+			ZoneNamedN(OnPostRenderFrame, "OnPostRender", true);
 
-			OnImguiRender();
-
-			{
-				ZoneNamedN(ImGuiRender, "ImGui::Render()", true);
-				ImGui::Render();
+			for (auto subsystem : m_Subsystems) {
+				subsystem->OnPostRender();
 			}
-			m_Renderer->EndImGuiFrame();
 		}
 
 #if FBT_PROFILING_ENABLED

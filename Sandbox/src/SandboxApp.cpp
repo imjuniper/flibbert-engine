@@ -4,22 +4,12 @@
 #include "Demos/DemoFloppyBirb.h"
 #include "Demos/DemoMeshGeneration.h"
 #include "Demos/DemoTexture2D.h"
-#include "Flibbert/Core/ClassRegistry.h"
+#include "Modules/Imgui/ImguiSubsystem.h"
 
 #include <Flibbert.h>
 #include <Flibbert/Core/EntryPoint.h>
 
 #include <imgui.h>
-
-class TestBaseClass
-{
-	FBTBASECLASS(TestBaseClass)
-};
-
-class TestClass : public TestBaseClass
-{
-	FBTCLASS(TestClass, TestBaseClass)
-};
 
 class Sandbox : public Flibbert::Application
 {
@@ -33,11 +23,9 @@ public:
 	{
 		ZoneScoped;
 
-		Flibbert::ClassRegistry::RegisterClass<TestClass>();
-
-		auto testobj = Flibbert::ClassRegistry::Create<TestClass>();
-
-		FBT_INFO("Created {0} from registry!", testobj->GetClassName());
+		if (auto imguiSS = GetSubsystem<Flibbert::Modules::Imgui::ImguiSubsystem>()) {
+			(void)imguiSS->OnImguiRender.AddDynamic(this, Sandbox::OnImguiRender);
+		}
 
 		RegisterDemo<Demo::DemoClearColor>();
 		RegisterDemo<Demo::DemoTexture2D>();
@@ -139,7 +127,7 @@ public:
 		ImGui::End();
 	}
 
-	void OnImguiRender() override
+	void OnImguiRender()
 	{
 		ZoneScoped;
 

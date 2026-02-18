@@ -4,6 +4,7 @@
 #include "Flibbert/Input/InputEvent.h"
 
 struct SDL_Window;
+typedef union SDL_Event SDL_Event;
 
 namespace Flibbert {
 
@@ -23,6 +24,9 @@ class Window
 
 	using OnWindowClosedDelegate = MulticastDelegate<Window&>;
 
+	// @todo handle all events with my own type
+	using OnPreprocessEventDelegate = MulticastDelegate<SDL_Event&>;
+
 public:
 	explicit Window(const WindowProps& props = WindowProps());
 
@@ -30,10 +34,6 @@ public:
 	Window& operator=(const Window&) = delete;
 
 	~Window();
-
-	void InitImGui();
-	void BeginImGuiFrame();
-	void ShutdownImGui();
 
 	void ProcessEvents();
 	void SwapBuffers();
@@ -57,6 +57,7 @@ public:
 	OnWindowResizedDelegate OnWindowResized;
 	OnWindowMovedDelegate OnWindowMoved;
 	OnWindowClosedDelegate OnWindowClosed;
+	OnPreprocessEventDelegate OnPreprocessEvent;
 
 private:
 	void OnSetCursorMode(CursorMode mode);
