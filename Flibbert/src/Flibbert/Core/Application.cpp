@@ -88,6 +88,8 @@ void Application::Run()
 {
 	ZoneScoped;
 
+	m_LastFrameTime = Platform::GetTime() - (1.0 / 60);
+
 	while (m_Running) {
 		m_Window->ProcessEvents();
 
