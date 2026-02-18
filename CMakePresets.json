@@ -15,35 +15,34 @@
 			"name": "debug",
 			"inherits": "base",
 			"displayName": "Debug",
-			"description": "Sets debug build type",
 			"cacheVariables": {
-				"CMAKE_BUILD_TYPE": "Debug"
-			}
-		},
-		{
-			"name": "debug-profiling",
-			"inherits": "debug",
-			"displayName": "Profiling",
-			"description": "Sets debug build type and enables profiling",
-			"cacheVariables": {
-				"FBT_PROFILING_ENABLED": "ON"
+				"CMAKE_BUILD_TYPE": "Debug",
+				"FBT_PROFILING_ENABLED": "OFF"
 			}
 		},
 		{
 			"name": "release",
 			"inherits": "base",
 			"displayName": "Release",
-			"description": "Sets release build type",
 			"cacheVariables": {
-				"CMAKE_BUILD_TYPE": "Release"
+				"CMAKE_BUILD_TYPE": "Release",
+				"FBT_PROFILING_ENABLED": "OFF"
+			}
+		},
+		{
+			"name": "debug-profiling",
+			"inherits": "debug",
+			"displayName": "Debug Profiling",
+			"cacheVariables": {
+				"FBT_PROFILING_ENABLED": "ON"
 			}
 		},
 		{
 			"name": "release-profiling",
 			"inherits": "release",
-			"displayName": "Profiling",
-			"description": "Sets release build type and enables profiling",
+			"displayName": "Release Profiling",
 			"cacheVariables": {
+				"CMAKE_BUILD_TYPE": "RelWithDebInfo",
 				"FBT_PROFILING_ENABLED": "ON"
 			}
 		}
@@ -75,17 +74,13 @@
 			"name": "debug",
 			"displayName": "Debug Package",
 			"configurePreset": "debug",
-			"generators": [
-				"ZIP"
-			]
+			"generators": ["ZIP"]
 		},
 		{
 			"name": "release",
 			"displayName": "Release Package",
 			"configurePreset": "release",
-			"generators": [
-				"ZIP"
-			]
+			"generators": ["ZIP"]
 		}
 	]
 }
