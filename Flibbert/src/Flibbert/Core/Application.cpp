@@ -1,9 +1,12 @@
 #include "Flibbert/Core/Application.h"
 
+#include "Backends/OpenGL/OpenGLRendererBackend.h"
 #include "Flibbert/Core/ApplicationSubsystem.h"
 #include "Flibbert/Core/ClassRegistry.h"
 #include "Flibbert/Core/Platform.h"
 #include "Flibbert/Renderer/Renderer.h"
+#include "Flibbert/Renderer/RendererBackend.h"
+#include "Modules/InitializeModules.h"
 #include "Platform/Desktop/Window.h"
 
 #include <filesystem>
@@ -11,6 +14,13 @@
 #include <vector>
 
 namespace Flibbert {
+
+static void RegisterTypes()
+{
+	ClassRegistry::RegisterAbstractClass<IRendererBackend>();
+	// @todo make this dynamic like modules
+	ClassRegistry::RegisterAbstractClass<OpenGLRendererBackend>();
+}
 
 Application* Application::s_Instance = nullptr;
 
@@ -31,6 +41,9 @@ Application::Application(const ApplicationInfo& info)
 	if (Platform::GetExecutablePath(executablePath)) {
 		std::filesystem::current_path(executablePath.parent_path());
 	}
+
+	RegisterTypes();
+	Flibbert::Modules::InitializeModules();
 
 	{
 		ZoneNamedN(ZoneWindowInit, "Window Initialization", true);

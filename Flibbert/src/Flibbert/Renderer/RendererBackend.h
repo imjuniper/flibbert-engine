@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Flibbert/Core/ClassRegistry.h"
+
 namespace Flibbert {
 
 class Renderer;
@@ -9,6 +11,8 @@ class IVertexArray;
 
 class IRendererBackend
 {
+	FBTBASECLASS(IRendererBackend)
+
 	friend Renderer;
 
 public:
@@ -28,7 +32,7 @@ protected:
 	virtual void Clear() = 0;
 
 	virtual void Submit(const std::shared_ptr<IVertexArray>& vertexArray,
-	                  const std::shared_ptr<IShader>& shader) const = 0;
+	                    const std::shared_ptr<IShader>& shader) const = 0;
 
 #if FBT_PROFILING_ENABLED
 	virtual void CaptureTracyFrameImage() = 0;

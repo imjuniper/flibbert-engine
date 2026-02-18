@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Flibbert/Core/ClassRegistry.h"
 #include "Flibbert/Renderer/RendererBackend.h"
 
 #if FBT_PROFILING_ENABLED
@@ -14,6 +15,8 @@ class Window;
 
 class OpenGLRendererBackend : public IRendererBackend
 {
+	FBTCLASS(OpenGLRendererBackend, IRendererBackend)
+
 public:
 	OpenGLRendererBackend();
 	~OpenGLRendererBackend() override;
@@ -22,7 +25,7 @@ public:
 	void Clear() override;
 
 	void Submit(const std::shared_ptr<IVertexArray>& vertexArray,
-	          const std::shared_ptr<IShader>& shader) const override;
+	            const std::shared_ptr<IShader>& shader) const override;
 
 #if FBT_PROFILING_ENABLED
 	void SetupTracyFrameImageData();
