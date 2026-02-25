@@ -15,9 +15,7 @@ public:
 	struct ClassInfo
 	{
 		uint32_t ClassID;
-		uint64_t ClassMask;
 		std::string_view Name;
-		std::string_view Parent;
 		ClassInfo* ParentInfo = nullptr;
 		void* (*FactoryFunc)() = nullptr;
 
@@ -112,7 +110,20 @@ private:                                                                        
 	inline static const ::Flibbert::ClassRegistry::ClassInfo* ClassInfoPrivate = nullptr;                          \
                                                                                                                        \
 	friend class ::Flibbert::ClassRegistry;                                                                        \
-	using ThisClass = this_class;
+	using ThisClass = this_class;                                                                                  \
+                                                                                                                       \
+public:                                                                                                                \
+	static const std::string_view& StaticClassName()                                                               \
+	{                                                                                                              \
+		return ClassNamePrivate;                                                                               \
+	}                                                                                                              \
+                                                                                                                       \
+	static const ::Flibbert::ClassRegistry::ClassInfo* StaticClass()                                               \
+	{                                                                                                              \
+		return ClassInfoPrivate;                                                                               \
+	}                                                                                                              \
+                                                                                                                       \
+private:
 
 #define FBTBASECLASS(this_class)                                                                                       \
 	FBT_CLASS_BODY_IMPL(this_class)                                                                                \
@@ -127,32 +138,24 @@ private:                                                                        
 		initialized = true;                                                                                    \
 	}                                                                                                              \
                                                                                                                        \
-	bool IsA(const ::Flibbert::ClassRegistry::ClassInfo* otherClass)                                               \
-	{                                                                                                              \
-		return GetClass()->IsA(otherClass);                                                                    \
-	}                                                                                                              \
-                                                                                                                       \
 public:                                                                                                                \
-	static const std::string_view& GetClassName()                                                                  \
-	{                                                                                                              \
-		return ClassNamePrivate;                                                                               \
-	}                                                                                                              \
-                                                                                                                       \
-	static const ::Flibbert::ClassRegistry::ClassInfo* StaticClass()                                               \
-	{                                                                                                              \
-		return ClassInfoPrivate;                                                                               \
-	}                                                                                                              \
-                                                                                                                       \
 	virtual const ::Flibbert::ClassRegistry::ClassInfo* GetClass() const                                           \
 	{                                                                                                              \
 		return ClassInfoPrivate;                                                                               \
 	}                                                                                                              \
                                                                                                                        \
+	virtual bool IsA(const ::Flibbert::ClassRegistry::ClassInfo* otherClass)                                       \
+	{                                                                                                              \
+		return GetClass()->IsA(otherClass);                                                                    \
+	}                                                                                                              \
+                                                                                                                       \
 	template <typename T>                                                                                          \
 	bool IsA()                                                                                                     \
 	{                                                                                                              \
-		IsA(T::StaticClass());                                                                                 \
-	}
+		return IsA(T::StaticClass());                                                                          \
+	}                                                                                                              \
+                                                                                                                       \
+private:
 
 #define FBTCLASS(this_class, parent_class)                                                                             \
 	FBT_CLASS_BODY_IMPL(this_class)                                                                                \
@@ -166,8 +169,14 @@ public:                                                                         
 			return;                                                                                        \
 		}                                                                                                      \
 		::Flibbert::ClassRegistry::InitializeClass<Super>();                                                   \
-		ClassInfoPrivate = ::Flibbert::ClassRegistry::AddClass(ClassNamePrivate, Super::GetClassName());       \
+		ClassInfoPrivate = ::Flibbert::ClassRegistry::AddClass(ClassNamePrivate, Super::StaticClassName());    \
 		initialized = true;                                                                                    \
+	}                                                                                                              \
+                                                                                                                       \
+public:                                                                                                                \
+	virtual const ::Flibbert::ClassRegistry::ClassInfo* GetClass() const override                                  \
+	{                                                                                                              \
+		return ClassInfoPrivate;                                                                               \
 	}                                                                                                              \
                                                                                                                        \
 private:

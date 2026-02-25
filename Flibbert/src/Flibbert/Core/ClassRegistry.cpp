@@ -14,8 +14,17 @@ std::unordered_map<std::string_view, ClassRegistry::ClassInfo> ClassRegistry::s_
 
 bool ClassRegistry::ClassInfo::IsA(const ClassInfo* otherClassInfo) const
 {
-	const uint64_t otherClassBit = 1ULL << otherClassInfo->ClassID;
-	return (ClassMask & otherClassBit) != 0;
+	FBT_ENSURE(otherClassInfo);
+
+	if (this == otherClassInfo) {
+		return true;
+	}
+
+	if (ParentInfo == nullptr) {
+		return false;
+	}
+
+	return ParentInfo->IsA(otherClassInfo);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -24,8 +33,6 @@ bool ClassRegistry::ClassInfo::IsA(const ClassInfo* otherClassInfo) const
 
 ClassRegistry::ClassInfo* ClassRegistry::AddClass(std::string_view className)
 {
-	FBT_CORE_ENSURE_MSG(s_NextClassInfoID < 64, "ClassID limit reached — consider switching to std::bitset");
-
 	const auto found = s_Classes.find(className);
 	if (found != s_Classes.end()) {
 		FBT_CORE_WARN("Tried to register class {0} more than once!", className);
@@ -34,7 +41,7 @@ ClassRegistry::ClassInfo* ClassRegistry::AddClass(std::string_view className)
 
 	const uint32_t classId = s_NextClassInfoID++;
 
-	auto [it, inserted] = s_Classes.emplace(className, ClassInfo{classId, 1ULL << classId, className});
+	auto [it, inserted] = s_Classes.emplace(className, ClassInfo{classId, className});
 	FBT_CORE_ENSURE_MSG(inserted,
 	                    "Failed to register class!"); // @todo figure out how to pass params in that func
 
@@ -49,8 +56,6 @@ ClassRegistry::ClassInfo* ClassRegistry::AddClass(std::string_view className, st
 	ClassInfo* parentInfo = &foundParent->second;
 
 	ClassInfo* info = AddClass(className);
-	info->ClassMask |= parentInfo->ClassMask;
-	info->Parent = parentClassName;
 	info->ParentInfo = parentInfo;
 
 	return info;
