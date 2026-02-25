@@ -101,6 +101,8 @@ public:
 	}
 };
 
+// @todo add custom Cast function
+
 } // namespace Flibbert
 
 #define FBT_CLASS_BODY_IMPL(this_class)                                                                                \

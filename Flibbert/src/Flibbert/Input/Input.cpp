@@ -14,18 +14,20 @@ void Input::ProcessInputEvent(const std::shared_ptr<InputEvent>& event)
 {
 	FBT_PROFILE_FUNCTION();
 
-	auto keyEvent = dynamic_pointer_cast<InputEventKey>(event);
-	if (keyEvent) {
+	// @todo handle scroll wheel
+
+	if (event->IsA<InputEventKey>()) {
+		auto keyEvent = std::static_pointer_cast<InputEventKey>(event);
+
 		if (keyEvent->IsPressed) {
 			m_KeysPressed.insert(keyEvent->Key);
 		}
 		else {
 			m_KeysPressed.erase(keyEvent->Key);
 		}
-	}
+	} else if (event->IsA<InputEventMouseButton>()) {
+		auto mouseButtonEvent = std::static_pointer_cast<InputEventMouseButton>(event);
 
-	auto mouseButtonEvent = dynamic_pointer_cast<InputEventMouseButton>(event);
-	if (mouseButtonEvent) {
 		m_MousePosition = mouseButtonEvent->Position;
 		if (mouseButtonEvent->IsPressed) {
 			m_MouseButtonMask |= GetMouseButtonAsMask(mouseButtonEvent->Button);
@@ -33,11 +35,10 @@ void Input::ProcessInputEvent(const std::shared_ptr<InputEvent>& event)
 		else {
 			m_MouseButtonMask &= ~GetMouseButtonAsMask(mouseButtonEvent->Button);
 		}
-	}
+	} else if (event->IsA<InputEventMouseMovement>()) {
+		auto mouseMoveEvent = std::static_pointer_cast<InputEventMouseMovement>(event);
 
-	auto mouseMovementEvent = dynamic_pointer_cast<InputEventMouseMovement>(event);
-	if (mouseMovementEvent) {
-		m_MousePosition = mouseMovementEvent->Position;
+		m_MousePosition = mouseMoveEvent->Position;
 	}
 }
 

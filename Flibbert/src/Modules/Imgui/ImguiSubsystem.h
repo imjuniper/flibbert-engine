@@ -3,12 +3,11 @@
 #include "Flibbert/Core/ApplicationSubsystem.h"
 #include "Flibbert/Core/ClassRegistry.h"
 
-typedef union SDL_Event SDL_Event;
-
 namespace Flibbert {
 
 class Window;
 class Renderer;
+class InputEvent;
 
 } // namespace Flibbert
 
@@ -26,7 +25,9 @@ public:
 	virtual void OnPostRender() override;
 	virtual void Shutdown() override;
 
-	void PreprocessWindowEvent(SDL_Event& event);
+	void PreprocessInputEvent(const std::shared_ptr<InputEvent>& event);
+	void HandleWindowFocusedGained(Window& window);
+	void HandleWindowFocusedLost(Window& window);
 
 	OnImguiRenderDelegate OnImguiRender;
 };

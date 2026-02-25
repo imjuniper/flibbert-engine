@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Flibbert/Core/ClassRegistry.h"
+
 namespace Flibbert {
 
 enum class Key
@@ -127,36 +129,77 @@ enum class CursorMode
 enum class MouseButton
 {
 	Left = 0,
-	Middle = 1,
-	Right = 2,
+	Right = 1,
+	Middle = 2,
 	X1 = 3,
 	X2 = 4
 };
 
-struct InputEvent
+class InputEvent
 {
+	FBTBASECLASS(InputEvent)
+
+public:
 	virtual ~InputEvent() = default;
 };
 
-struct InputEventKey final : InputEvent
+class InputEventWithModifier : public InputEvent
 {
+	FBTCLASS(InputEventWithModifier, InputEvent)
+
+public:
+	bool CtrlPressed;
+	bool ShiftPressed;
+	bool AltPressed;
+	bool SuperPressed;
+};
+
+class InputEventText final : public InputEventWithModifier {
+	FBTCLASS(InputEventText, InputEventWithModifier)
+
+public:
+	const char* Text;
+};
+
+class InputEventKey final : public InputEventWithModifier
+{
+	FBTCLASS(InputEventKey, InputEventWithModifier)
+
+public:
 	Key Key;
 	bool IsPressed = false;
 };
 
-struct InputEventMouse : InputEvent
+class InputEventMouse : public InputEventWithModifier
 {
+	FBTCLASS(InputEventMouse, InputEventWithModifier)
+
+public:
 	glm::vec2 Position;
 };
 
-struct InputEventMouseButton final : InputEventMouse
+class InputEventMouseButton final : public InputEventMouse
 {
+	FBTCLASS(InputEventMouseButton, InputEventMouse)
+
+public:
 	MouseButton Button;
 	bool IsPressed = false;
 };
 
-struct InputEventMouseMovement final : InputEventMouse
+class InputEventMouseWheel final : public InputEventMouse
 {
+	FBTCLASS(InputEventMouseWheel, InputEventMouse)
+
+public:
+	glm::vec2 Amount;
+};
+
+class InputEventMouseMovement final : public InputEventMouse
+{
+	FBTCLASS(InputEventMouseMovement, InputEventMouse)
+
+public:
 	glm::vec2 MovementDelta;
 };
 

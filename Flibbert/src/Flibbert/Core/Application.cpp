@@ -4,6 +4,7 @@
 #include "Flibbert/Core/ApplicationSubsystem.h"
 #include "Flibbert/Core/ClassRegistry.h"
 #include "Flibbert/Core/Platform.h"
+#include "Flibbert/Input/InputEvent.h"
 #include "Flibbert/Renderer/Renderer.h"
 #include "Flibbert/Renderer/RendererBackend.h"
 #include "Modules/InitializeModules.h"
@@ -20,6 +21,16 @@ static void RegisterTypes()
 	ClassRegistry::RegisterAbstractClass<IRendererBackend>();
 	// @todo make this dynamic like modules
 	ClassRegistry::RegisterClass<OpenGLRendererBackend>();
+
+	/// Inputs ///
+	ClassRegistry::RegisterAbstractClass<InputEvent>();
+	ClassRegistry::RegisterAbstractClass<InputEventWithModifier>();
+	ClassRegistry::RegisterClass<InputEventKey>();
+	ClassRegistry::RegisterClass<InputEventText>();
+	ClassRegistry::RegisterAbstractClass<InputEventMouse>();
+	ClassRegistry::RegisterClass<InputEventMouseButton>();
+	ClassRegistry::RegisterClass<InputEventMouseWheel>();
+	ClassRegistry::RegisterClass<InputEventMouseMovement>();
 }
 
 Application* Application::s_Instance = nullptr;

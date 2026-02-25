@@ -4,7 +4,6 @@
 #include "Flibbert/Input/InputEvent.h"
 
 struct SDL_Window;
-typedef union SDL_Event SDL_Event;
 
 namespace Flibbert {
 
@@ -24,8 +23,12 @@ class Window
 
 	using OnWindowClosedDelegate = MulticastDelegate<Window&>;
 
+	using OnWindowFocusGainedDelegate = MulticastDelegate<Window&>;
+
+	using OnWindowFocusLostDelegate = MulticastDelegate<Window&>;
+
 	// @todo handle all events with my own type
-	using OnPreprocessEventDelegate = MulticastDelegate<SDL_Event&>;
+	using OnPreprocessEventDelegate = MulticastDelegate<const std::shared_ptr<InputEvent>&>;
 
 public:
 	explicit Window(const WindowProps& props = WindowProps());
@@ -57,6 +60,8 @@ public:
 	OnWindowResizedDelegate OnWindowResized;
 	OnWindowMovedDelegate OnWindowMoved;
 	OnWindowClosedDelegate OnWindowClosed;
+	OnWindowFocusGainedDelegate OnWindowFocusGained;
+	OnWindowFocusLostDelegate OnWindowFocusLost;
 	OnPreprocessEventDelegate OnPreprocessEvent;
 
 private:
