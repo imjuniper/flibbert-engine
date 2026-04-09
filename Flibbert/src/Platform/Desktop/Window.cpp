@@ -212,8 +212,6 @@ void Window::OnSetCursorMode(CursorMode mode)
 {
 	FBT_PROFILE_FUNCTION();
 
-	FBT_CORE_LOG(info, "wow!");
-
 	switch (mode) {
 	case CursorMode::Normal:
 		SDL_CaptureMouse(false);
