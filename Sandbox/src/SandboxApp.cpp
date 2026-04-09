@@ -14,6 +14,7 @@
 class Sandbox : public Flibbert::Application
 {
 private:
+	const char* m_CurrentDemoName = "None";
 	std::unique_ptr<Demo::Demo> m_CurrentDemo = nullptr;
 
 	std::vector<std::pair<const char*, std::function<std::unique_ptr<Demo::Demo>()>>> m_Demos;
@@ -27,20 +28,20 @@ public:
 			(void)imguiSS->OnImguiRender.Add<&Sandbox::OnImguiRender>(this);
 		}
 
-		RegisterDemo<Demo::DemoClearColor>();
-		RegisterDemo<Demo::DemoTexture2D>();
-		RegisterDemo<Demo::DemoFloppyBirb>();
-		RegisterDemo<Demo::DemoCamera3D>();
-		RegisterDemo<Demo::DemoMeshGeneration>();
+		RegisterDemo<Demo::DemoClearColor>("Clear Color");
+		RegisterDemo<Demo::DemoTexture2D>("2D Texture");
+		RegisterDemo<Demo::DemoFloppyBirb>("Floppy Birb");
+		RegisterDemo<Demo::DemoCamera3D>("3D Camera");
+		RegisterDemo<Demo::DemoMeshGeneration>("Terrain Generation");
 	}
 
-	template <typename TDemo>
-	void RegisterDemo()
+	template <std::derived_from<Demo::Demo> TDemo>
+	void RegisterDemo(const char* name)
 	{
 		FBT_PROFILE_FUNCTION();
 
-		FBT_INFO("Registering demo {}", TDemo::Name);
-		m_Demos.emplace_back(TDemo::Name, []() { return std::make_unique<TDemo>(); });
+		FBT_INFO("Registering demo {}", name);
+		m_Demos.emplace_back(name, []() { return std::make_unique<TDemo>(); });
 	}
 
 	void OnUpdate(const double ts) override
@@ -96,6 +97,7 @@ public:
 			if (ImGui::BeginMenu("Demos")) {
 				for (auto& [demoName, createDemo] : m_Demos) {
 					if (ImGui::MenuItem(demoName)) {
+						m_CurrentDemoName = demoName;
 						m_CurrentDemo = createDemo();
 					}
 				}
@@ -134,7 +136,7 @@ public:
 		BeginMainImguiWindow();
 
 		if (m_CurrentDemo) {
-			ImGui::Begin(m_CurrentDemo->GetName());
+			ImGui::Begin(m_CurrentDemoName);
 			m_CurrentDemo->OnImGuiRender();
 			ImGui::End();
 		}

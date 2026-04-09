@@ -39,8 +39,6 @@ public:
 	virtual void OnRender() {};
 	virtual void OnImGuiRender() {};
 	virtual void OnInput(const std::shared_ptr<Flibbert::InputEvent>& event) {}
-
-	virtual const char* GetName() const = 0;
 };
 
 } // namespace Demo

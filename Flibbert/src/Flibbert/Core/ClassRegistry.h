@@ -3,11 +3,14 @@
 #include "Flibbert/Core/Base.h"
 #include "Flibbert/Core/Log.h"
 
-#include <memory>
+#include <concepts>
 #include <string_view>
 #include <unordered_map>
 
 namespace Flibbert {
+
+template <typename T>
+concept HasThisClassMember = requires(T v) { std::same_as<typename T::ThisClass, T>; };
 
 class ClassRegistry
 {
@@ -31,77 +34,64 @@ private:
 	static void GetChildClasses(const ClassInfo* classInfo, std::vector<const ClassInfo*>& classes);
 
 public:
-	template <typename T>
+	template <HasThisClassMember C>
 	static void* ClassFactory()
 	{
-		return new T();
+		return new C();
 	}
 
 	static ClassInfo* AddClass(std::string_view className);
 	static ClassInfo* AddClass(std::string_view className, std::string_view parentClassName);
 
-	template <typename T>
+	template <HasThisClassMember C>
 	static void GetChildClasses(std::vector<const ClassInfo*>& classes)
 	{
-		static_assert(std::is_same_v<typename T::ThisClass, T>,
-		              "Class not declared properly, please use FBTCLASS.");
-
-		return GetChildClasses(T::StaticClass(), classes);
+		return GetChildClasses(C::StaticClass(), classes);
 	}
 
-	template <typename T>
+	template <HasThisClassMember C>
 	static void InitializeClass()
 	{
-		static_assert(std::is_same_v<typename T::ThisClass, T>,
-		              "Class not declared properly, please use FBTCLASS.");
-
-		T::InitializeClass();
+		C::InitializeClass();
 	}
 
-	template <typename T>
+	template <HasThisClassMember C>
 	static void RegisterAbstractClass()
 	{
-		static_assert(std::is_same_v<typename T::ThisClass, T>,
-		              "Class not declared properly, please use FBTCLASS.");
+		C::InitializeClass();
 
-		T::InitializeClass();
-
-		FBT_CORE_TRACE("Registered abstract class {0}", T::ClassNamePrivate);
+		FBT_CORE_TRACE("Registered abstract class {0}", C::ClassNamePrivate);
 	}
 
-	template <typename T>
+	template <HasThisClassMember C>
 	static void RegisterClass()
 	{
-		static_assert(std::is_same_v<typename T::ThisClass, T>,
-		              "Class not declared properly, please use FBTCLASS.");
+		C::InitializeClass();
+		const auto found = s_Classes.find(C::ClassNamePrivate);
+		found->second.FactoryFunc = &ClassFactory<C>;
 
-		T::InitializeClass();
-		const auto found = s_Classes.find(T::ClassNamePrivate);
-		found->second.FactoryFunc = &ClassFactory<T>;
-
-		FBT_CORE_TRACE("Registered class {0}", T::ClassNamePrivate);
+		FBT_CORE_TRACE("Registered class {0}", C::ClassNamePrivate);
 	}
 
-	template <typename T>
-	static std::shared_ptr<T> Create()
+	template <HasThisClassMember C>
+	static std::shared_ptr<C> Create()
 	{
-		static_assert(std::is_same_v<typename T::ThisClass, T>,
-		              "Class not declared properly, please use FBTCLASS.");
-
-		return std::make_shared<T>();
+		return std::make_shared<C>();
 	}
 
-	template <typename T>
-	static std::shared_ptr<T> Create(const ClassInfo* info)
+	template <HasThisClassMember C>
+	static std::shared_ptr<C> Create(const ClassInfo* info)
 	{
-		static_assert(std::is_same_v<typename T::ThisClass, T>,
-		              "Class not declared properly, please use FBTCLASS.");
-
-		return std::shared_ptr<T>(static_cast<T*>(info->FactoryFunc()));
+		return std::shared_ptr<C>(static_cast<C*>(info->FactoryFunc()));
 	}
 };
 
 // @todo add custom Cast function
+
+template <typename T>
+concept HasStaticClassFunction = requires(T) {
+	{ T::StaticClass() } -> std::same_as<const ClassRegistry::ClassInfo*>;
+};
 
 } // namespace Flibbert
 
@@ -141,6 +131,11 @@ private:
 	}                                                                                                              \
                                                                                                                        \
 public:                                                                                                                \
+	virtual const std::string_view& GetClassName() const                                                           \
+	{                                                                                                              \
+		return ClassNamePrivate;                                                                               \
+	}                                                                                                              \
+                                                                                                                       \
 	virtual const ::Flibbert::ClassRegistry::ClassInfo* GetClass() const                                           \
 	{                                                                                                              \
 		return ClassInfoPrivate;                                                                               \
@@ -151,10 +146,10 @@ public:                                                                         
 		return GetClass()->IsA(otherClass);                                                                    \
 	}                                                                                                              \
                                                                                                                        \
-	template <typename T>                                                                                          \
+	template <HasStaticClassFunction C>                                                                            \
 	bool IsA()                                                                                                     \
 	{                                                                                                              \
-		return IsA(T::StaticClass());                                                                          \
+		return IsA(C::StaticClass());                                                                          \
 	}                                                                                                              \
                                                                                                                        \
 private:
@@ -176,6 +171,11 @@ private:
 	}                                                                                                              \
                                                                                                                        \
 public:                                                                                                                \
+	virtual const std::string_view& GetClassName() const override                                                  \
+	{                                                                                                              \
+		return ClassNamePrivate;                                                                               \
+	}                                                                                                              \
+                                                                                                                       \
 	virtual const ::Flibbert::ClassRegistry::ClassInfo* GetClass() const override                                  \
 	{                                                                                                              \
 		return ClassInfoPrivate;                                                                               \

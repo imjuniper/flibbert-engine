@@ -16,14 +16,6 @@ public:
 	void OnImGuiRender() override;
 	void OnInput(const std::shared_ptr<Flibbert::InputEvent>& event) override;
 
-	const char* GetName() const override
-	{
-		return Name;
-	}
-
-public:
-	static constexpr auto Name = "3D Camera";
-
 private:
 	Flibbert::Renderer& m_Renderer;
 

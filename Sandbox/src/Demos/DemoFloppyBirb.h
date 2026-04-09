@@ -59,14 +59,6 @@ public:
 	void OnImGuiRender() override;
 	void OnInput(const std::shared_ptr<Flibbert::InputEvent>& event) override;
 
-	const char* GetName() const override
-	{
-		return Name;
-	}
-
-public:
-	static constexpr auto Name = "Floppy Birb";
-
 private:
 	Flibbert::Renderer& m_Renderer;
 	std::shared_ptr<Flibbert::IUniformBuffer> m_PerFrameBuffer;

@@ -5,6 +5,7 @@
 #include "Flibbert/Renderer/Renderer.h"
 #include "Platform/Desktop/Window.h"
 
+#include <concepts>
 #include <memory>
 #include <string>
 
@@ -41,7 +42,7 @@ public:
 	void InitializeSubsystems();
 	void ShutdownSubsystems();
 
-	template <typename T>
+	template <std::derived_from<ApplicationSubsystem> T>
 	std::shared_ptr<T> GetSubsystem()
 	{
 		for (auto subsystem : m_Subsystems) {

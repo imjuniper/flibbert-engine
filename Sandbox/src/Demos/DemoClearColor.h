@@ -13,14 +13,6 @@ public:
 	void OnRender() override;
 	void OnImGuiRender() override;
 
-	const char* GetName() const override
-	{
-		return Name;
-	}
-
-public:
-	static constexpr auto Name = "Clear Color";
-
 private:
 	Flibbert::Renderer& m_Renderer;
 

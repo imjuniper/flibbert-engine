@@ -22,6 +22,7 @@ struct MemberClass<ReturnValue (C::*)(Args...) const>
 template <auto Function>
 using MemberClassOf = typename MemberClass<decltype(Function)>::Type;
 
+// @todo can this be simplified further with other concepts?
 // Checks that Function is a member function pointer callable with Args and returns ReturnValue
 template <auto Function, typename ReturnValue, typename... Args>
 concept MatchingMemberFunction =
