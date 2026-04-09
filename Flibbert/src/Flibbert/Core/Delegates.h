@@ -136,14 +136,14 @@ public:
 		return m_Function != nullptr;
 	}
 
-	template <typename ...Args2>
+	template <typename... Args2>
 	ReturnValue Execute(Args2&&... args) const
 	{
 		FBT_CORE_ENSURE_MSG(IsBound(), "Cannot invoke unbound delegate. Call Bind() first.");
 		return m_Function(m_Instance, std::forward<Args2>(args)...);
 	}
 
-	template <typename ...Args2>
+	template <typename... Args2>
 	ReturnValue ExecuteIfBound(Args2&&... args) const
 	{
 		if (IsBound()) {
@@ -231,7 +231,7 @@ public:
 		});
 	}
 
-	template <typename ...Args2>
+	template <typename... Args2>
 	void Broadcast(Args2&&... args) const
 	{
 		for (const auto& [_, stub] : m_BoundFunctions) {
