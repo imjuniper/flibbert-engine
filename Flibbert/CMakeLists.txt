@@ -37,7 +37,6 @@ add_library(Flibbert
     src/Flibbert/Core/Log.h
     src/Flibbert/Core/Platform.cpp
     src/Flibbert/Core/Platform.h
-    src/Flibbert/Core/PlatformDetection.h
     src/Flibbert/Core/StringName.cpp
     src/Flibbert/Core/StringName.h
     src/Flibbert/Core/StringUtils.cpp
@@ -155,15 +154,16 @@ if(FBT_PROFILING_ENABLED)
 endif()
 
 ### Platforms ###
+# @todo this probably should be including files for the *target* platform instead?
 set(PLATFORMS_DIR src/Platform)
 if(WIN32)
     include(${PLATFORMS_DIR}/Windows/Platform.cmake)
+elseif(APPLE)
+    include(${PLATFORMS_DIR}/MacOS/Platform.cmake)
+elseif(LINUX)
+    include(${PLATFORMS_DIR}/Linux/Platform.cmake)
 else()
-    if (APPLE)
-        include(${PLATFORMS_DIR}/MacOS/Platform.cmake)
-    else()
-        include(${PLATFORMS_DIR}/Linux/Platform.cmake)
-    endif()
+    message(FATAL_ERROR "Unsupported platform!")
 endif()
 
 ### Modules ###

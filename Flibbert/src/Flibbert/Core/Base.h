@@ -2,7 +2,6 @@
 // this should probably have a better name than base? Core? CoreMinimal like UE? Should I only IWYU?
 // Also some stuff should probably be private.
 
-#include "Flibbert/Core/PlatformDetection.h"
 #include "Flibbert/Core/Types.h"
 
 // Resolve which function signature macro will be used. Note that this only
