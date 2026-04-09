@@ -131,7 +131,7 @@ Camera::Camera(const std::shared_ptr<CameraMode>& mode, const glm::vec3& positio
 	FBT_PROFILE_FUNCTION();
 
 	Window& window = Application::Get().GetWindow();
-	m_WindowResizedDelegate = window.OnWindowResized.AddDynamic(this, Camera::OnResize);
+	m_WindowResizedDelegate = window.OnWindowResized.Add<&Camera::OnResize>(this);
 
 	m_AspectRatio = window.GetAspectRatio();
 	m_ProjectionMatrix = m_CameraMode->CalculateProjection(m_AspectRatio);

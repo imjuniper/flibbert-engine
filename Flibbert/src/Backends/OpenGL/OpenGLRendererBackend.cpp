@@ -102,7 +102,7 @@ OpenGLRendererBackend::OpenGLRendererBackend()
 		FBT_CORE_INFO("\tVersion: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 	}
 
-	m_WindowResizedDelegate = window.OnWindowResized.AddDynamic(this, OpenGLRendererBackend::OnWindowResized);
+	m_WindowResizedDelegate = window.OnWindowResized.Add<&OpenGLRendererBackend::OnWindowResized>(this);
 
 #ifdef FBT_DEBUG
 	glEnable(GL_DEBUG_OUTPUT);

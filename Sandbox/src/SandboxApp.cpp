@@ -24,7 +24,7 @@ public:
 		FBT_PROFILE_FUNCTION();
 
 		if (auto imguiSS = GetSubsystem<Flibbert::Modules::Imgui::ImguiSubsystem>()) {
-			(void)imguiSS->OnImguiRender.AddDynamic(this, Sandbox::OnImguiRender);
+			(void)imguiSS->OnImguiRender.Add<&Sandbox::OnImguiRender>(this);
 		}
 
 		RegisterDemo<Demo::DemoClearColor>();

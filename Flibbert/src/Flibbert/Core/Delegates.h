@@ -2,11 +2,31 @@
 
 #include <map>
 
-// Would love to implement something more similar to actual delegates, like
-// https://github.com/simco50/CppDelegates/blob/master/Delegates.h
-// but I want to understand it first
-
 namespace Flibbert {
+
+template <typename T>
+struct MemberClass;
+
+template <typename C, typename ReturnValue, typename... Args>
+struct MemberClass<ReturnValue (C::*)(Args...)>
+{
+	using Type = C;
+};
+
+template <typename C, typename ReturnValue, typename... Args>
+struct MemberClass<ReturnValue (C::*)(Args...) const>
+{
+	using Type = const C;
+};
+
+template <auto Function>
+using MemberClassOf = typename MemberClass<decltype(Function)>::Type;
+
+// Checks that Function is a member function pointer callable with Args and returns ReturnValue
+template <auto Function, typename ReturnValue, typename... Args>
+concept MatchingMemberFunction =
+    std::is_member_function_pointer_v<decltype(Function)> &&
+    std::is_invocable_r_v<ReturnValue, decltype(Function), MemberClassOf<Function>*, Args...>;
 
 struct DelegateHandle
 {
@@ -71,61 +91,110 @@ private:
 	}
 };
 
+// @todo: Can I create a base class so that at least the *Stub functions can be shared?
+
 template <typename ReturnValue, typename... Args>
 class Delegate
 {
-public:
-	using DelegateFunction = std::function<ReturnValue(Args...)>;
+	using DelegateFunction = ReturnValue (*)(void*, Args...);
 
-	// Default constructor
-	Delegate() noexcept : m_BoundFunction() {}
+	void* m_Instance = nullptr;
+	DelegateFunction m_Function = nullptr;
 
-	void __Internal_Bind(DelegateFunction function)
+	template <ReturnValue (*Function)(Args...)>
+	static ReturnValue FreeFunctionStub(void*, Args... args)
 	{
-		m_BoundFunction = function;
+		return std::invoke(Function, std::forward<Args>(args)...);
+	}
+
+	template <auto Function>
+		requires MatchingMemberFunction<Function, ReturnValue, Args...>
+	static ReturnValue MemberFunctionStub(void* instance, Args... args)
+	{
+		return std::invoke(Function, (MemberClassOf<Function>*)instance, std::forward<Args>(args)...);
+	}
+
+public:
+	Delegate() noexcept : m_Instance(nullptr), m_Function(nullptr) {}
+
+	template <ReturnValue (*Function)(Args...)>
+	void Bind()
+	{
+		m_Function = &FreeFunctionStub<Function>;
+	}
+
+	template <auto Function>
+		requires MatchingMemberFunction<Function, ReturnValue, Args...>
+	void Bind(MemberClassOf<Function>* instance)
+	{
+		m_Instance = instance;
+		m_Function = &MemberFunctionStub<Function>;
 	}
 
 	bool IsBound() const
 	{
-		return !!m_BoundFunction;
+		return m_Function != nullptr;
 	}
 
-	ReturnValue Execute(Args&... args) const
+	ReturnValue Execute(Args... args) const
 	{
-		FBT_CORE_ENSURE_MSG(m_BoundFunction, "Delegate is not bound!");
-		return m_BoundFunction(std::forward<Args>(args)...);
+		FBT_CORE_ENSURE_MSG(IsBound(), "Cannot invoke unbound delegate. Call Bind() first.");
+		return m_Function(m_Instance, std::forward<Args>(args)...);
 	}
 
-	ReturnValue ExecuteIfBound(Args&... args) const
+	ReturnValue ExecuteIfBound(Args... args) const
 	{
 		if (IsBound()) {
-			return m_BoundFunction(std::forward<Args>(args)...);
+			return m_Function(m_Instance, std::forward<Args>(args)...);
 		}
 		return ReturnValue();
 	}
 
 	void Clear()
 	{
-		m_BoundFunction = nullptr;
+		m_Instance = nullptr;
+		m_Function = nullptr;
 	}
-
-private:
-	DelegateFunction m_BoundFunction;
 };
 
 template <typename... Args>
 class MulticastDelegate
 {
+	using DelegateFunction = void (*)(void*, Args...);
+	using Stub = std::pair<void*, DelegateFunction>;
+
+	std::map<DelegateHandle, Stub> m_BoundFunctions;
+
+	template <void (*Function)(Args...)>
+	static void FreeFunctionStub(void*, Args... args)
+	{
+		std::invoke(Function, std::forward<Args>(args)...);
+	}
+
+	template <auto Function>
+		requires MatchingMemberFunction<Function, void, Args...>
+	static void MemberFunctionStub(void* instance, Args... args)
+	{
+		std::invoke(Function, (MemberClassOf<Function>*)instance, std::forward<Args>(args)...);
+	}
+
 public:
-	using DelegateFunction = std::function<void(Args...)>;
+	MulticastDelegate() noexcept : m_BoundFunctions() {}
 
-	// Default constructor
-	MulticastDelegate() noexcept : m_Events() {}
-
-	[[nodiscard]] DelegateHandle __Internal_Add(DelegateFunction function)
+	template <void (*Function)(Args...)>
+	[[nodiscard]] DelegateHandle Add()
 	{
 		DelegateHandle newHandle(true);
-		m_Events.insert({newHandle, function});
+		m_BoundFunctions.insert({newHandle, Stub(nullptr, &FreeFunctionStub<Function>)});
+		return newHandle;
+	}
+
+	template <auto Function>
+		requires MatchingMemberFunction<Function, void, Args...>
+	[[nodiscard]] DelegateHandle Add(MemberClassOf<Function>* instance)
+	{
+		DelegateHandle newHandle(true);
+		m_BoundFunctions.insert({newHandle, Stub{instance, &MemberFunctionStub<Function>}});
 		return newHandle;
 	}
 
@@ -135,37 +204,37 @@ public:
 			return false;
 		}
 
-		for (const auto& event : m_Events) {
-			if (event.first == handleToRemove) {
-				m_Events.erase(handleToRemove);
-				handleToRemove.Reset();
-				return true;
-			}
+		const bool erased = m_BoundFunctions.erase(handleToRemove) > 0;
+		if (erased) {
+			handleToRemove.Reset();
+		}
+		return erased;
+	}
+
+	void RemoveAll(void* boundObject)
+	{
+		if (boundObject == nullptr) {
+			return;
 		}
 
-		return false;
+		std::erase_if(m_BoundFunctions, [boundObject](const auto& pair) {
+			DelegateHandle& handle = pair.first;
+			const Stub& stub = pair.second;
+
+			const bool shouldErase = stub.first == boundObject;
+			if (shouldErase) {
+				handle.Reset();
+			}
+			return shouldErase;
+		});
 	}
 
 	void Broadcast(Args&... args) const
 	{
-		for (const auto& event : m_Events) {
-			event.second(std::forward<Args>(args)...);
+		for (const auto& [_, stub] : m_BoundFunctions) {
+			stub.second(stub.first, std::forward<Args>(args)...);
 		}
 	}
-
-private:
-	std::map<DelegateHandle, DelegateFunction> m_Events;
 };
 
 } // namespace Flibbert
-
-// Thanks Hazel <3
-#define FBT_BIND_EVENT(objectPtr, function)                                                                            \
-	[objectPtr](auto&&... args) -> decltype(auto) {                                                                \
-		return (objectPtr)->function(std::forward<decltype(args)>(args)...);                                   \
-	}
-
-// Inspired by Unreal Engine, but autocomplete isn't as good, so I need to find a better way to do
-// this. When I have *actual* delegates, it will be better, but until then this shall do
-#define BindDynamic(object, function) __Internal_Bind(FBT_BIND_EVENT(object, function))
-#define AddDynamic(object, function) __Internal_Add(FBT_BIND_EVENT(object, function))

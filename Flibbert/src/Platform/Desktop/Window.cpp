@@ -1,6 +1,7 @@
 #include "Platform/Desktop/Window.h"
 
 #include "Flibbert/Core/Application.h"
+#include "Flibbert/Core/Log.h"
 #include "Flibbert/Input/Input.h"
 #include "Flibbert/Input/InputEvent.h"
 
@@ -9,6 +10,7 @@
 #include "SDL3/SDL_keycode.h"
 #include "SDL3/SDL_mouse.h"
 #include "SDL3/SDL_video.h"
+#include "spdlog/common.h"
 
 #include <memory>
 
@@ -54,7 +56,7 @@ Window::Window(const WindowProps& props)
 
 	m_AspectRatio = static_cast<float>(m_Size.x) / m_Size.y;
 
-	Input::Get().OnSetCursorMode.BindDynamic(this, Window::OnSetCursorMode);
+	Input::Get().OnSetCursorMode.Bind<&Window::OnSetCursorMode>(this);
 }
 
 Window::~Window()
@@ -209,6 +211,8 @@ glm::u32vec2 Window::GetPosition() const
 void Window::OnSetCursorMode(CursorMode mode)
 {
 	FBT_PROFILE_FUNCTION();
+
+	FBT_CORE_LOG(info, "wow!");
 
 	switch (mode) {
 	case CursorMode::Normal:

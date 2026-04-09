@@ -267,9 +267,9 @@ void ImguiSubsystem::Initialize(Application* application)
 
 	ImGui_ImplOpenGL3_Init("#version 460");
 
-	(void)application->GetWindow().OnPreprocessEvent.AddDynamic(this, ThisClass::PreprocessInputEvent);
-	(void)application->GetWindow().OnWindowFocusGained.AddDynamic(this, ThisClass::HandleWindowFocusedGained);
-	(void)application->GetWindow().OnWindowFocusLost.AddDynamic(this, ThisClass::HandleWindowFocusedLost);
+	(void)application->GetWindow().OnPreprocessEvent.Add<&ThisClass::PreprocessInputEvent>(this);
+	(void)application->GetWindow().OnWindowFocusGained.Add<&ThisClass::HandleWindowFocusedGained>(this);
+	(void)application->GetWindow().OnWindowFocusLost.Add<&ThisClass::HandleWindowFocusedLost>(this);
 }
 
 void ImguiSubsystem::OnUpdate(double ts)

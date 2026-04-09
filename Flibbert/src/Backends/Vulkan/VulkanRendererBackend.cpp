@@ -12,7 +12,7 @@ VulkanRendererBackend::VulkanRendererBackend()
 
 	Window& window = Application::Get().GetWindow();
 
-	m_WindowResizedDelegate = window.OnWindowResized.AddDynamic(this, VulkanRendererBackend::OnWindowResized);
+	m_WindowResizedDelegate = window.OnWindowResized.Add<&VulkanRendererBackend::OnWindowResized>(this);
 
 #if FBT_PROFILING_ENABLED
 	SetupProfilerFrameImageData();
